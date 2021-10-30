@@ -5,7 +5,7 @@
 
 class Pawn : public Piece {
  public:
-  explicit Pawn(PieceColor color, Position position);
+  Pawn(PieceColor color, Position position);
 };
 
 #endif  // PAWN_H_

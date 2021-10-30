@@ -7,6 +7,8 @@
 class Board {
   std::list<Piece> pieces_;
 
+  void generatePiecesForColor(PieceColor color);
+
  public:
   Board();
 

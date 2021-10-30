@@ -5,8 +5,11 @@
 TEST_SUITE("Blocking Queue Tests") {
 TEST_CASE("Create Chess Board") {
     Board board;
+
+    unsigned short count = 0;
     for(Piece piece : board){
-        CHECK_EQ(1, 1);
+        count++;
     }
+    CHECK_EQ(32, count);
 }
 }
