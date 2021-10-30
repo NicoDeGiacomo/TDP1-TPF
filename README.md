@@ -2,6 +2,7 @@
 Taller de Programación I - TP Final
 
 ### Build Steps
+Manually execute the following.
 ```shell
 $ rm -r build
 $ mkdir build
@@ -11,4 +12,9 @@ $ make
 $ ./TESTS
 $ ./SERVER
 $ ./CLIENT
+```
+
+Or let our bash script do it four you!
+```shell
+$ sh build.sh
 ```
