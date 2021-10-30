@@ -5,10 +5,14 @@
 #include "Piece.h"
 
 class Board {
-  std::list<Piece*> pieces_;
+  std::list<Piece> pieces_;
 
  public:
   Board();
+
+  std::list<Piece>::iterator begin();
+
+  std::list<Piece>::iterator end();
 };
 
 #endif  // BOARD_H_

@@ -3,7 +3,10 @@
 #include "common/chess_game/Board.h"
 
 TEST_SUITE("Blocking Queue Tests") {
-TEST_CASE("Create Board") {
-    CHECK_EQ(1, 1);
+TEST_CASE("Create Chess Board") {
+    Board board;
+    for(Piece piece : board){
+        CHECK_EQ(1, 1);
+    }
 }
 }

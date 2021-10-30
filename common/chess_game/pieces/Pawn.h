@@ -3,8 +3,9 @@
 
 #include <chess_game/Piece.h>
 
-class Pawn : Piece{
-
+class Pawn : public Piece {
+ public:
+  explicit Pawn(PieceColor color, Position position);
 };
 
 #endif  // PAWN_H_
