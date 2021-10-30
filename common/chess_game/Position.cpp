@@ -11,3 +11,11 @@ void Position::validate_position() const {
         throw std::invalid_argument("Invalid position.");
     }
 }
+
+unsigned short Position::getX() const {
+    return x_;
+}
+
+unsigned short Position::getY() const {
+    return y_;
+}

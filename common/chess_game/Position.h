@@ -10,6 +10,10 @@ class Position {
 
  public:
   Position(unsigned short x, unsigned short y);
+
+  unsigned short getX() const;
+
+  unsigned short getY() const;
 };
 
 #endif  // POSITION_H_

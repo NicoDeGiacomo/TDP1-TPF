@@ -3,11 +3,13 @@ project(QUANTUM-CHESS)
 
 set(CMAKE_CXX_STANDARD 14)
 
+add_compile_options(-Wall -Wextra -pedantic -Werror)
+
 # Wildcard
 FILE(GLOB_RECURSE client_files "client/*.cpp")
 FILE(GLOB_RECURSE server_files "server/*.cpp")
 FILE(GLOB_RECURSE common_files "common/*.cpp")
-# message(STATUS "Sources loaded: ${main_files}")
+# message(STATUS "Sources loaded: ${server_files}")
 
 # Directories
 include_directories(.)
@@ -22,10 +24,10 @@ add_executable(TESTS
         tests/Tests.cpp tests/doctest/doctest.h ${common_files})
 
 add_executable(CLIENT
-        ${client_files})
+        ${client_files} ${common_files})
 
 add_executable(SERVER
-        ${server_files})
+        ${server_files} ${common_files})
 
 # Libraries
 set(THREADS_PREFER_PTHREAD_FLAG ON)

@@ -1,3 +1,3 @@
 #include "Knight.h"
 
-Knight::Knight(PieceColor color, Position position) : Piece(color, position) {}
+Knight::Knight(PieceColor color, Position position) : Piece(color, position, 'K') {}

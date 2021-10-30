@@ -1,5 +1,5 @@
-#ifndef COMMON_SRC_SOCKET_H_
-#define COMMON_SRC_SOCKET_H_
+#ifndef COMMON_SOCKET_H_
+#define COMMON_SOCKET_H_
 
 #include <exception>
 #include <string>
@@ -7,11 +7,6 @@
 
 /// Implementation of a TCP Socket.
 class Socket {
- private:
-  int fd;
-  explicit Socket(int fd);
-  static struct addrinfo* get_addresses(const char* port, const char* ip);
-
  public:
   /// Creates a Socket.
   Socket();
@@ -62,6 +57,12 @@ class Socket {
 
   /// Shutdowns the Socket.
   void shutdown();
+
+ private:
+  int fd;
+
+  explicit Socket(int fd);
+  static struct addrinfo* get_addresses(const char* port, const char* ip);
 };
 
 /// Exception thrown when an error was produced.
@@ -85,4 +86,4 @@ struct ClosedSocketException : public SocketException {
   ClosedSocketException() : SocketException("The socket is closed.") {}
 };
 
-#endif  // COMMON_SRC_SOCKET_H_
+#endif  // COMMON_SOCKET_H_
