@@ -1,6 +1,6 @@
 #define DOCTEST_CONFIG_IMPLEMENT_WITH_MAIN
 #include "tests/doctest/doctest.h"
-#include "ChessBoard.h"
+#include "common/chess_game/Board.h"
 
 TEST_SUITE("Blocking Queue Tests") {
 TEST_CASE("Create Board") {
