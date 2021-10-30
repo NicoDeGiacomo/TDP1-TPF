@@ -2,18 +2,20 @@
 #define POSITION_H_
 
 class Position {
-  unsigned short x_;
-  unsigned short y_;
+  int x_;
+  int y_;
 
  private:
   void validate_position() const;
 
  public:
-  Position(unsigned short x, unsigned short y);
+  Position(int x, int y);
 
-  unsigned short getX() const;
+  int getX() const;
 
-  unsigned short getY() const;
+  int getY() const;
+
+  Position operator+(const Position& pos2) const;
 };
 
 #endif  // POSITION_H_

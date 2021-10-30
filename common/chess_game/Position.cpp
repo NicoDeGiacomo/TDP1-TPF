@@ -2,7 +2,7 @@
 
 #include <stdexcept>
 
-Position::Position(unsigned short x, unsigned short y) : x_(x), y_(y) {
+Position::Position(int x, int y) : x_(x), y_(y) {
     validate_position();
 }
 
@@ -12,10 +12,13 @@ void Position::validate_position() const {
     }
 }
 
-unsigned short Position::getX() const {
+int Position::getX() const {
     return x_;
 }
 
-unsigned short Position::getY() const {
+int Position::getY() const {
     return y_;
+}
+Position Position::operator+(const Position &pos2) const {
+    return {x_ + pos2.x_, y_ + pos2.y_};  // todo test que verifique que se esta validando
 }

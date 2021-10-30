@@ -8,6 +8,10 @@ class Knight : public Piece {
   Knight(PieceColor color, Position position);
 
   char getDrawing() const override;
+
+ protected:
+  std::list<std::pair<int, int>> getPossibleBeamMoves() const override;
+  std::list<std::pair<int, int>> getPossibleStepMoves() const override;
 };
 
 #endif  // KNIGHT_H_

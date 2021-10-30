@@ -8,13 +8,13 @@ TEST_SUITE("Board tests") {
 TEST_CASE("Create Chess Board") {
     Board board;
 
-    unsigned short total = 0;
-    unsigned short pawns = 0;
-    unsigned short rooks = 0;
-    unsigned short knights = 0;
-    unsigned short bishops = 0;
-    unsigned short queens = 0;
-    unsigned short kings = 0;
+    int total = 0;
+    int pawns = 0;
+    int rooks = 0;
+    int knights = 0;
+    int bishops = 0;
+    int queens = 0;
+    int kings = 0;
     for (const Piece* piece : board) {
         total++;
         switch (piece->getDrawing()) {

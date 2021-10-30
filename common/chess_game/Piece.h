@@ -5,7 +5,7 @@
 #include "Position.h"
 #include "Drawable.h"
 
-enum PieceColor {WHITE, BLACK};
+enum PieceColor { WHITE, BLACK };
 
 class Piece : public Drawable {
  public:
@@ -15,15 +15,19 @@ class Piece : public Drawable {
 
   void move(Position position);
 
-  std::list<Position> getPossibleMoves() const;
+  std::list<Position> getPossiblePositions() const;
 
   virtual ~Piece() = default;
+
+ protected:
+  bool has_moved_;
+
+  virtual std::list<std::pair<int, int>> getPossibleBeamMoves() const = 0;
+  virtual std::list<std::pair<int, int>> getPossibleStepMoves() const = 0;
 
  private:
   PieceColor color_;
   Position position_;
-  std::list<Position> move_multiple_;
-  std::list<Position> move_once_;
 };
 
 #endif  // PIECE_H_

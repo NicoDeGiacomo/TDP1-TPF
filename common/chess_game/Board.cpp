@@ -21,12 +21,12 @@ std::list<Piece*>::const_iterator Board::end() const {
 }
 
 void Board::generatePiecesForColor(PieceColor color) {
-    unsigned short pawnRank = color == WHITE? 2 : 7;
+    int pawnRank = color == WHITE? 2 : 7;
     for (int i = 1; i <= 8; ++i) {
         pieces_.push_back(new Pawn(color, Position(i, pawnRank)));
     }
 
-    unsigned short pieceRank = color == WHITE? 1 : 8;
+    int pieceRank = color == WHITE? 1 : 8;
     pieces_.push_back(new Rook(color, Position(1, pieceRank)));
     pieces_.push_back(new Rook(color, Position(8, pieceRank)));
 

@@ -5,3 +5,11 @@ Rook::Rook(PieceColor color, Position position) : Piece(color, position) {}
 char Rook::getDrawing() const {
     return 'R';
 }
+
+std::list<std::pair<int, int>> Rook::getPossibleBeamMoves() const {
+    return {};
+}
+
+std::list<std::pair<int, int>> Rook::getPossibleStepMoves() const {
+    return {};
+}

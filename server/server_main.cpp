@@ -30,7 +30,8 @@ int main() {
     Board board;
 
     Piece* piece = *board.begin();
-    piece->move(Position(4, 4));
+    piece->move(piece->getPossiblePositions().front());
+    // piece->move(Position(4, 4));
 
     print_board(board);
 

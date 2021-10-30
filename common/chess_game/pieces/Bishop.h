@@ -8,6 +8,9 @@ class Bishop : public Piece {
   Bishop(PieceColor color, Position position);
 
   char getDrawing() const override;
+ protected:
+  std::list<std::pair<int, int>> getPossibleBeamMoves() const override;
+  std::list<std::pair<int, int>> getPossibleStepMoves() const override;
 };
 
 #endif  // BISHOP_H_

@@ -8,6 +8,10 @@ class Rook : public Piece {
   Rook(PieceColor color, Position position);
 
   char getDrawing() const override;
+
+ private:
+  std::list<std::pair<int, int>> getPossibleBeamMoves() const override;
+  std::list<std::pair<int, int>> getPossibleStepMoves() const override;
 };
 
 #endif  // ROOK_H_
