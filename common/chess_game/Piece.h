@@ -28,6 +28,8 @@ class Piece : public Drawable {
  private:
   PieceColor color_;
   Position position_;
+  std::list<Position> getPossibleStepPositions() const;
+  std::list<Position> getPossibleBeamPositions() const;
 };
 
 #endif  // PIECE_H_

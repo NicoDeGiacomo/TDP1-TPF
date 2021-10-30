@@ -1,5 +1,6 @@
 #define DOCTEST_CONFIG_IMPLEMENT_WITH_MAIN
 
+#include <chess_game/pieces/Rook.h>
 #include "tests/doctest/doctest.h"
 #include "common/chess_game/Board.h"
 #include "common/chess_game/pieces/Pawn.h"
@@ -44,19 +45,24 @@ TEST_CASE("Compare positions") {
     CHECK(Position(1, 1) == Position(1, 1));
 }
 
-TEST_CASE("Get possible positions") {
+TEST_CASE("Possible positions") {
     Pawn pawn(WHITE, Position(1, 1));
     auto positions = pawn.getPossiblePositions();
     CHECK_EQ(2, positions.size());
+    CHECK((std::find(positions.begin(), positions.end(), Position(1, 2)) != positions.end()));
+    CHECK((std::find(positions.begin(), positions.end(), Position(1, 3)) != positions.end()));
+    CHECK((std::find(positions.begin(), positions.end(), Position(1, 1)) == positions.end()));
 
-    bool pos1 = (std::find(positions.begin(), positions.end(), Position(1, 2)) != positions.end());
-    CHECK(pos1);
-
-    bool pos2 = (std::find(positions.begin(), positions.end(), Position(1, 3)) != positions.end());
-    CHECK(pos2);
+    Rook rook(WHITE, Position(1, 1));
+    positions = rook.getPossiblePositions();
+    CHECK_EQ(14, positions.size());
+    CHECK((std::find(positions.begin(), positions.end(), Position(1, 8)) != positions.end()));
+    CHECK((std::find(positions.begin(), positions.end(), Position(8, 1)) != positions.end()));
+    CHECK((std::find(positions.begin(), positions.end(), Position(8, 8)) == positions.end()));
+    CHECK((std::find(positions.begin(), positions.end(), Position(1, 1)) == positions.end()));
 }
 
-TEST_CASE("Move piece to valid position") {
+TEST_CASE("Move piece") {
     // todo: implement me
 }
 }

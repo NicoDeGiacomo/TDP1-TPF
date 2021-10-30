@@ -7,7 +7,7 @@ char Rook::getDrawing() const {
 }
 
 std::list<std::pair<int, int>> Rook::getPossibleBeamMoves() const {
-    return {};
+    return {{1, 0}, {-1, 0}, {0, 1}, {0, -1}};
 }
 
 std::list<std::pair<int, int>> Rook::getPossibleStepMoves() const {
