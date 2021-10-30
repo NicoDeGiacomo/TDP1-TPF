@@ -5,8 +5,8 @@
 void print_board(const Board &board) {
     char chessBoard[8][8]{};
     for (const auto &piece : board) {
-        chessBoard[piece.getPosition().getY() - 1][piece.getPosition().getX()
-            - 1] = piece.getDrawing();
+        chessBoard[piece->getPosition().getY() - 1][piece->getPosition().getX()
+            - 1] = piece->getDrawing();
     }
 
     for (auto &file : chessBoard) {
@@ -29,7 +29,8 @@ int main() {
     printf("STARTING SERVER\n");
     Board board;
 
-    board.begin()->move(Position(4, 4));
+    Piece* piece = *board.begin();
+    piece->move(Position(4, 4));
 
     print_board(board);
 

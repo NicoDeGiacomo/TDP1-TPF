@@ -6,6 +6,8 @@
 class Knight : public Piece {
  public:
   Knight(PieceColor color, Position position);
+
+  char getDrawing() const override;
 };
 
 #endif  // KNIGHT_H_

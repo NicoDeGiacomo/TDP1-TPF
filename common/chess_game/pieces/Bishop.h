@@ -6,6 +6,8 @@
 class Bishop : public Piece {
  public:
   Bishop(PieceColor color, Position position);
+
+  char getDrawing() const override;
 };
 
 #endif  // BISHOP_H_

@@ -6,6 +6,8 @@
 class Pawn : public Piece {
  public:
   Pawn(PieceColor color, Position position);
+
+  char getDrawing() const override;
 };
 
 #endif  // PAWN_H_

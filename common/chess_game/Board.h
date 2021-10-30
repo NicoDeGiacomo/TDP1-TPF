@@ -8,12 +8,14 @@ class Board {
  public:
   Board();
 
-  std::list<Piece>::iterator begin() const;
+  std::list<Piece*>::const_iterator begin() const;
 
-  std::list<Piece>::iterator end() const;
+  std::list<Piece*>::const_iterator end() const;
+
+  virtual ~Board();
 
  private:
-  std::list<Piece> pieces_;
+  std::list<Piece*> pieces_;
 
   void generatePiecesForColor(PieceColor color);
 };

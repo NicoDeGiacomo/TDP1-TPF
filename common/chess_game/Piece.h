@@ -1,25 +1,29 @@
 #ifndef PIECE_H_
 #define PIECE_H_
 
-#include <Drawable.h>
+#include <list>
 #include "Position.h"
+#include "Drawable.h"
 
 enum PieceColor {WHITE, BLACK};
 
 class Piece : public Drawable {
  public:
-  Piece(PieceColor color, Position position, char drawing);
+  Piece(PieceColor color, Position position);
 
   Position getPosition() const;
 
-  char getDrawing() const override;
-
   void move(Position position);
+
+  std::list<Position> getPossibleMoves() const;
+
+  virtual ~Piece() = default;
 
  private:
   PieceColor color_;
   Position position_;
-  char drawing_;
+  std::list<Position> move_multiple_;
+  std::list<Position> move_once_;
 };
 
 #endif  // PIECE_H_

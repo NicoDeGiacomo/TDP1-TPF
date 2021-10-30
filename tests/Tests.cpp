@@ -15,9 +15,9 @@ TEST_CASE("Create Chess Board") {
     unsigned short bishops = 0;
     unsigned short queens = 0;
     unsigned short kings = 0;
-    for (const Piece& piece : board) {
+    for (const Piece* piece : board) {
         total++;
-        switch (piece.getDrawing()) {
+        switch (piece->getDrawing()) {
             case 'p': pawns++; break;
             case 'R': rooks++; break;
             case 'K': knights++; break;
