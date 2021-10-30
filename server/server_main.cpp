@@ -2,14 +2,15 @@
 
 #include "common/chess_game/Board.h"
 
-void print_board(Board &board) {
+void print_board(const Board &board) {
     char chessBoard[8][8]{};
-    for (const auto& piece : board) {
-        chessBoard[piece.getPosition().getY()-1][piece.getPosition().getX()-1] = piece.getDrawing();
+    for (const auto &piece : board) {
+        chessBoard[piece.getPosition().getY() - 1][piece.getPosition().getX()
+            - 1] = piece.getDrawing();
     }
 
-    for (auto & file : chessBoard) {
-        //printf("--------\n");
+    for (auto &file : chessBoard) {
+        // printf("--------\n");
         for (char square : file) {
             printf("|");
             if (square) {
@@ -21,8 +22,7 @@ void print_board(Board &board) {
         printf("|");
         printf("\n");
     }
-    //printf("--------\n");
-
+    // printf("--------\n");
 }
 
 int main() {

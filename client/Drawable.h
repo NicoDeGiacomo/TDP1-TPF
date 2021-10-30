@@ -1,10 +1,10 @@
-#ifndef DRAWABLE_H_
-#define DRAWABLE_H_
+#ifndef CLIENT_DRAWABLE_H_
+#define CLIENT_DRAWABLE_H_
 
 class Drawable {
  public:
-  //TODO: Temporal, hasta poder dibujar con imágenes
+  // todo: Temporal, hasta poder dibujar con imágenes
   virtual char getDrawing() const = 0;
 };
 
-#endif  // DRAWABLE_H_
+#endif  // CLIENT_DRAWABLE_H_

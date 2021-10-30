@@ -12,11 +12,11 @@ Board::Board() {
     generatePiecesForColor(BLACK);
 }
 
-std::list<Piece>::iterator Board::begin() {
+std::list<Piece>::iterator Board::begin() const {
     return pieces_.begin();
 }
 
-std::list<Piece>::iterator Board::end() {
+std::list<Piece>::iterator Board::end() const {
     return pieces_.end();
 }
 

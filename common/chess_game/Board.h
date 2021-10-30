@@ -8,9 +8,9 @@ class Board {
  public:
   Board();
 
-  std::list<Piece>::iterator begin();
+  std::list<Piece>::iterator begin() const;
 
-  std::list<Piece>::iterator end();
+  std::list<Piece>::iterator end() const;
 
  private:
   std::list<Piece> pieces_;
