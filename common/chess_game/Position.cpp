@@ -19,6 +19,11 @@ int Position::getX() const {
 int Position::getY() const {
     return y_;
 }
-Position Position::operator+(const Position &pos2) const {
-    return {x_ + pos2.x_, y_ + pos2.y_};  // todo test que verifique que se esta validando
+
+bool Position::operator==(const Position &other) const {
+    return x_ == other.x_ && y_ == other.y_;
+}
+
+bool Position::operator!=(const Position &other) const {
+    return !(other == *this);
 }

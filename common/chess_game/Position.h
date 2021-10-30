@@ -15,7 +15,8 @@ class Position {
 
   int getY() const;
 
-  Position operator+(const Position& pos2) const;
+  bool operator==(const Position &other) const;
+  bool operator!=(const Position &other) const;
 };
 
 #endif  // POSITION_H_
