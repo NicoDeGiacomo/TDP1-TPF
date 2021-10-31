@@ -1,6 +1,7 @@
 #define DOCTEST_CONFIG_IMPLEMENT_WITH_MAIN
 
 #include <chess_game/pieces/Rook.h>
+#include <chess_game/pieces/Knight.h>
 #include "tests/doctest/doctest.h"
 #include "common/chess_game/Board.h"
 #include "common/chess_game/pieces/Pawn.h"
@@ -67,6 +68,14 @@ TEST_CASE("Valid positions") {
     CHECK((std::find(rookPositions.begin(), rookPositions.end(), Position(8, 1)) != rookPositions.end()));
     CHECK((std::find(rookPositions.begin(), rookPositions.end(), Position(8, 8)) == rookPositions.end()));
     CHECK((std::find(rookPositions.begin(), rookPositions.end(), Position(1, 1)) == rookPositions.end()));
+
+    Knight knight(WHITE, Position(1, 1));
+    auto knightPositions = knight.getPossiblePositions();
+    CHECK_EQ(2, knightPositions.size());
+    CHECK((std::find(knightPositions.begin(), knightPositions.end(), Position(2, 3)) != knightPositions.end()));
+    CHECK((std::find(knightPositions.begin(), knightPositions.end(), Position(3, 2)) != knightPositions.end()));
+
+    // todo: check pieces left
 }
 
 TEST_CASE("Invalid move") {

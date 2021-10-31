@@ -23,8 +23,8 @@ class Piece : public Drawable {
   PieceColor color_;
   bool has_moved_;
 
-  virtual std::list<std::pair<int, int>> getPossibleBeamMoves() const = 0;
-  virtual std::list<std::pair<int, int>> getPossibleStepMoves() const = 0;
+  virtual std::list<std::pair<int, int>> getVectorBeamMoves() const = 0;
+  virtual std::list<std::pair<int, int>> getVectorStepMoves() const = 0;
 
  private:
   Position position_;

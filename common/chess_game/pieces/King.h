@@ -9,8 +9,8 @@ class King : public Piece {
 
   char getDrawing() const override;
  protected:
-  std::list<std::pair<int, int>> getPossibleBeamMoves() const override;
-  std::list<std::pair<int, int>> getPossibleStepMoves() const override;
+  std::list<std::pair<int, int>> getVectorBeamMoves() const override;
+  std::list<std::pair<int, int>> getVectorStepMoves() const override;
 };
 
 #endif  // KING_H_

@@ -31,10 +31,14 @@ std::list<Position> Piece::getPossiblePositions() const {
 
 std::list<Position> Piece::getPossibleStepPositions() const {
     std::list<Position> possiblePositions;
-    for (auto move: getPossibleStepMoves()) {
-        Position newPosition
-            (position_.getX() + move.first, position_.getY() + move.second);
-        possiblePositions.push_back(newPosition);
+    for (auto move: getVectorStepMoves()) {
+        try {
+            Position newPosition
+                (position_.getX() + move.first, position_.getY() + move.second);
+            possiblePositions.push_back(newPosition);
+        } catch (std::invalid_argument &) {
+            continue;
+        }
     }
 
     return possiblePositions;
@@ -42,7 +46,7 @@ std::list<Position> Piece::getPossibleStepPositions() const {
 
 std::list<Position> Piece::getPossibleBeamPositions() const {
     std::list<Position> possiblePositions;
-    for (auto move: getPossibleBeamMoves()) {
+    for (auto move: getVectorBeamMoves()) {
         int x = position_.getX();
         int y = position_.getY();
         while (true) {

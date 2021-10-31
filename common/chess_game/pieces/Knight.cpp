@@ -6,10 +6,10 @@ char Knight::getDrawing() const {
     return 'K';
 }
 
-std::list<std::pair<int, int>> Knight::getPossibleBeamMoves() const {
+std::list<std::pair<int, int>> Knight::getVectorBeamMoves() const {
     return {};
 }
 
-std::list<std::pair<int, int>> Knight::getPossibleStepMoves() const {
-    return {};
+std::list<std::pair<int, int>> Knight::getVectorStepMoves() const {
+    return {{2, 1}, {2, -1}, {-2, 1}, {-2, -1}, {1, 2}, {1, -2}, {-1, 2}, {-2, -1}};
 }

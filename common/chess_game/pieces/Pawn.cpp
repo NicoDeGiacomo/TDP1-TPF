@@ -6,13 +6,12 @@ char Pawn::getDrawing() const {
     return 'p';
 }
 
-std::list<std::pair<int, int>> Pawn::getPossibleBeamMoves() const {
+std::list<std::pair<int, int>> Pawn::getVectorBeamMoves() const {
     return {};
 }
 
-std::list<std::pair<int, int>> Pawn::getPossibleStepMoves() const {
+std::list<std::pair<int, int>> Pawn::getVectorStepMoves() const {
     int move = color_ == WHITE ? 1 : -1;
-    // todo: depende del color
     if (!has_moved_) {
         return {{0, 1 * move}, {0, 2 * move}};
     }
