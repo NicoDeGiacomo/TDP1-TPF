@@ -1,18 +1,15 @@
 #include "Socket.h"
 
-
 #include <unistd.h>
 #include <cstring>
-#include <stdexcept>
-#include <iostream>
 
 #if defined (__WIN32__)
-    //FOR WINDOWS
-    #define IN_WINDOWS 1
     #include <winsock2.h>
     #include <windows.h>
     #include <WinSock2.h>
     #include <ws2tcpip.h>
+    #include <iostream>
+    #include <stdexcept>
 
     #ifndef MSG_NOSIGNAL
         #define MSG_NOSIGNAL 0
@@ -21,7 +18,6 @@
         #define SHUT_RDWR 2
     #endif
 #else
-    #define IN_WINDOWS 0
     #include <sys/socket.h>
     #include <netdb.h>
 #endif
@@ -30,28 +26,31 @@ Socket::Socket() : fd(-1) {}
 
 Socket::Socket(int fd) : fd(fd) {}
 
-int Socket::get_addresses(const char *host, const char* port, struct addrinfo **addresses) {
-    if (IN_WINDOWS) {
-        WSADATA wsaData;
-        int ret;
+int Socket::get_addresses(const char *host,
+                          const char *port,
+                          struct addrinfo **addresses) {
+    #if defined (__WIN32__)
+    WSADATA wsaData;
+    int ret;
 
-        // Initialize Winsock version 2.2
-        ret = WSAStartup(MAKEWORD(2, 2), &wsaData);
-        if (ret != 0) {
-            std::cout << "WSAStartup failed with error " << ret << "\n";
-            return 0;
-        }
-
-        std::cout << "The current status is:" << wsaData.szSystemStatus << "\n";
+    // Initialize Winsock version 2.2
+    ret = WSAStartup(MAKEWORD(2, 2), &wsaData);
+    if (ret != 0) {
+        std::cout << "WSAStartup failed with error " << ret << "\n";
+        return 0;
     }
-    struct addrinfo hints;
+
+    std::cout << "The current status is:" << wsaData.szSystemStatus << "\n";
+    #endif
+    struct addrinfo hints {};
     memset(&hints, 0, sizeof(struct addrinfo));
     hints.ai_family = AF_INET;
     hints.ai_socktype = SOCK_STREAM;
     hints.ai_flags = 0;
     if (getaddrinfo(host, port, &hints, addresses) != 0) {
-        if (IN_WINDOWS)
+        #if defined (__WIN32__)
             WSACleanup();
+        #endif
         throw SocketException("Failed getting address information.");
     }
     return 0;
@@ -63,7 +62,11 @@ void Socket::bind(const char *port) {
     int val = 1;
     for (struct addrinfo* i = addresses; i != nullptr; i = i->ai_next) {
         int skt = socket(i->ai_family, i->ai_socktype, i->ai_protocol);
-        ::setsockopt(skt, SOL_SOCKET, SO_REUSEADDR, (const char*)&val, sizeof(val));
+        ::setsockopt(skt,
+                     SOL_SOCKET,
+                     SO_REUSEADDR,
+                     (const char *) &val,
+                     sizeof(val));
         if (skt != -1) {
             if (::bind(skt, i->ai_addr, i->ai_addrlen) != -1) {
                 fd = skt;
@@ -157,8 +160,9 @@ Socket &Socket::operator=(Socket &&other)  noexcept {
 
 void Socket::shutdown() {
     if (fd != -1) {
-        if (IN_WINDOWS)
+        #if defined (__WIN32__)
             WSACleanup();
+        #endif
         ::shutdown(fd, SHUT_RDWR);
         close(fd);
         fd = -1;

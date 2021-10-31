@@ -62,7 +62,9 @@ class Socket {
   int fd;
 
   explicit Socket(int fd);
-  int get_addresses(const char *host, const char* port, struct addrinfo **addresses);
+  static int get_addresses(const char *host,
+                           const char *port,
+                           struct addrinfo **addresses);
 };
 
 /// Exception thrown when an error was produced.
