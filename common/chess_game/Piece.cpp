@@ -1,4 +1,5 @@
 #include <stdexcept>
+#include <algorithm>
 #include "Piece.h"
 
 Piece::Piece(PieceColor color, Position position)

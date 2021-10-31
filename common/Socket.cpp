@@ -1,33 +1,69 @@
 #include "Socket.h"
 
-#include <netdb.h>
+
 #include <unistd.h>
 #include <cstring>
 #include <stdexcept>
+#include <iostream>
+
+#if defined (__WIN32__)
+    //FOR WINDOWS
+    #define IN_WINDOWS 1
+    #include <winsock2.h>
+    #include <windows.h>
+    #include <WinSock2.h>
+    #include <ws2tcpip.h>
+
+    #ifndef MSG_NOSIGNAL
+        #define MSG_NOSIGNAL 0
+    #endif
+    #ifndef SHUT_RDWR
+        #define SHUT_RDWR 2
+    #endif
+#else
+    #define IN_WINDOWS 0
+    #include <sys/socket.h>
+    #include <netdb.h>
+#endif
 
 Socket::Socket() : fd(-1) {}
 
 Socket::Socket(int fd) : fd(fd) {}
 
-struct addrinfo *Socket::get_addresses(const char *port, const char *ip) {
-    struct addrinfo* addresses;
-    struct addrinfo hints{};
+int Socket::get_addresses(const char *host, const char* port, struct addrinfo **addresses) {
+    if (IN_WINDOWS) {
+        WSADATA wsaData;
+        int ret;
+
+        // Initialize Winsock version 2.2
+        ret = WSAStartup(MAKEWORD(2, 2), &wsaData);
+        if (ret != 0) {
+            std::cout << "WSAStartup failed with error " << ret << "\n";
+            return 0;
+        }
+
+        std::cout << "The current status is:" << wsaData.szSystemStatus << "\n";
+    }
+    struct addrinfo hints;
     memset(&hints, 0, sizeof(struct addrinfo));
     hints.ai_family = AF_INET;
     hints.ai_socktype = SOCK_STREAM;
-    hints.ai_flags = (ip == nullptr) ? AI_PASSIVE : 0;
-    if (getaddrinfo(ip, port, &hints, &addresses) != 0) {
+    hints.ai_flags = 0;
+    if (getaddrinfo(host, port, &hints, addresses) != 0) {
+        if (IN_WINDOWS)
+            WSACleanup();
         throw SocketException("Failed getting address information.");
     }
-    return addresses;
+    return 0;
 }
 
 void Socket::bind(const char *port) {
-    struct addrinfo* addresses = get_addresses(port, nullptr);
+    struct addrinfo* addresses;
+    get_addresses(nullptr, port, &addresses);
     int val = 1;
     for (struct addrinfo* i = addresses; i != nullptr; i = i->ai_next) {
         int skt = socket(i->ai_family, i->ai_socktype, i->ai_protocol);
-        ::setsockopt(skt, SOL_SOCKET, SO_REUSEADDR, &val, sizeof(val));
+        ::setsockopt(skt, SOL_SOCKET, SO_REUSEADDR, (const char*)&val, sizeof(val));
         if (skt != -1) {
             if (::bind(skt, i->ai_addr, i->ai_addrlen) != -1) {
                 fd = skt;
@@ -58,7 +94,8 @@ Socket Socket::accept() const {
 }
 
 void Socket::connect(const char* port, const char* name) {
-    struct addrinfo* addresses = get_addresses(port, name);
+    struct addrinfo* addresses;
+    get_addresses(port, name, &addresses);
     struct addrinfo* a;
     for (a = addresses; a != nullptr; a = a->ai_next) {
         int skt = ::socket(a->ai_family, a->ai_socktype, a->ai_protocol);
@@ -120,6 +157,8 @@ Socket &Socket::operator=(Socket &&other)  noexcept {
 
 void Socket::shutdown() {
     if (fd != -1) {
+        if (IN_WINDOWS)
+            WSACleanup();
         ::shutdown(fd, SHUT_RDWR);
         close(fd);
         fd = -1;
