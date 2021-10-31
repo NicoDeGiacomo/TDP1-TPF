@@ -2,14 +2,19 @@
 #include "Piece.h"
 
 Piece::Piece(PieceColor color, Position position)
-    : has_moved_(false), color_(color), position_(position) {}
+    : color_(color), has_moved_(false), position_(position) {}
 
 Position Piece::getPosition() const {
     return position_;
 }
 
 void Piece::move(Position position) {
-    // todo validate with possible moves
+    std::list<Position> positions = getPossiblePositions();
+    bool found = std::find(positions.begin(), positions.end(), Position(1, 2)) != positions.end();
+    if (!found) {
+        throw std::invalid_argument("Invalid move.");
+    }
+
     position_ = position;
     has_moved_ = true;
 }
@@ -46,7 +51,7 @@ std::list<Position> Piece::getPossibleBeamPositions() const {
                 y += move.second;
                 Position newPosition(x, y);
                 possiblePositions.push_back(newPosition);
-            } catch (std::invalid_argument&) {
+            } catch (std::invalid_argument &) {
                 break;
             }
         }

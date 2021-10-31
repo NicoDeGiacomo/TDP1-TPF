@@ -20,13 +20,13 @@ class Piece : public Drawable {
   virtual ~Piece() = default;
 
  protected:
+  PieceColor color_;
   bool has_moved_;
 
   virtual std::list<std::pair<int, int>> getPossibleBeamMoves() const = 0;
   virtual std::list<std::pair<int, int>> getPossibleStepMoves() const = 0;
 
  private:
-  PieceColor color_;
   Position position_;
   std::list<Position> getPossibleStepPositions() const;
   std::list<Position> getPossibleBeamPositions() const;

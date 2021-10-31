@@ -45,37 +45,57 @@ TEST_CASE("Compare positions") {
     CHECK(Position(1, 1) == Position(1, 1));
 }
 
-TEST_CASE("Possible positions") {
-    Pawn pawn(WHITE, Position(1, 1));
-    auto positions = pawn.getPossiblePositions();
-    CHECK_EQ(2, positions.size());
-    CHECK((std::find(positions.begin(), positions.end(), Position(1, 2)) != positions.end()));
-    CHECK((std::find(positions.begin(), positions.end(), Position(1, 3)) != positions.end()));
-    CHECK((std::find(positions.begin(), positions.end(), Position(1, 1)) == positions.end()));
+TEST_CASE("Valid positions") {
+    Pawn whitePawn(WHITE, Position(1, 2));
+    auto whitePositions = whitePawn.getPossiblePositions();
+    CHECK_EQ(2, whitePositions.size());
+    CHECK((std::find(whitePositions.begin(), whitePositions.end(), Position(1, 3)) != whitePositions.end()));
+    CHECK((std::find(whitePositions.begin(), whitePositions.end(), Position(1, 4)) != whitePositions.end()));
+    CHECK((std::find(whitePositions.begin(), whitePositions.end(), Position(1, 2)) == whitePositions.end()));
+
+    Pawn blackPawn(BLACK, Position(1, 7));
+    auto blackPositions = blackPawn.getPossiblePositions();
+    CHECK_EQ(2, blackPositions.size());
+    CHECK((std::find(blackPositions.begin(), blackPositions.end(), Position(1, 6)) != blackPositions.end()));
+    CHECK((std::find(blackPositions.begin(), blackPositions.end(), Position(1, 5)) != blackPositions.end()));
+    CHECK((std::find(blackPositions.begin(), blackPositions.end(), Position(1, 7)) == blackPositions.end()));
 
     Rook rook(WHITE, Position(1, 1));
-    positions = rook.getPossiblePositions();
-    CHECK_EQ(14, positions.size());
-    CHECK((std::find(positions.begin(), positions.end(), Position(1, 8)) != positions.end()));
-    CHECK((std::find(positions.begin(), positions.end(), Position(8, 1)) != positions.end()));
-    CHECK((std::find(positions.begin(), positions.end(), Position(8, 8)) == positions.end()));
-    CHECK((std::find(positions.begin(), positions.end(), Position(1, 1)) == positions.end()));
+    auto rookPositions = rook.getPossiblePositions();
+    CHECK_EQ(14, rookPositions.size());
+    CHECK((std::find(rookPositions.begin(), rookPositions.end(), Position(1, 8)) != rookPositions.end()));
+    CHECK((std::find(rookPositions.begin(), rookPositions.end(), Position(8, 1)) != rookPositions.end()));
+    CHECK((std::find(rookPositions.begin(), rookPositions.end(), Position(8, 8)) == rookPositions.end()));
+    CHECK((std::find(rookPositions.begin(), rookPositions.end(), Position(1, 1)) == rookPositions.end()));
 }
 
-TEST_CASE("Move piece") {
-    // todo: implement me
+TEST_CASE("Invalid move") {
+    Pawn whitePawn(WHITE, Position(1, 2));
+    CHECK_THROWS_WITH_AS(whitePawn.move(Position(1, 2)), "Invalid move.", std::invalid_argument);
+    CHECK_THROWS_WITH_AS(whitePawn.move(Position(1, 5)), "Invalid move.", std::invalid_argument);
+    CHECK_THROWS_WITH_AS(whitePawn.move(Position(2, 3)), "Invalid move.", std::invalid_argument);
+
+    Pawn blackPawn(BLACK, Position(1, 7));
+    CHECK_THROWS_WITH_AS(blackPawn.move(Position(1, 7)), "Invalid move.", std::invalid_argument);
+    CHECK_THROWS_WITH_AS(blackPawn.move(Position(1, 4)), "Invalid move.", std::invalid_argument);
+    CHECK_THROWS_WITH_AS(blackPawn.move(Position(2, 6)), "Invalid move.", std::invalid_argument);
 }
 }
 
 TEST_SUITE("Position tests") {
 TEST_CASE("Create valid position") {
+    CHECK_NOTHROW(Position(1, 8));
     Position position(1, 8);
     CHECK_EQ(position.getX(), 1);
     CHECK_EQ(position.getY(), 8);
 }
 
 TEST_CASE("Create invalid position") {
-    CHECK_THROWS_AS(Position(9, 9), std::invalid_argument);
-    CHECK_THROWS_AS(Position(0, 0), std::invalid_argument);
+    CHECK_THROWS_WITH_AS(Position(9, 9), "Invalid position.", std::invalid_argument);
+    CHECK_THROWS_WITH_AS(Position(0, 0), "Invalid position.", std::invalid_argument);
+    CHECK_THROWS_WITH_AS(Position(1, 9), "Invalid position.", std::invalid_argument);
+    CHECK_THROWS_WITH_AS(Position(9, 1), "Invalid position.", std::invalid_argument);
+    CHECK_THROWS_WITH_AS(Position(0, 1), "Invalid position.", std::invalid_argument);
+    CHECK_THROWS_WITH_AS(Position(1, 0), "Invalid position.", std::invalid_argument);
 }
 }
