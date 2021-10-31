@@ -1,10 +1,11 @@
 #define DOCTEST_CONFIG_IMPLEMENT_WITH_MAIN
-
-#include <chess_game/pieces/Rook.h>
-#include <chess_game/pieces/Knight.h>
 #include "tests/doctest/doctest.h"
-#include "common/chess_game/Board.h"
-#include "common/chess_game/pieces/Pawn.h"
+
+#include <Rook.h>
+#include <Knight.h>
+#include <Pawn.h>
+#include "Board.h"
+
 
 TEST_SUITE("Board tests") {
 TEST_CASE("Create Chess Board") {

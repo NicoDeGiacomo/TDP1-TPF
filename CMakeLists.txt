@@ -25,13 +25,13 @@ include_directories(./tests/doctest)
 
 # Executables
 add_executable(TESTS
-        tests/Tests.cpp tests/doctest/doctest.h ${common_files})
+    tests/Tests.cpp tests/doctest/doctest.h ${common_files})
 
 add_executable(CLIENT
-        ${client_files} ${common_files})
+    ${client_files} ${common_files})
 
 add_executable(SERVER
-        ${server_files} ${common_files})
+    ${server_files} ${common_files})
 
 # Libraries
 set(THREADS_PREFER_PTHREAD_FLAG ON)
@@ -39,23 +39,32 @@ find_package(Threads REQUIRED)
 target_link_libraries(CLIENT Threads::Threads)
 target_link_libraries(SERVER Threads::Threads)
 
-#Paths client
-set (all_the_paths "")
+# Paths client
+set(all_the_paths "")
 foreach (_headerFile ${client_header_files})
     get_filename_component(_dir ${_headerFile} PATH)
-    list (APPEND all_the_paths ${_dir})
-endforeach()
-list (REMOVE_DUPLICATES all_the_paths)
+    list(APPEND all_the_paths ${_dir})
+endforeach ()
+list(REMOVE_DUPLICATES all_the_paths)
 target_include_directories(CLIENT PRIVATE ${all_the_paths})
 
-#Paths server
-set (all_the_paths "")
+# Paths server
+set(all_the_paths "")
 foreach (_headerFile ${server_header_files})
     get_filename_component(_dir ${_headerFile} PATH)
-    list (APPEND all_the_paths ${_dir})
-endforeach()
-list (REMOVE_DUPLICATES all_the_paths)
+    list(APPEND all_the_paths ${_dir})
+endforeach ()
+list(REMOVE_DUPLICATES all_the_paths)
 target_include_directories(SERVER PRIVATE ${all_the_paths})
+
+# Paths tests
+set(all_the_paths "")
+foreach (_headerFile ${common_header_files})
+    get_filename_component(_dir ${_headerFile} PATH)
+    list(APPEND all_the_paths ${_dir})
+endforeach ()
+list(REMOVE_DUPLICATES all_the_paths)
+target_include_directories(TESTS PRIVATE ${all_the_paths})
 
 #FOR WINDOWS
 if (WIN32)
