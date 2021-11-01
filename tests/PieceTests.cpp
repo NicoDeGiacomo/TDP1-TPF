@@ -103,14 +103,26 @@ TEST_CASE("Possible positions") {
 
 TEST_CASE("Invalid moves") {
     Pawn whitePawn(PieceColor::WHITE, Position(1, 2), nullptr);
-    CHECK_THROWS_WITH_AS(whitePawn.move(Position(1, 2)), "Invalid move.", std::invalid_argument);
-    CHECK_THROWS_WITH_AS(whitePawn.move(Position(1, 5)), "Invalid move.", std::invalid_argument);
-    CHECK_THROWS_WITH_AS(whitePawn.move(Position(2, 3)), "Invalid move.", std::invalid_argument);
+    CHECK_THROWS_WITH_AS(whitePawn.move(Position(1, 2)),
+                         "Invalid move: not possible.",
+                         std::invalid_argument);
+    CHECK_THROWS_WITH_AS(whitePawn.move(Position(1, 5)),
+                         "Invalid move: not possible.",
+                         std::invalid_argument);
+    CHECK_THROWS_WITH_AS(whitePawn.move(Position(2, 3)),
+                         "Invalid move: not possible.",
+                         std::invalid_argument);
 
     Pawn blackPawn(PieceColor::BLACK, Position(1, 7), nullptr);
-    CHECK_THROWS_WITH_AS(blackPawn.move(Position(1, 7)), "Invalid move.", std::invalid_argument);
-    CHECK_THROWS_WITH_AS(blackPawn.move(Position(1, 4)), "Invalid move.", std::invalid_argument);
-    CHECK_THROWS_WITH_AS(blackPawn.move(Position(2, 6)), "Invalid move.", std::invalid_argument);
+    CHECK_THROWS_WITH_AS(blackPawn.move(Position(1, 7)),
+                         "Invalid move: not possible.",
+                         std::invalid_argument);
+    CHECK_THROWS_WITH_AS(blackPawn.move(Position(1, 4)),
+                         "Invalid move: not possible.",
+                         std::invalid_argument);
+    CHECK_THROWS_WITH_AS(blackPawn.move(Position(2, 6)),
+                         "Invalid move: not possible.",
+                         std::invalid_argument);
 }
 
 TEST_CASE("Valid moves") {

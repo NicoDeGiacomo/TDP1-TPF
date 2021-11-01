@@ -14,3 +14,8 @@ std::list<std::pair<int, int>> King::getVectorStepMoves() const {
     // Castle: todo
     return {{1, 0}, {-1, 0}, {0, 1}, {0, -1}, {1, 1}, {1, -1}, {-1, 1}, {-1, -1}};
 }
+
+void King::eat() {
+    board_->finishGame(
+        color_ == PieceColor::WHITE ? PieceColor::BLACK : PieceColor::WHITE);
+}

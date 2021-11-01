@@ -21,6 +21,8 @@ class Piece : public Drawable {
 
   std::list<Position> getPossibleMoves() const;
 
+  virtual void eat();
+
   virtual ~Piece() = default;
 
  protected:

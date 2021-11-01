@@ -8,6 +8,9 @@ class King : public Piece {
   King(PieceColor color, Position position, Board* board);
 
   char getDrawing() const override;
+
+  void eat() override;
+
  protected:
   std::list<std::pair<int, int>> getVectorBeamMoves() const override;
   std::list<std::pair<int, int>> getVectorStepMoves() const override;

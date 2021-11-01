@@ -17,7 +17,7 @@ void Piece::move(Position position) {
     std::list<Position> positions = getPossibleMoves();
     bool found = std::find(positions.begin(), positions.end(), position) != positions.end();
     if (!found) {
-        throw std::invalid_argument("Invalid move.");
+        throw std::invalid_argument("Invalid move: not possible.");
     }
 
     position_ = position;
@@ -83,3 +83,5 @@ std::list<Position> Piece::getPossibleBeamPositions_() const {
 Piece *Piece::getPieceFromBoard(Position &position) const {
     return board_ != nullptr ? board_->getPiece(position) : nullptr;
 }
+
+void Piece::eat() {}

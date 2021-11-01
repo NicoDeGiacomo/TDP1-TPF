@@ -9,7 +9,7 @@
 #include <algorithm>
 #include <stdexcept>
 
-Board::Board() : turn_(PieceColor::WHITE){
+Board::Board() : turn_(PieceColor::WHITE), finished_(false) {
     generatePiecesForColor(PieceColor::WHITE);
     generatePiecesForColor(PieceColor::BLACK);
 }
@@ -41,6 +41,10 @@ std::list<Position> Board::getPossibleMoves(Position position) const {
     return piece->getPossibleMoves();
 }
 
+bool Board::isFinished() const {
+    return finished_;
+}
+
 void Board::move(Position from, Position to) {
     auto pieceFrom = getPiece(from);
     auto pieceTo = getPiece(to);
@@ -53,14 +57,21 @@ void Board::move(Position from, Position to) {
     }
 
     pieceFrom->move(to);
-    // todo check coronation
 
     if (pieceTo != nullptr) {
+        pieceTo->eat();
+        //todo: finish game if the King is eaten
         pieces_.remove(pieceTo);
         delete pieceTo;
     }
 
+    // todo: Promotion
+
     turn_ = turn_ == PieceColor::WHITE ? PieceColor::BLACK : PieceColor::WHITE;
+}
+
+void Board::finishGame(PieceColor winner) {
+    finished_ = true;
 }
 
 void Board::generatePiecesForColor(PieceColor color) {
