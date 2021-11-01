@@ -23,7 +23,7 @@ class Board {
 
   void move(Position from, Position to);
 
-  void finishGame(PieceColor winner);
+  void finishGame(__attribute__((unused)) PieceColor winner);
 
   virtual ~Board();
 

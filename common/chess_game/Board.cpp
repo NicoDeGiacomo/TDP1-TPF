@@ -69,7 +69,7 @@ void Board::move(Position from, Position to) {
     turn_ = turn_ == PieceColor::WHITE ? PieceColor::BLACK : PieceColor::WHITE;
 }
 
-void Board::finishGame(PieceColor winner) {
+void Board::finishGame(__attribute__((unused)) PieceColor winner) {
     finished_ = true;
 }
 

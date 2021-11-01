@@ -22,4 +22,30 @@ TEST_CASE("Send and receive") {
     CHECK_EQ(read[0], 'h');
     CHECK_EQ(read[1], 'i');
 }
+
+TEST_CASE("Error") {
+    Socket client;
+    CHECK_THROWS_WITH_AS(client.connect(".", "."),
+                         "Failed getting address information.",
+                         SocketException);
+    CHECK_THROWS_WITH_AS(client.connect("localhost", "7777"),
+                         "Error connecting to server.",
+                         SocketException);
+}
+
+TEST_CASE("Error description") {
+    Socket client;
+    try {
+        client.connect(".", ".");
+    } catch (SocketException &e) {
+        std::string error = e.what();
+        CHECK_EQ(error, "Failed getting address information.");
+    }
+    try {
+        client.connect("localhost", "7777");
+    } catch (SocketException &e) {
+        std::string error = e.what();
+        CHECK_EQ(error, "Error connecting to server.");
+    }
+}
 }
