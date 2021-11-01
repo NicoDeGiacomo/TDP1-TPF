@@ -35,7 +35,7 @@ int main() {
     Board board;
 
     Piece* piece = *board.begin();
-    Position position = piece->getPossiblePositions().front();
+    Position position = piece->getPossibleMoves().front();
     piece->move(position);
 
     print_board(board);

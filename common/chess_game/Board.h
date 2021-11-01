@@ -15,7 +15,11 @@ class Board {
 
   std::list<Piece*>::const_iterator end() const;
 
-  Piece *getPiece(Position position);
+  Piece *getPiece(Position position) const;
+
+  std::list<Position> getPossibleMoves(Position position) const;
+
+  void move(Position from, Position to);
 
   virtual ~Board();
 

@@ -17,7 +17,7 @@ class Piece : public Drawable {
 
   void move(Position position);
 
-  std::list<Position> getPossiblePositions() const;
+  std::list<Position> getPossibleMoves() const;
 
   virtual ~Piece() = default;
 
@@ -29,11 +29,11 @@ class Piece : public Drawable {
 
   virtual std::list<std::pair<int, int>> getVectorBeamMoves() const = 0;
   virtual std::list<std::pair<int, int>> getVectorStepMoves() const = 0;
-  Piece *getPieceFromBoard(Position &position) const;
+  Piece* getPieceFromBoard(Position &position) const;
 
  private:
-  std::list<Position> getPossibleStepPositions() const;
-  std::list<Position> getPossibleBeamPositions() const;
+  std::list<Position> getPossibleStepPositions_() const;
+  std::list<Position> getPossibleBeamPositions_() const;
 };
 
 #endif  // PIECE_H_

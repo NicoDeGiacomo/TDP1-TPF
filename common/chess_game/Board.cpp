@@ -21,7 +21,7 @@ std::list<Piece*>::const_iterator Board::end() const {
     return pieces_.end();
 }
 
-Piece *Board::getPiece(Position position) {
+Piece *Board::getPiece(Position position) const {
     // todo: hacer que pieces_ sea un mapa, para mejor eficiencia?
     for (const auto &piece : *this) {
         if (piece->getPosition() == position) {
@@ -29,6 +29,33 @@ Piece *Board::getPiece(Position position) {
         }
     }
     return nullptr;
+}
+
+std::list<Position> Board::getPossibleMoves(Position position) const {
+    auto piece = getPiece(position);
+    if (piece == nullptr) {
+        return {};
+    }
+
+    return piece->getPossibleMoves();
+}
+
+void Board::move(Position from, Position to) {
+    auto pieceFrom = getPiece(from);
+    if (pieceFrom == nullptr) {
+        return;
+    }
+
+    auto pieceTo = getPiece(to);
+    if (pieceTo != nullptr) {
+        pieces_.remove(pieceTo);
+        delete pieceTo;
+        return;
+    }
+
+    pieceFrom->move(to);
+
+    // todo check coronation
 }
 
 void Board::generatePiecesForColor(PieceColor color) {

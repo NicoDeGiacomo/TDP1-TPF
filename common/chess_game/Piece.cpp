@@ -10,7 +10,7 @@ Position Piece::getPosition() const {
 }
 
 void Piece::move(Position position) {
-    std::list<Position> positions = getPossiblePositions();
+    std::list<Position> positions = getPossibleMoves();
     bool found = std::find(positions.begin(), positions.end(), position) != positions.end();
     if (!found) {
         throw std::invalid_argument("Invalid move.");
@@ -20,9 +20,9 @@ void Piece::move(Position position) {
     has_moved_ = true;
 }
 
-std::list<Position> Piece::getPossiblePositions() const {
-    std::list<Position> possibleStepPositions = getPossibleStepPositions();
-    std::list<Position> possibleBeamPositions = getPossibleBeamPositions();
+std::list<Position> Piece::getPossibleMoves() const {
+    std::list<Position> possibleStepPositions = getPossibleStepPositions_();
+    std::list<Position> possibleBeamPositions = getPossibleBeamPositions_();
     if (possibleStepPositions.empty()) {
         return possibleBeamPositions;
     }
@@ -30,7 +30,7 @@ std::list<Position> Piece::getPossiblePositions() const {
 
 }
 
-std::list<Position> Piece::getPossibleStepPositions() const {
+std::list<Position> Piece::getPossibleStepPositions_() const {
     std::list<Position> possiblePositions;
     for (auto move: getVectorStepMoves()) {
         try {
@@ -48,7 +48,7 @@ std::list<Position> Piece::getPossibleStepPositions() const {
     return possiblePositions;
 }
 
-std::list<Position> Piece::getPossibleBeamPositions() const {
+std::list<Position> Piece::getPossibleBeamPositions_() const {
     std::list<Position> possiblePositions;
     for (auto move: getVectorBeamMoves()) {
         int x = position_.getX();
