@@ -15,6 +15,8 @@ class Piece : public Drawable {
 
   Position getPosition() const;
 
+  PieceColor getColor() const;
+
   void move(Position position);
 
   std::list<Position> getPossibleMoves() const;

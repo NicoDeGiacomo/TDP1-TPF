@@ -25,6 +25,7 @@ class Board {
 
  private:
   std::list<Piece*> pieces_;
+  PieceColor turn_;
 
   void generatePiecesForColor(PieceColor color);
 };

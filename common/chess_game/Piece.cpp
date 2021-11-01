@@ -9,6 +9,10 @@ Position Piece::getPosition() const {
     return position_;
 }
 
+PieceColor Piece::getColor() const {
+    return color_;
+}
+
 void Piece::move(Position position) {
     std::list<Position> positions = getPossibleMoves();
     bool found = std::find(positions.begin(), positions.end(), position) != positions.end();

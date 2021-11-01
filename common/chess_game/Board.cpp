@@ -7,8 +7,9 @@
 #include <chess_game/pieces/Queen.h>
 #include <chess_game/pieces/King.h>
 #include <algorithm>
+#include <stdexcept>
 
-Board::Board() {
+Board::Board() : turn_(PieceColor::WHITE){
     generatePiecesForColor(PieceColor::WHITE);
     generatePiecesForColor(PieceColor::BLACK);
 }
@@ -42,20 +43,24 @@ std::list<Position> Board::getPossibleMoves(Position position) const {
 
 void Board::move(Position from, Position to) {
     auto pieceFrom = getPiece(from);
-    if (pieceFrom == nullptr) {
-        return;
-    }
-
     auto pieceTo = getPiece(to);
-    if (pieceTo != nullptr) {
-        pieces_.remove(pieceTo);
-        delete pieceTo;
-        return;
+
+    if (pieceFrom == nullptr) {
+        throw std::invalid_argument("Invalid move: empty square.");
+    }
+    if (pieceFrom->getColor() != turn_) {
+        throw std::invalid_argument("Invalid move: out of turn.");
     }
 
     pieceFrom->move(to);
-
     // todo check coronation
+
+    if (pieceTo != nullptr) {
+        pieces_.remove(pieceTo);
+        delete pieceTo;
+    }
+
+    turn_ = turn_ == PieceColor::WHITE ? PieceColor::BLACK : PieceColor::WHITE;
 }
 
 void Board::generatePiecesForColor(PieceColor color) {

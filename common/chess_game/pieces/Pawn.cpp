@@ -16,7 +16,7 @@ std::list<std::pair<int, int>> Pawn::getVectorStepMoves() const {
     int direction = color_ == PieceColor::WHITE ? 1 : -1;
     std::list<std::pair<int, int>> moves {};
 
-    // Cannot take forward
+    // Cannot capture forward
     try {
         Position front
             (position_.getX(), position_.getY() + (1 * direction));
