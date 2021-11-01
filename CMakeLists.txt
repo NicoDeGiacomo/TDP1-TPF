@@ -3,12 +3,13 @@ project(QUANTUM-CHESS)
 
 set(CMAKE_CXX_STANDARD 14)
 
-add_compile_options(-Wall -Wextra -pedantic -Werror)
+#add_compile_options(-Wall -Wextra -pedantic -Werror)
 
 # Wildcard
 FILE(GLOB_RECURSE client_files "client/*.cpp")
 FILE(GLOB_RECURSE server_files "server/*.cpp")
 FILE(GLOB_RECURSE common_files "common/*.cpp")
+FILE(GLOB_RECURSE tests_files "tests/*.cpp")
 
 FILE(GLOB_RECURSE common_header_files "common/*.h")
 FILE(GLOB_RECURSE server_header_files "server/*.h" ${common_header_files})
@@ -25,7 +26,7 @@ include_directories(./tests/doctest)
 
 # Executables
 add_executable(TESTS
-    tests/Tests.cpp tests/doctest/doctest.h ${common_files})
+    ${tests_files} ${common_files})
 
 add_executable(CLIENT
     ${client_files} ${common_files})
@@ -66,7 +67,7 @@ endforeach ()
 list(REMOVE_DUPLICATES all_the_paths)
 target_include_directories(TESTS PRIVATE ${all_the_paths})
 
-#FOR WINDOWS
+# For Windows
 if (WIN32)
     target_link_libraries(CLIENT wsock32 ws2_32)
     target_link_libraries(SERVER wsock32 ws2_32)
