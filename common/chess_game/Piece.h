@@ -4,12 +4,14 @@
 #include <list>
 #include "Position.h"
 #include "Drawable.h"
+#include "Board.h"
 
-enum PieceColor { WHITE, BLACK };
+class Board;
+enum class PieceColor { WHITE, BLACK };
 
 class Piece : public Drawable {
  public:
-  Piece(PieceColor color, Position position);
+  Piece(PieceColor color, Position position, Board* board);
 
   Position getPosition() const;
 
@@ -22,6 +24,7 @@ class Piece : public Drawable {
  protected:
   PieceColor color_;
   bool has_moved_;
+  Board* board_;
 
   virtual std::list<std::pair<int, int>> getVectorBeamMoves() const = 0;
   virtual std::list<std::pair<int, int>> getVectorStepMoves() const = 0;
@@ -30,6 +33,7 @@ class Piece : public Drawable {
   Position position_;
   std::list<Position> getPossibleStepPositions() const;
   std::list<Position> getPossibleBeamPositions() const;
+  Piece *getPieceFromBoard(Position &position) const;
 };
 
 #endif  // PIECE_H_

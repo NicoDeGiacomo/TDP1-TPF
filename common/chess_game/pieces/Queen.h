@@ -5,7 +5,7 @@
 
 class Queen : public Piece {
  public:
-  Queen(PieceColor color, Position position);
+  Queen(PieceColor color, Position position, Board* board);
 
   char getDrawing() const override;
  protected:

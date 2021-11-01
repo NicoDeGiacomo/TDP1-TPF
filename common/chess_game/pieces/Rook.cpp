@@ -1,6 +1,6 @@
 #include "Rook.h"
 
-Rook::Rook(PieceColor color, Position position) : Piece(color, position) {}
+Rook::Rook(PieceColor color, Position position, Board* board) : Piece(color, position, board) {}
 
 char Rook::getDrawing() const {
     return 'R';

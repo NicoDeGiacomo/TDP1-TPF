@@ -2,8 +2,8 @@
 #include <algorithm>
 #include "Piece.h"
 
-Piece::Piece(PieceColor color, Position position)
-    : color_(color), has_moved_(false), position_(position) {}
+Piece::Piece(PieceColor color, Position position, Board* board)
+    : color_(color), has_moved_(false), position_(position), board_(board) {}
 
 Position Piece::getPosition() const {
     return position_;
@@ -11,7 +11,7 @@ Position Piece::getPosition() const {
 
 void Piece::move(Position position) {
     std::list<Position> positions = getPossiblePositions();
-    bool found = std::find(positions.begin(), positions.end(), Position(1, 2)) != positions.end();
+    bool found = std::find(positions.begin(), positions.end(), position) != positions.end();
     if (!found) {
         throw std::invalid_argument("Invalid move.");
     }
@@ -36,7 +36,10 @@ std::list<Position> Piece::getPossibleStepPositions() const {
         try {
             Position newPosition
                 (position_.getX() + move.first, position_.getY() + move.second);
-            possiblePositions.push_back(newPosition);
+            Piece* otherPiece = getPieceFromBoard(newPosition);
+            if (otherPiece == nullptr || otherPiece->color_ != color_) {
+                possiblePositions.push_back(newPosition);
+            }
         } catch (std::invalid_argument &) {
             continue;
         }
@@ -55,6 +58,14 @@ std::list<Position> Piece::getPossibleBeamPositions() const {
                 x += move.first;
                 y += move.second;
                 Position newPosition(x, y);
+                Piece* otherPiece = getPieceFromBoard(newPosition);
+                if (otherPiece != nullptr) {
+                    if (color_ != otherPiece->color_) {
+                        possiblePositions.push_back(newPosition);
+                    }
+                    break;
+                }
+
                 possiblePositions.push_back(newPosition);
             } catch (std::invalid_argument &) {
                 break;
@@ -63,4 +74,8 @@ std::list<Position> Piece::getPossibleBeamPositions() const {
     }
 
     return possiblePositions;
+}
+
+Piece *Piece::getPieceFromBoard(Position &position) const {
+    return board_ != nullptr ? board_->getPiece(position) : nullptr;
 }

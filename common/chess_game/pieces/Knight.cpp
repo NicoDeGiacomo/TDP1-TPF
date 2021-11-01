@@ -1,6 +1,6 @@
 #include "Knight.h"
 
-Knight::Knight(PieceColor color, Position position) : Piece(color, position) {}
+Knight::Knight(PieceColor color, Position position, Board* board) : Piece(color, position, board) {}
 
 char Knight::getDrawing() const {
     return 'K';

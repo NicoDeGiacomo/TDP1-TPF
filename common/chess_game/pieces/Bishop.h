@@ -5,7 +5,7 @@
 
 class Bishop : public Piece {
  public:
-  Bishop(PieceColor color, Position position);
+  Bishop(PieceColor color, Position position, Board* board);
 
   char getDrawing() const override;
 

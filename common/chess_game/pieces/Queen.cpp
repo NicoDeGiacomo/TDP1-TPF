@@ -1,6 +1,6 @@
 #include "Queen.h"
 
-Queen::Queen(PieceColor color, Position position) : Piece(color, position) {}
+Queen::Queen(PieceColor color, Position position, Board* board) : Piece(color, position, board) {}
 
 char Queen::getDrawing() const {
     return 'Q';

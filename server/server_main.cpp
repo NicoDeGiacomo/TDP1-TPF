@@ -34,9 +34,9 @@ int main() {
     printf("STARTING SERVER\n");
     Board board;
 
-    //Piece* piece = *board.begin();
-    //piece->move(piece->getPossiblePositions().front());
-    // piece->move(Position(4, 4));
+    Piece* piece = *board.begin();
+    Position position = piece->getPossiblePositions().front();
+    piece->move(position);
 
     print_board(board);
     start_socket_and_receive_2_bytes_to_test();

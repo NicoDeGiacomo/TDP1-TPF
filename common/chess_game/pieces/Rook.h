@@ -5,7 +5,7 @@
 
 class Rook : public Piece {
  public:
-  Rook(PieceColor color, Position position);
+  Rook(PieceColor color, Position position, Board* board);
 
   char getDrawing() const override;
 

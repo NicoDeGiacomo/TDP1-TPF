@@ -14,7 +14,7 @@ TEST_CASE("Create Chess Board") {
     int bishops = 0;
     int queens = 0;
     int kings = 0;
-    for (const Piece* piece : board) {
+    for (auto piece : board) {
         total++;
         switch (piece->getDrawing()) {
             case 'p': pawns++; break;

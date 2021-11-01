@@ -1,6 +1,6 @@
 #include "Bishop.h"
 
-Bishop::Bishop(PieceColor color, Position position) : Piece(color, position) {}
+Bishop::Bishop(PieceColor color, Position position, Board* board) : Piece(color, position, board) {}
 
 char Bishop::getDrawing() const {
     return 'B';

@@ -1,6 +1,6 @@
 #include "King.h"
 
-King::King(PieceColor color, Position position) : Piece(color, position) {}
+King::King(PieceColor color, Position position, Board* board) : Piece(color, position, board) {}
 
 char King::getDrawing() const {
     return 'W';

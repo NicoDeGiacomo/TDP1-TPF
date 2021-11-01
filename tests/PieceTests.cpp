@@ -38,23 +38,23 @@ TEST_CASE("Compare positions") {
 }
 }
 
-TEST_SUITE("Moves tests") {
+TEST_SUITE("Moves tests (empty board)") {
 TEST_CASE("Possible positions") {
-    Pawn whitePawn(WHITE, Position(1, 2));
+    Pawn whitePawn(PieceColor::WHITE, Position(1, 2), nullptr);
     auto whitePositions = whitePawn.getPossiblePositions();
     CHECK_EQ(2, whitePositions.size());
     CHECK(!findPosition_(whitePositions, Position(1, 2)));
     CHECK(findPosition_(whitePositions, Position(1, 3)));
     CHECK(findPosition_(whitePositions, Position(1, 4)));
 
-    Pawn blackPawn(BLACK, Position(1, 7));
+    Pawn blackPawn(PieceColor::BLACK, Position(1, 7), nullptr);
     auto blackPositions = blackPawn.getPossiblePositions();
     CHECK_EQ(2, blackPositions.size());
     CHECK(!findPosition_(blackPositions, Position(1, 7)));
     CHECK(findPosition_(blackPositions, Position(1, 6)));
     CHECK(findPosition_(blackPositions, Position(1, 5)));
 
-    Rook rook(WHITE, Position(1, 1));
+    Rook rook(PieceColor::WHITE, Position(1, 1), nullptr);
     auto rookPositions = rook.getPossiblePositions();
     CHECK_EQ(14, rookPositions.size());
     CHECK(!findPosition_(rookPositions, Position(8, 8)));
@@ -62,13 +62,13 @@ TEST_CASE("Possible positions") {
     CHECK(findPosition_(rookPositions, Position(1, 8)));
     CHECK(findPosition_(rookPositions, Position(8, 1)));
 
-    Knight knight(WHITE, Position(1, 1));
+    Knight knight(PieceColor::WHITE, Position(1, 1), nullptr);
     auto knightPositions = knight.getPossiblePositions();
     CHECK_EQ(2, knightPositions.size());
     CHECK(findPosition_(knightPositions, Position(2, 3)));
     CHECK(findPosition_(knightPositions, Position(3, 2)));
 
-    Bishop bishop(WHITE, Position(2, 2));
+    Bishop bishop(PieceColor::WHITE, Position(2, 2), nullptr);
     auto bishopPositions = bishop.getPossiblePositions();
     CHECK_EQ(9, bishopPositions.size());
     CHECK(!findPosition_(bishopPositions, Position(2, 2)));
@@ -82,7 +82,7 @@ TEST_CASE("Possible positions") {
     CHECK(findPosition_(bishopPositions, Position(1, 3)));
     CHECK(findPosition_(bishopPositions, Position(3, 1)));
 
-    Queen queen(WHITE, Position(3, 2));
+    Queen queen(PieceColor::WHITE, Position(3, 2), nullptr);
     auto queenPositions = queen.getPossiblePositions();
     CHECK_EQ(23, queenPositions.size());
     CHECK(!findPosition_(queenPositions, Position(3, 2)));
@@ -90,7 +90,7 @@ TEST_CASE("Possible positions") {
     CHECK(findPosition_(queenPositions, Position(3, 8)));
     CHECK(findPosition_(queenPositions, Position(8, 2)));
 
-    King king(WHITE, Position(8, 5));
+    King king(PieceColor::WHITE, Position(8, 5), nullptr);
     auto kingPositions = king.getPossiblePositions();
     CHECK_EQ(5, kingPositions.size());
     CHECK(!findPosition_(kingPositions, Position(8, 5)));
@@ -102,15 +102,60 @@ TEST_CASE("Possible positions") {
 }
 
 TEST_CASE("Invalid moves") {
-    Pawn whitePawn(WHITE, Position(1, 2));
+    Pawn whitePawn(PieceColor::WHITE, Position(1, 2), nullptr);
     CHECK_THROWS_WITH_AS(whitePawn.move(Position(1, 2)), "Invalid move.", std::invalid_argument);
     CHECK_THROWS_WITH_AS(whitePawn.move(Position(1, 5)), "Invalid move.", std::invalid_argument);
     CHECK_THROWS_WITH_AS(whitePawn.move(Position(2, 3)), "Invalid move.", std::invalid_argument);
 
-    Pawn blackPawn(BLACK, Position(1, 7));
+    Pawn blackPawn(PieceColor::BLACK, Position(1, 7), nullptr);
     CHECK_THROWS_WITH_AS(blackPawn.move(Position(1, 7)), "Invalid move.", std::invalid_argument);
     CHECK_THROWS_WITH_AS(blackPawn.move(Position(1, 4)), "Invalid move.", std::invalid_argument);
     CHECK_THROWS_WITH_AS(blackPawn.move(Position(2, 6)), "Invalid move.", std::invalid_argument);
+}
+
+TEST_CASE("Valid moves") {
+    // todo: implement me!
+}
+}
+
+TEST_SUITE("Moves tests (default board)") {
+TEST_CASE("Possible positions") {
+    Board board;
+    Pawn whitePawn(PieceColor::WHITE, Position(1, 2), &board);
+    auto whitePositions = whitePawn.getPossiblePositions();
+    CHECK_EQ(2, whitePositions.size());
+    CHECK(!findPosition_(whitePositions, Position(1, 2)));
+    CHECK(findPosition_(whitePositions, Position(1, 3)));
+    CHECK(findPosition_(whitePositions, Position(1, 4)));
+
+    Pawn blackPawn(PieceColor::BLACK, Position(1, 7), &board);
+    auto blackPositions = blackPawn.getPossiblePositions();
+    CHECK_EQ(2, blackPositions.size());
+    CHECK(!findPosition_(blackPositions, Position(1, 7)));
+    CHECK(findPosition_(blackPositions, Position(1, 6)));
+    CHECK(findPosition_(blackPositions, Position(1, 5)));
+
+    Rook rook(PieceColor::WHITE, Position(1, 1), &board);
+    auto rookPositions = rook.getPossiblePositions();
+    CHECK_EQ(0, rookPositions.size());
+
+    Knight knight(PieceColor::WHITE, Position(2, 1), &board);
+    auto knightPositions = knight.getPossiblePositions();
+    CHECK_EQ(2, knightPositions.size());
+    CHECK(findPosition_(knightPositions, Position(1, 3)));
+    CHECK(findPosition_(knightPositions, Position(3, 3)));
+
+    Bishop bishop(PieceColor::WHITE, Position(3, 1), &board);
+    auto bishopPositions = bishop.getPossiblePositions();
+    CHECK_EQ(0, bishopPositions.size());
+
+    Queen queen(PieceColor::WHITE, Position(4, 1), &board);
+    auto queenPositions = queen.getPossiblePositions();
+    CHECK_EQ(0, queenPositions.size());
+
+    King king(PieceColor::WHITE, Position(5, 1), &board);
+    auto kingPositions = king.getPossiblePositions();
+    CHECK_EQ(0, kingPositions.size());
 }
 
 TEST_CASE("Valid moves") {

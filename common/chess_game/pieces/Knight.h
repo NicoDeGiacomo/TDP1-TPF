@@ -5,7 +5,7 @@
 
 class Knight : public Piece {
  public:
-  Knight(PieceColor color, Position position);
+  Knight(PieceColor color, Position position, Board* board);
 
   char getDrawing() const override;
 

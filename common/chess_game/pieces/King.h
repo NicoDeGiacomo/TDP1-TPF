@@ -5,7 +5,7 @@
 
 class King : public Piece {
  public:
-  King(PieceColor color, Position position);
+  King(PieceColor color, Position position, Board* board);
 
   char getDrawing() const override;
  protected:

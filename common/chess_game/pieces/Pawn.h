@@ -5,7 +5,7 @@
 
 class Pawn : public Piece {
  public:
-  Pawn(PieceColor color, Position position);
+  Pawn(PieceColor color, Position position, Board* board);
 
   char getDrawing() const override;
 
