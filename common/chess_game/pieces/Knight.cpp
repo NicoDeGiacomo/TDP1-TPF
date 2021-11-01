@@ -11,5 +11,5 @@ std::list<std::pair<int, int>> Knight::getVectorBeamMoves() const {
 }
 
 std::list<std::pair<int, int>> Knight::getVectorStepMoves() const {
-    return {{2, 1}, {2, -1}, {-2, 1}, {-2, -1}, {1, 2}, {1, -2}, {-1, 2}, {-2, -1}};
+    return {{2, 1}, {2, -1}, {-2, 1}, {-2, -1}, {1, 2}, {1, -2}, {-1, 2}, {-1, -2}};
 }

@@ -175,7 +175,7 @@ TEST_CASE("Possible positions") {
 }
 
 TEST_CASE("Valid moves") {
-    SUBCASE("Pawns") {
+    SUBCASE("Pawn") {
         Board board;
         Pawn whitePawn(PieceColor::WHITE, Position(1, 5), &board);
         whitePawn.move(Position(1, 6));
@@ -187,6 +187,48 @@ TEST_CASE("Valid moves") {
 
         whitePawn.move(Position(1, 8));
         CHECK_EQ(0, whitePawn.getPossiblePositions().size());
+    }
+
+    SUBCASE("Rook") {
+        Board board;
+        Rook rook(PieceColor::BLACK, Position(4, 6), &board);
+        CHECK_EQ(11, rook.getPossiblePositions().size());
+
+        rook.move(Position(4, 2));
+        CHECK_EQ(7, rook.getPossiblePositions().size());
+    }
+
+    SUBCASE("Knight") {
+        Board board;
+        Knight knight(PieceColor::BLACK, Position(2, 8), &board);
+        CHECK_EQ(2, knight.getPossiblePositions().size());
+
+        knight.move(Position(3, 6));
+        CHECK_EQ(4, knight.getPossiblePositions().size());
+
+        knight.move(Position(4, 4));
+        CHECK_EQ(8, knight.getPossiblePositions().size());
+    }
+
+    SUBCASE("Bishop") {
+        Board board;
+        Bishop bishop(PieceColor::BLACK, Position(8, 6), &board);
+        CHECK_EQ(4, bishop.getPossiblePositions().size());
+
+        bishop.move(Position(4, 2));
+        CHECK_EQ(9, bishop.getPossiblePositions().size());
+    }
+
+    SUBCASE("Queen") {
+        Board board;
+        Queen queen(PieceColor::BLACK, Position(4, 8), &board);
+        CHECK_EQ(0, queen.getPossiblePositions().size());
+    }
+
+    SUBCASE("King") {
+        Board board;
+        King king(PieceColor::BLACK, Position(5, 8), &board);
+        CHECK_EQ(0, king.getPossiblePositions().size());
     }
 }
 }
