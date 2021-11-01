@@ -30,8 +30,8 @@ std::list<Position> Piece::getPossibleMoves() const {
     if (possibleStepPositions.empty()) {
         return possibleBeamPositions;
     }
-    return possibleStepPositions;  // todo join lists
 
+    return possibleStepPositions;  // todo join lists
 }
 
 std::list<Position> Piece::getPossibleStepPositions_() const {

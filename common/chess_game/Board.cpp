@@ -60,7 +60,6 @@ void Board::move(Position from, Position to) {
 
     if (pieceTo != nullptr) {
         pieceTo->eat();
-        //todo: finish game if the King is eaten
         pieces_.remove(pieceTo);
         delete pieceTo;
     }

@@ -39,22 +39,5 @@ int main() {
     piece->move(position);
 
     print_board(board);
-    start_socket_and_receive_2_bytes_to_test();
-
     return 0;
-}
-
-void start_socket_and_receive_2_bytes_to_test() {
-    Socket socket;
-    socket.bind("7777");
-    socket.listen(5);
-    socket = socket.accept();
-    std::vector<char> buffer(3);
-    buffer [0] = 0;
-    buffer [1] = 0;
-    socket.receive(&buffer[0], 2);
-    //print buffer
-    for (int i = 0; i<2 ; i++){
-        std::cout << buffer[i] << std::endl;
-    }
 }

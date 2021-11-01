@@ -5,6 +5,8 @@ DOCTEST_MAKE_STD_HEADERS_CLEAN_FROM_WARNINGS_ON_WALL_BEGIN
 #include <list>
 #include <algorithm>
 #include <stdexcept>
+#include <vector>
+#include <iostream>
 DOCTEST_MAKE_STD_HEADERS_CLEAN_FROM_WARNINGS_ON_WALL_END
 
 #include "Position.h"

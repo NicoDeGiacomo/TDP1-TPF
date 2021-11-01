@@ -3,7 +3,7 @@
 
 #include "Board.h"
 
-TEST_SUITE("Board initialization") {
+TEST_SUITE("Board tests") {
 TEST_CASE("Create Chess Board") {
     Board board;
 
