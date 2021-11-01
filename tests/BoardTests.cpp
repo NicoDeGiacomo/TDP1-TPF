@@ -1,5 +1,5 @@
 #include "tests/doctest/doctest.h"
-#include "Tests.cpp"
+#include "Tests.cpp"  // NOLINT [build/c++11]
 
 #include "Board.h"
 
@@ -9,7 +9,7 @@ TEST_CASE("Create Chess Board") {
 
     int total = 0, rooks = 0, pawns = 0, knights = 0, bishops = 0, queens = 0,
         kings = 0;
-    for (auto piece: board) {
+    for (auto piece : board) {
         total++;
         switch (piece->getDrawing()) {
             case 'p': pawns++;

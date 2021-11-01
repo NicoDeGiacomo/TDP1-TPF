@@ -1,5 +1,5 @@
 #include "tests/doctest/doctest.h"
-#include "Tests.cpp"
+#include "Tests.cpp"  // NOLINT [build/c++11]
 
 #include "Position.h"
 #include "Pawn.h"
@@ -18,12 +18,24 @@ TEST_CASE("Valid position") {
 }
 
 TEST_CASE("Invalid position") {
-    CHECK_THROWS_WITH_AS(Position(9, 9), "Invalid position.", std::invalid_argument);
-    CHECK_THROWS_WITH_AS(Position(0, 0), "Invalid position.", std::invalid_argument);
-    CHECK_THROWS_WITH_AS(Position(1, 9), "Invalid position.", std::invalid_argument);
-    CHECK_THROWS_WITH_AS(Position(9, 1), "Invalid position.", std::invalid_argument);
-    CHECK_THROWS_WITH_AS(Position(0, 1), "Invalid position.", std::invalid_argument);
-    CHECK_THROWS_WITH_AS(Position(1, 0), "Invalid position.", std::invalid_argument);
+    CHECK_THROWS_WITH_AS(Position(9, 9),
+                         "Invalid position.",
+                         std::invalid_argument);
+    CHECK_THROWS_WITH_AS(Position(0, 0),
+                         "Invalid position.",
+                         std::invalid_argument);
+    CHECK_THROWS_WITH_AS(Position(1, 9),
+                         "Invalid position.",
+                         std::invalid_argument);
+    CHECK_THROWS_WITH_AS(Position(9, 1),
+                         "Invalid position.",
+                         std::invalid_argument);
+    CHECK_THROWS_WITH_AS(Position(0, 1),
+                         "Invalid position.",
+                         std::invalid_argument);
+    CHECK_THROWS_WITH_AS(Position(1, 0),
+                         "Invalid position.",
+                         std::invalid_argument);
 }
 
 TEST_CASE("Compare positions") {

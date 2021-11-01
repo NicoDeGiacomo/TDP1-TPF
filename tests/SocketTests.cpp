@@ -1,5 +1,5 @@
 #include "tests/doctest/doctest.h"
-#include "Tests.cpp"
+#include "Tests.cpp"  // NOLINT [build/c++11]
 
 #include <Socket.h>
 

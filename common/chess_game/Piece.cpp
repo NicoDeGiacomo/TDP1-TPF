@@ -3,7 +3,7 @@
 #include "Piece.h"
 
 Piece::Piece(PieceColor color, Position position, Board* board)
-    : color_(color), has_moved_(false), position_(position), board_(board) {}
+    : position_(position), color_(color), has_moved_(false), board_(board) {}
 
 Position Piece::getPosition() const {
     return position_;
