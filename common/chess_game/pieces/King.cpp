@@ -11,5 +11,6 @@ std::list<std::pair<int, int>> King::getVectorBeamMoves() const {
 }
 
 std::list<std::pair<int, int>> King::getVectorStepMoves() const {
+    // Castle: todo
     return {{1, 0}, {-1, 0}, {0, 1}, {0, -1}, {1, 1}, {1, -1}, {-1, 1}, {-1, -1}};
 }

@@ -22,18 +22,18 @@ class Piece : public Drawable {
   virtual ~Piece() = default;
 
  protected:
+  Position position_;
   PieceColor color_;
   bool has_moved_;
   Board* board_;
 
   virtual std::list<std::pair<int, int>> getVectorBeamMoves() const = 0;
   virtual std::list<std::pair<int, int>> getVectorStepMoves() const = 0;
+  Piece *getPieceFromBoard(Position &position) const;
 
  private:
-  Position position_;
   std::list<Position> getPossibleStepPositions() const;
   std::list<Position> getPossibleBeamPositions() const;
-  Piece *getPieceFromBoard(Position &position) const;
 };
 
 #endif  // PIECE_H_

@@ -114,7 +114,23 @@ TEST_CASE("Invalid moves") {
 }
 
 TEST_CASE("Valid moves") {
-    // todo: implement me!
+    Pawn whitePawn(PieceColor::WHITE, Position(1, 2), nullptr);
+    CHECK_EQ(2, whitePawn.getPossiblePositions().size());
+
+    whitePawn.move(Position(1, 3));
+    CHECK_EQ(1, whitePawn.getPossiblePositions().size());
+    CHECK_EQ(Position(1, 3), whitePawn.getPosition());
+
+    whitePawn.move(Position(1, 4));
+    CHECK_EQ(1, whitePawn.getPossiblePositions().size());
+    CHECK_EQ(Position(1, 4), whitePawn.getPosition());
+
+    Pawn blackPawn(PieceColor::WHITE, Position(1, 2), nullptr);
+    CHECK_EQ(2, blackPawn.getPossiblePositions().size());
+
+    blackPawn.move(Position(1, 4));
+    CHECK_EQ(1, blackPawn.getPossiblePositions().size());
+    CHECK_EQ(Position(1, 4), blackPawn.getPosition());
 }
 }
 
@@ -159,6 +175,18 @@ TEST_CASE("Possible positions") {
 }
 
 TEST_CASE("Valid moves") {
-    // todo: implement me!
+    SUBCASE("Pawns") {
+        Board board;
+        Pawn whitePawn(PieceColor::WHITE, Position(1, 5), &board);
+        whitePawn.move(Position(1, 6));
+
+        CHECK_EQ(1, whitePawn.getPossiblePositions().size());
+
+        whitePawn.move(Position(2, 7));
+        CHECK_EQ(2, whitePawn.getPossiblePositions().size());
+
+        whitePawn.move(Position(1, 8));
+        CHECK_EQ(0, whitePawn.getPossiblePositions().size());
+    }
 }
 }
