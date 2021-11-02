@@ -17,9 +17,11 @@ class Piece : public Drawable {
 
   PieceColor getColor() const;
 
-  void move(Position position);
-
   std::list<Position> getPossibleMoves() const;
+
+  float getProbability() const;
+
+  void move(Position position);
 
   virtual void eat();
 

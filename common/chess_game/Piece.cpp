@@ -117,3 +117,7 @@ void Piece::appendToBoard_(Piece* piece) {
         board_->pieces_.push_back(piece);
     }
 }
+
+float Piece::getProbability() const {
+    return probability_;
+}

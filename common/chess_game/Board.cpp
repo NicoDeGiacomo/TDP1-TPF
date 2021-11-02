@@ -10,8 +10,8 @@
 #include <stdexcept>
 
 Board::Board() : turn_(PieceColor::WHITE), finished_(false) {
-    generatePiecesForColor(PieceColor::WHITE);
-    generatePiecesForColor(PieceColor::BLACK);
+    generatePiecesForColor_(PieceColor::WHITE);
+    generatePiecesForColor_(PieceColor::BLACK);
 }
 
 std::list<Piece*>::const_iterator Board::begin() const {
@@ -82,13 +82,14 @@ void Board::split(Position from, Position to1, Position to2) {
     }
 
     pieceFrom->split(to1, to2);
+    turn_ = turn_ == PieceColor::WHITE ? PieceColor::BLACK : PieceColor::WHITE;  // todo function
 }
 
 void Board::finishGame(__attribute__((unused)) PieceColor winner) {
     finished_ = true;
 }
 
-void Board::generatePiecesForColor(PieceColor color) {
+void Board::generatePiecesForColor_(PieceColor color) {
     int pawnRank = color == PieceColor::WHITE? 2 : 7;
     for (int i = 1; i <= 8; ++i) {
         pieces_.push_back(new Pawn(color, Position(i, pawnRank), this));

@@ -15,9 +15,9 @@ class Board {
 
   std::list<Piece*>::const_iterator end() const;
 
-  Piece *getPiece(Position position) const;
-
   std::list<Position> getPossibleMoves(Position position) const;
+
+  Piece* getPiece(Position position) const;
 
   bool isFinished() const;
 
@@ -34,7 +34,7 @@ class Board {
   PieceColor turn_;
   bool finished_;
 
-  void generatePiecesForColor(PieceColor color);
+  void generatePiecesForColor_(PieceColor color);
 
   friend Piece;
 };

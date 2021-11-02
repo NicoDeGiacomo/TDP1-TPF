@@ -36,6 +36,12 @@ TEST_CASE("Create Chess Board") {
 }
 
 TEST_SUITE("Move pieces") {
+TEST_CASE("Possible moves") {
+    Board board;
+    CHECK_EQ(2, board.getPossibleMoves(Position(5, 2)).size());
+    CHECK_EQ(0, board.getPossibleMoves(Position(5, 1)).size());
+}
+
 TEST_CASE("Invalid move") {
     Board board;
     CHECK_THROWS_WITH_AS(board.move(Position(5, 3), Position(5, 4)),
@@ -161,7 +167,45 @@ TEST_CASE("Valid split") {
     Board board;
     board.move(Position(3, 2), Position(3, 3));
     board.move(Position(4, 7), Position(4, 6));
+
+    CHECK_EQ(board.getPiece(Position(4, 1))->getProbability(), 1.0);
     board.split(Position(4, 1), Position(3, 2), Position(2, 3));
     CHECK_EQ(33, countPieces_(board));
+
+    CHECK_EQ(board.getPiece(Position(4, 1)), nullptr);
+    CHECK_EQ(board.getPiece(Position(3, 2))->getProbability(), 0.5);
+    CHECK_EQ(board.getPiece(Position(2, 3))->getProbability(), 0.5);
+}
+
+TEST_CASE("Double split") {
+    Board board;
+    board.move(Position(3, 2), Position(3, 3));
+    board.move(Position(4, 7), Position(4, 6));
+
+    CHECK_EQ(board.getPiece(Position(4, 1))->getProbability(), 1.0f);
+    board.split(Position(4, 1), Position(3, 2), Position(2, 3));
+    CHECK_EQ(33, countPieces_(board));
+
+    CHECK_EQ(board.getPiece(Position(4, 1)), nullptr);
+    CHECK_EQ(board.getPiece(Position(3, 2))->getProbability(), 0.5f);
+    CHECK_EQ(board.getPiece(Position(2, 3))->getProbability(), 0.5f);
+
+    board.move(Position(8, 7), Position(8, 6));
+    board.split(Position(2, 3), Position(2, 4), Position(2, 5));
+
+    CHECK_EQ(board.getPiece(Position(2, 3)), nullptr);
+    CHECK_EQ(board.getPiece(Position(2, 4))->getProbability(), 0.25f);
+    CHECK_EQ(board.getPiece(Position(2, 5))->getProbability(), 0.25f);
+    CHECK_EQ(board.getPiece(Position(3, 2))->getProbability(), 0.5f);
+}
+}
+
+TEST_SUITE("Merge") {
+TEST_CASE("Invalid merge") {
+
+}
+
+TEST_CASE("Valid merge") {
+
 }
 }
