@@ -44,6 +44,7 @@ class Piece : public Drawable {
  private:
   std::list<Position> getPossibleStepPositions_() const;
   std::list<Position> getPossibleBeamPositions_() const;
+  void validateMove_(const Position &position) const;
 };
 
 #endif  // PIECE_H_

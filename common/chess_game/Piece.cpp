@@ -18,12 +18,7 @@ PieceColor Piece::getColor() const {
 }
 
 void Piece::move(Position position) {
-    std::list<Position> positions = getPossibleMoves();
-    bool found = std::find(positions.begin(), positions.end(), position) != positions.end();
-    if (!found) {
-        throw std::invalid_argument("Invalid move: not possible.");
-    }
-
+    validateMove_(position);
     position_ = position;
     has_moved_ = true;
 }
@@ -88,10 +83,20 @@ Piece *Piece::getPieceFromBoard_(Position &position) const {
     return board_ != nullptr ? board_->getPiece(position) : nullptr;
 }
 
+void Piece::validateMove_(const Position &position) const {
+    std::__cxx11::list<Position> positions = getPossibleMoves();
+    bool found = std::find(positions.begin(), positions.end(), position) != positions.end();
+    if (!found) {
+        throw std::invalid_argument("Invalid move: not possible.");
+    }
+}
+
 void Piece::eat() {}
 
 void Piece::split(Position position1, Position position2) {
-    // todo check both moves before action
+    validateMove_(position1);
+    validateMove_(position2);
+
     createSplit_(position2, probability_ / 2);
     move(position1);
     probability_ = probability_ / 2;

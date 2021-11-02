@@ -147,11 +147,18 @@ TEST_CASE("Invalid split") {
                                      Position(1, 4)),
                          "Invalid move: cannot split a pawn.",
                          std::invalid_argument);
+
+    CHECK_THROWS_WITH_AS(board.split(Position(4, 1),
+                                     Position(4, 3),
+                                     Position(4, 4)),
+                         "Invalid move: not possible.",
+                         std::invalid_argument);
+
+    CHECK_EQ(32, countPieces_(board));
 }
 
 TEST_CASE("Valid split") {
     Board board;
-
     board.move(Position(3, 2), Position(3, 3));
     board.move(Position(4, 7), Position(4, 6));
     board.split(Position(4, 1), Position(3, 2), Position(2, 3));
