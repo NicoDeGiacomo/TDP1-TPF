@@ -119,3 +119,42 @@ TEST_CASE("Finish game") {
 }
 }
 }
+
+TEST_SUITE("Split") {
+TEST_CASE("Invalid split") {
+    Board board;
+
+    CHECK_THROWS_WITH_AS(board.split(Position(5, 5),
+                                     Position(1, 3),
+                                     Position(1, 4)),
+                         "Invalid move: empty square.",
+                         std::invalid_argument);
+
+    CHECK_THROWS_WITH_AS(board.split(Position(1, 2),
+                                     Position(2, 2),
+                                     Position(1, 4)),
+                         "Invalid move: non-empty square.",
+                         std::invalid_argument);
+
+    CHECK_THROWS_WITH_AS(board.split(Position(1, 2),
+                                     Position(1, 3),
+                                     Position(2, 2)),
+                         "Invalid move: non-empty square.",
+                         std::invalid_argument);
+
+    CHECK_THROWS_WITH_AS(board.split(Position(1, 2),
+                                     Position(1, 3),
+                                     Position(1, 4)),
+                         "Invalid move: cannot split a pawn.",
+                         std::invalid_argument);
+}
+
+TEST_CASE("Valid split") {
+    Board board;
+
+    board.move(Position(3, 2), Position(3, 3));
+    board.move(Position(4, 7), Position(4, 6));
+    board.split(Position(4, 1), Position(3, 2), Position(2, 3));
+    CHECK_EQ(33, countPieces_(board));
+}
+}

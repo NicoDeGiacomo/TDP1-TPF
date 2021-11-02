@@ -23,6 +23,8 @@ class Board {
 
   void move(Position from, Position to);
 
+  void split(Position from, Position to1, Position to2);
+
   void finishGame(__attribute__((unused)) PieceColor winner);
 
   virtual ~Board();
@@ -33,6 +35,8 @@ class Board {
   bool finished_;
 
   void generatePiecesForColor(PieceColor color);
+
+  friend Piece;
 };
 
 #endif  // BOARD_H_

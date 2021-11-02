@@ -23,6 +23,8 @@ class Piece : public Drawable {
 
   virtual void eat();
 
+  virtual void split(Position position1, Position position2);
+
   virtual ~Piece() = default;
 
  protected:
@@ -30,10 +32,14 @@ class Piece : public Drawable {
   PieceColor color_;
   bool has_moved_;
   Board* board_;
+  float probability_;
 
-  virtual std::list<std::pair<int, int>> getVectorBeamMoves() const = 0;
-  virtual std::list<std::pair<int, int>> getVectorStepMoves() const = 0;
-  Piece* getPieceFromBoard(Position &position) const;
+  Piece(PieceColor color, Position position, Board* board, float probability);
+  virtual void createSplit_(Position to, float probability) = 0;
+  virtual std::list<std::pair<int, int>> getVectorBeamMoves_() const = 0;
+  virtual std::list<std::pair<int, int>> getVectorStepMoves_() const = 0;
+  Piece* getPieceFromBoard_(Position &position) const;
+  void appendToBoard_(Piece* piece);
 
  private:
   std::list<Position> getPossibleStepPositions_() const;

@@ -10,8 +10,10 @@ class Bishop : public Piece {
   char getDrawing() const override;
 
  private:
-  std::list<std::pair<int, int>> getVectorBeamMoves() const override;
-  std::list<std::pair<int, int>> getVectorStepMoves() const override;
+  Bishop(PieceColor color, Position position, Board* board, float probability);
+  std::list<std::pair<int, int>> getVectorBeamMoves_() const override;
+  std::list<std::pair<int, int>> getVectorStepMoves_() const override;
+  void createSplit_(Position to, float probability) override;
 };
 
 #endif  // BISHOP_H_

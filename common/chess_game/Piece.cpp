@@ -2,8 +2,12 @@
 #include <algorithm>
 #include "Piece.h"
 
-Piece::Piece(PieceColor color, Position position, Board* board)
-    : position_(position), color_(color), has_moved_(false), board_(board) {}
+Piece::Piece(PieceColor color, Position position, Board *board)
+    : position_(position),
+      color_(color),
+      has_moved_(false),
+      board_(board),
+      probability_(1.0) {}
 
 Position Piece::getPosition() const {
     return position_;
@@ -36,11 +40,11 @@ std::list<Position> Piece::getPossibleMoves() const {
 
 std::list<Position> Piece::getPossibleStepPositions_() const {
     std::list<Position> possiblePositions;
-    for (auto move: getVectorStepMoves()) {
+    for (auto move: getVectorStepMoves_()) {
         try {
             Position newPosition
                 (position_.getX() + move.first, position_.getY() + move.second);
-            Piece* otherPiece = getPieceFromBoard(newPosition);
+            Piece* otherPiece = getPieceFromBoard_(newPosition);
             if (otherPiece == nullptr || otherPiece->color_ != color_) {
                 possiblePositions.push_back(newPosition);
             }
@@ -54,7 +58,7 @@ std::list<Position> Piece::getPossibleStepPositions_() const {
 
 std::list<Position> Piece::getPossibleBeamPositions_() const {
     std::list<Position> possiblePositions;
-    for (auto move: getVectorBeamMoves()) {
+    for (auto move: getVectorBeamMoves_()) {
         int x = position_.getX();
         int y = position_.getY();
         while (true) {
@@ -62,7 +66,7 @@ std::list<Position> Piece::getPossibleBeamPositions_() const {
                 x += move.first;
                 y += move.second;
                 Position newPosition(x, y);
-                Piece* otherPiece = getPieceFromBoard(newPosition);
+                Piece* otherPiece = getPieceFromBoard_(newPosition);
                 if (otherPiece != nullptr) {
                     if (color_ != otherPiece->color_) {
                         possiblePositions.push_back(newPosition);
@@ -80,8 +84,31 @@ std::list<Position> Piece::getPossibleBeamPositions_() const {
     return possiblePositions;
 }
 
-Piece *Piece::getPieceFromBoard(Position &position) const {
+Piece *Piece::getPieceFromBoard_(Position &position) const {
     return board_ != nullptr ? board_->getPiece(position) : nullptr;
 }
 
 void Piece::eat() {}
+
+void Piece::split(Position position1, Position position2) {
+    // todo check both moves before action
+    createSplit_(position2, probability_ / 2);
+    move(position1);
+    probability_ = probability_ / 2;
+}
+
+Piece::Piece(PieceColor color,
+             Position position,
+             Board *board,
+             float probability)
+    : position_(position),
+      color_(color),
+      has_moved_(false),
+      board_(board),
+      probability_(probability) {}
+
+void Piece::appendToBoard_(Piece* piece) {
+    if (board_ != nullptr) {
+        board_->pieces_.push_back(piece);
+    }
+}

@@ -69,6 +69,21 @@ void Board::move(Position from, Position to) {
     turn_ = turn_ == PieceColor::WHITE ? PieceColor::BLACK : PieceColor::WHITE;
 }
 
+
+void Board::split(Position from, Position to1, Position to2) {
+    auto pieceFrom = getPiece(from);
+    auto pieceTo1 = getPiece(to1);
+    auto pieceTo2 = getPiece(to2);
+    if (pieceTo1 != nullptr || pieceTo2 != nullptr) {
+        throw std::invalid_argument("Invalid move: non-empty square.");
+    }
+    if (pieceFrom == nullptr) {
+        throw std::invalid_argument("Invalid move: empty square.");
+    }
+
+    pieceFrom->split(to1, to2);
+}
+
 void Board::finishGame(__attribute__((unused)) PieceColor winner) {
     finished_ = true;
 }
