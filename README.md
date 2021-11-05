@@ -1,7 +1,7 @@
 # TDP1-TPF
 Taller de Programación I - TP Final
 
-### Build Steps
+## Build Steps
 Manually execute the following.
 ```shell
 $ rm -r build
@@ -18,3 +18,7 @@ Or let our bash script do it four you!
 ```shell
 $ sh build.sh
 ```
+
+## Diagrams
+### Chess game
+![](assets/readme/chess.svg)

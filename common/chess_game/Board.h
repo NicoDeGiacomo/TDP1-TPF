@@ -25,6 +25,8 @@ class Board {
 
   void split(Position from, Position to1, Position to2);
 
+  void merge(Position pos1, Position pos2);
+
   void finishGame(__attribute__((unused)) PieceColor winner);
 
   virtual ~Board();
