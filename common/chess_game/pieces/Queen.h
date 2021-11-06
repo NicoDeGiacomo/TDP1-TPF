@@ -10,10 +10,9 @@ class Queen : public Piece {
   char getDrawing() const override;
 
  protected:
-  Queen(PieceColor color, Position position, Board* board, float probability);
   std::list<std::pair<int, int>> getVectorBeamMoves_() const override;
   std::list<std::pair<int, int>> getVectorStepMoves_() const override;
-  void createSplit_(Position to, float probability) override;
+  Piece * createSplit_(Position to) override;
 
 };
 

@@ -66,11 +66,14 @@ void Board::move(Position from, Position to) {
 
     // todo: Promotion
 
-    turn_ = turn_ == PieceColor::WHITE ? PieceColor::BLACK : PieceColor::WHITE;
+    changeTurn();
 }
 
-
 void Board::split(Position from, Position to1, Position to2) {
+    if (to1 == to2) {
+        throw std::invalid_argument("Invalid move: equal split positions.");
+    }
+
     auto pieceFrom = getPiece(from);
     auto pieceTo1 = getPiece(to1);
     auto pieceTo2 = getPiece(to2);
@@ -82,8 +85,12 @@ void Board::split(Position from, Position to1, Position to2) {
     }
 
     pieceFrom->split(to1, to2);
-    turn_ = turn_ == PieceColor::WHITE ? PieceColor::BLACK : PieceColor::WHITE;  // todo function
+    changeTurn();
 }
+
+//void Board::merge(Position pos1, Position pos2) {
+//
+//}
 
 void Board::finishGame(__attribute__((unused)) PieceColor winner) {
     finished_ = true;
@@ -108,6 +115,10 @@ void Board::generatePiecesForColor_(PieceColor color) {
     pieces_.push_back(new Queen(color, Position(4, rank), this));
 
     pieces_.push_back(new King(color, Position(5, rank), this));
+}
+
+void Board::changeTurn() {
+    turn_ = turn_ == PieceColor::WHITE ? PieceColor::BLACK : PieceColor::WHITE;
 }
 
 Board::~Board() {

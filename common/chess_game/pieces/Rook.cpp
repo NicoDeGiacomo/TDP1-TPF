@@ -13,10 +13,7 @@ std::list<std::pair<int, int>> Rook::getVectorBeamMoves_() const {
 std::list<std::pair<int, int>> Rook::getVectorStepMoves_() const {
     return {};
 }
-void Rook::createSplit_(Position to, float probability) {
-    auto* split = new Rook(color_, position_, board_, probability);
-    split->move(to);
-    appendToBoard_(split);
+
+Piece * Rook::createSplit_(Position to) {
+    return new Rook(color_, to, board_);
 }
-Rook::Rook(PieceColor color, Position position, Board *board, float probability)
-    : Piece(color, position, board, probability) {}

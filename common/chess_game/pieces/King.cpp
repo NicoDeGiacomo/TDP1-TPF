@@ -23,11 +23,6 @@ void King::eat() {
     }
 }
 
-King::King(PieceColor color, Position position, Board *board, float probability)
-    : Piece(color, position, board, probability) {}
-
-void King::createSplit_(Position to, float probability) {
-    auto* split = new King(color_, position_, board_, probability);
-    split->move(to);
-    appendToBoard_(split);
+Piece * King::createSplit_(Position to) {
+    return new King(color_, to, board_);
 }

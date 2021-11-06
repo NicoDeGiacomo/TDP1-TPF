@@ -39,6 +39,7 @@ class Board {
   void generatePiecesForColor_(PieceColor color);
 
   friend Piece;
+  void changeTurn();
 };
 
 #endif  // BOARD_H_

@@ -61,7 +61,6 @@ std::list<std::pair<int, int>> Pawn::getVectorStepMoves_() const {
 
     return moves;
 }
-void Pawn::createSplit_(__attribute__((unused)) Position to,
-                        __attribute__((unused)) float probability) {
+Piece * Pawn::createSplit_(__attribute__((unused)) Position to) {
     throw std::invalid_argument("Invalid move: cannot split a pawn.");
 }

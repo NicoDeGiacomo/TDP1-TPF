@@ -14,16 +14,6 @@ std::list<std::pair<int, int>> Bishop::getVectorStepMoves_() const {
     return {};
 }
 
-void Bishop::createSplit_(Position to, float probability) {
-    auto* split = new Bishop(color_, position_, board_, probability);
-    split->move(to);
-    appendToBoard_(split);
+Piece * Bishop::createSplit_(Position to) {
+    return new Bishop(color_, to, board_);
 }
-
-Bishop::Bishop(PieceColor color,
-               Position position,
-               Board *board,
-               float probability) : Piece(color,
-                                          position,
-                                          board,
-                                          probability) {}

@@ -97,8 +97,13 @@ void Piece::split(Position position1, Position position2) {
     validateMove_(position1);
     validateMove_(position2);
 
-    createSplit_(position2, probability_ / 2);
+    auto* split = createSplit_(position2);
+    appendToBoard_(split);
+    split->splits_.push_back(this);
+    split->probability_ = probability_ / 2;
+
     move(position1);
+    splits_.push_back(split);
     probability_ = probability_ / 2;
 }
 

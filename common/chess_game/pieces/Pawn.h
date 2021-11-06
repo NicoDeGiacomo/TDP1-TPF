@@ -12,7 +12,7 @@ class Pawn : public Piece {
  private:
   std::list<std::pair<int, int>> getVectorBeamMoves_() const override;
   std::list<std::pair<int, int>> getVectorStepMoves_() const override;
-  void createSplit_(Position to, float probability) override;
+  Piece * createSplit_(Position to) override;
 };
 
 #endif  // PAWN_H_

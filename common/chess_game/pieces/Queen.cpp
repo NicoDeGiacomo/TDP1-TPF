@@ -14,13 +14,6 @@ std::list<std::pair<int, int>> Queen::getVectorStepMoves_() const {
     return {};
 }
 
-void Queen::createSplit_(Position to, float probability) {
-    auto* split = new Queen(color_, position_, board_, probability);
-    split->move(to);
-    appendToBoard_(split);
+Piece * Queen::createSplit_(Position to) {
+    return new Queen(color_, to, board_);
 }
-
-Queen::Queen(PieceColor color,
-             Position position,
-             Board *board,
-             float probability) : Piece(color, position, board, probability) {}

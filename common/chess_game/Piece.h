@@ -2,6 +2,7 @@
 #define PIECE_H_
 
 #include <list>
+#include <vector>
 #include "Position.h"
 #include "Drawable.h"
 #include "Board.h"
@@ -35,9 +36,10 @@ class Piece : public Drawable {
   bool has_moved_;
   Board* board_;
   float probability_;
+  std::vector<Piece*> splits_;
 
   Piece(PieceColor color, Position position, Board* board, float probability);
-  virtual void createSplit_(Position to, float probability) = 0;
+  virtual Piece * createSplit_(Position to) = 0;
   virtual std::list<std::pair<int, int>> getVectorBeamMoves_() const = 0;
   virtual std::list<std::pair<int, int>> getVectorStepMoves_() const = 0;
   Piece* getPieceFromBoard_(Position &position) const;
