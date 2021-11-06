@@ -239,18 +239,18 @@ TEST_CASE("Valid merge - non empty square") {
 
     SUBCASE("Case 2") {
         Board board;
-        board.move(Position(3, 2), Position(3, 3));
-        board.move(Position(4, 7), Position(4, 6));
-        board.split(Position(4, 1), Position(3, 2), Position(2, 3));
-        board.move(Position(4, 6), Position(4, 5));
+        board.move(Position("c2"), Position("c3"));
+        board.move(Position("d7"), Position("d6"));
+        board.split(Position("d1"), Position("c2"), Position("b3"));
+        board.move(Position("d6"), Position("d5"));
 
-        board.merge(Position(3, 2), Position(2, 3), Position(3, 2));
+        board.merge(Position("c2"), Position("b3"), Position("c2"));
         CHECK_EQ(32, countPieces_(board));
 
-        CHECK_EQ(board.getPiece(Position(2, 3)), nullptr);
-        CHECK_EQ(board.getPiece(Position(4, 1)), nullptr);
-        CHECK_NE(board.getPiece(Position(3, 2)), nullptr);
-        CHECK_EQ(board.getPiece(Position(3, 2))->getProbability(), 1.0);
+        CHECK_EQ(board.getPiece(Position("b3")), nullptr);
+        CHECK_EQ(board.getPiece(Position("d1")), nullptr);
+        CHECK_NE(board.getPiece(Position("c2")), nullptr);
+        CHECK_EQ(board.getPiece(Position("c2"))->getProbability(), 1.0);
     }
 }
 }
