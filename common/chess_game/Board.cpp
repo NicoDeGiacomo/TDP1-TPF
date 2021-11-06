@@ -88,9 +88,20 @@ void Board::split(Position from, Position to1, Position to2) {
     changeTurn();
 }
 
-//void Board::merge(Position pos1, Position pos2) {
-//
-//}
+void Board::merge(Position from1, Position from2, Position to) {
+    if (from1 == from2) {
+        throw std::invalid_argument("Invalid move: merging same position.");
+    }
+
+    auto* pieceFrom1 = getPiece(from1);
+    auto* pieceFrom2 = getPiece(from2);
+    if (pieceFrom1 == nullptr || pieceFrom2 == nullptr) {
+        throw std::invalid_argument("Invalid move: empty square.");
+    }
+
+    pieceFrom1->merge(to, pieceFrom2);
+    changeTurn();
+}
 
 void Board::finishGame(__attribute__((unused)) PieceColor winner) {
     finished_ = true;

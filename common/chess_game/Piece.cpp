@@ -40,7 +40,7 @@ std::list<Position> Piece::getPossibleStepPositions_() const {
             Position newPosition
                 (position_.getX() + move.first, position_.getY() + move.second);
             Piece* otherPiece = getPieceFromBoard_(newPosition);
-            if (otherPiece == nullptr || otherPiece->color_ != color_) {
+            if (otherPiece == nullptr || otherPiece->color_ != color_ || isSplit_(otherPiece)) {
                 possiblePositions.push_back(newPosition);
             }
         } catch (std::invalid_argument &) {
@@ -63,6 +63,10 @@ std::list<Position> Piece::getPossibleBeamPositions_() const {
                 Position newPosition(x, y);
                 Piece* otherPiece = getPieceFromBoard_(newPosition);
                 if (otherPiece != nullptr) {
+                    if (isSplit_(otherPiece)) {
+                        possiblePositions.push_back(newPosition);
+                        continue;
+                    }
                     if (color_ != otherPiece->color_) {
                         possiblePositions.push_back(newPosition);
                     }
@@ -84,7 +88,7 @@ Piece *Piece::getPieceFromBoard_(Position &position) const {
 }
 
 void Piece::validateMove_(const Position &position) const {
-    std::__cxx11::list<Position> positions = getPossibleMoves();
+    std::list<Position> positions = getPossibleMoves();
     bool found = std::find(positions.begin(), positions.end(), position) != positions.end();
     if (!found) {
         throw std::invalid_argument("Invalid move: not possible.");
@@ -107,18 +111,35 @@ void Piece::split(Position position1, Position position2) {
     probability_ = probability_ / 2;
 }
 
-Piece::Piece(PieceColor color,
-             Position position,
-             Board *board,
-             float probability)
-    : position_(position),
-      color_(color),
-      has_moved_(false),
-      board_(board),
-      probability_(probability) {}
+void Piece::merge(Position to, Piece* other) {
+    merge_();
+    other->merge_();
+
+    Piece* toDelete = nullptr;
+
+    if (position_ == to) {
+        toDelete = other;
+        probability_ += other->probability_;
+    } else if (other->position_ == to) {
+        toDelete = this;
+        other->probability_ += probability_;
+    } else if (getPieceFromBoard_(to) == nullptr) {
+        this->move(to);
+        toDelete = other;
+        probability_ += other->probability_;
+    } else {
+        throw std::invalid_argument("Invalid move: invalid merge");
+    }
+
+    for (auto piece : toDelete->splits_) {
+        piece->splits_.remove(toDelete);
+    }
+    board_->pieces_.remove(toDelete);
+    delete toDelete;
+}
 
 void Piece::appendToBoard_(Piece* piece) {
-    if (board_ != nullptr) {
+    if (board_ != nullptr) {  // todo remove check
         board_->pieces_.push_back(piece);
     }
 }
@@ -126,3 +147,9 @@ void Piece::appendToBoard_(Piece* piece) {
 float Piece::getProbability() const {
     return probability_;
 }
+
+bool Piece::isSplit_(Piece *other) const {
+    return std::find(splits_.begin(), splits_.end(), other) != splits_.end();
+}
+
+void Piece::merge_() {}

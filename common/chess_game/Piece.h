@@ -28,6 +28,8 @@ class Piece : public Drawable {
 
   virtual void split(Position position1, Position position2);
 
+  void merge(Position to, Piece* other);
+
   virtual ~Piece() = default;
 
  protected:
@@ -36,19 +38,20 @@ class Piece : public Drawable {
   bool has_moved_;
   Board* board_;
   float probability_;
-  std::vector<Piece*> splits_;
+  std::list<Piece*> splits_;
 
-  Piece(PieceColor color, Position position, Board* board, float probability);
   virtual Piece * createSplit_(Position to) = 0;
   virtual std::list<std::pair<int, int>> getVectorBeamMoves_() const = 0;
   virtual std::list<std::pair<int, int>> getVectorStepMoves_() const = 0;
   Piece* getPieceFromBoard_(Position &position) const;
-  void appendToBoard_(Piece* piece);
+  virtual void merge_();
 
  private:
   std::list<Position> getPossibleStepPositions_() const;
   std::list<Position> getPossibleBeamPositions_() const;
   void validateMove_(const Position &position) const;
+  void appendToBoard_(Piece* piece);
+  bool isSplit_(Piece *other) const;
 };
 
 #endif  // PIECE_H_
