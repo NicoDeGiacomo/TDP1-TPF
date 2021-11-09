@@ -3,9 +3,7 @@
 #include <vector>
 
 #include "Board.h"
-#include "Socket.h"
-
-void start_socket_and_receive_2_bytes_to_test();
+#include "Chat_SV.h"
 
 void print_board(const Board &board) {
     char chessBoard[8][8]{};
@@ -39,5 +37,9 @@ int main() {
     piece->move(position);
 
     print_board(board);
+
+    //TODO: encapsulate chat in room
+    Chat_SV chat;
+    chat.start();
     return 0;
 }

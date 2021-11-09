@@ -32,10 +32,10 @@ add_executable(TESTS
     ${tests_files} ${common_files})
 
 add_executable(CLIENT
-    ${client_files} ${common_files})
+    ${client_files} ${common_files} client/Chat_CL.cpp client/Chat_CL.h)
 
 add_executable(SERVER
-    ${server_files} ${common_files})
+    ${server_files} ${common_files} server/Chat_SV.cpp server/Chat_SV.h)
 
 
 ################ LIBRARIES ################
