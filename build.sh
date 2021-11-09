@@ -1,5 +1,5 @@
 #!/bin/sh
-rm -r build || exit
+rm -r build
 mkdir build || exit
 cd build || exit
 cmake .. || exit
