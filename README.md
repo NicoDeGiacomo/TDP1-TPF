@@ -28,7 +28,14 @@ cmake . && make && make install
 ```
 
 ### 1.2. Build Project
-Manually execute the following.
+Use our bash script to build the project! This will also execute the tests automatically.
+```shell
+$ source build.sh
+$ ./SERVER
+$ ./CLIENT
+```
+
+Or, if you prefer to do it yourself, you can manually the following.
 ```shell
 $ rm -r build
 $ mkdir build
@@ -36,13 +43,6 @@ $ cd build
 $ cmake ..
 $ make
 $ ./TESTS
-$ ./SERVER
-$ ./CLIENT
-```
-
-Or let our bash script do it four you! This will also execute the tests automatically.
-```shell
-$ source build.sh
 $ ./SERVER
 $ ./CLIENT
 ```
