@@ -5,6 +5,17 @@ set(CMAKE_CXX_STANDARD 14)
 
 add_compile_options(-Wall -Wextra -pedantic -Werror)
 
+# Agrego la libreria SDL2pp habilitando manejo de imagenes y de letras
+SET(SDL2PP_WITH_IMAGE ON) # if you need SDL_image support
+SET(SDL2PP_WITH_MIXER ON) # if you need SDL_mixer support
+SET(SDL2PP_WITH_TTF ON) # if you need SDL_ttf support
+#ADD_SUBDIRECTORY(libs/libSDL2pp)
+
+# Agrego la carpeta con los headers autogenerados a los includes
+message("Agregando '${PROJECT_SOURCE_DIR}/libs' como directorio de includes")
+include_directories(${PROJECT_SOURCE_DIR}/libs)
+include_directories(${SDL2PP_INCLUDE_DIRS})
+
 # Wildcard
 FILE(GLOB_RECURSE client_files "client/*.cpp")
 FILE(GLOB_RECURSE server_files "server/*.cpp")
