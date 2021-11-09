@@ -1,4 +1,4 @@
-#include "tests/doctest/doctest.h"
+#include "doctest.h"
 #include "Tests.cpp"  // NOLINT [build/c++11]
 
 #include "Position.h"
