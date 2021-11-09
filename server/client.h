@@ -11,7 +11,6 @@ class Client {
 private:
     std::string name;
 public:
-    Client();
     void notify();
 };
 
