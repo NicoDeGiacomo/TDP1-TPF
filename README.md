@@ -30,7 +30,7 @@ cmake . && make && make install
 ### 1.2. Build Project
 Use our bash script to build the project! This will also execute the tests automatically.
 ```shell
-$ sh build.
+$ sh build.sh
 $ cd build
 $ ./SERVER
 $ ./CLIENT
