@@ -27,6 +27,9 @@ int main() {
 
     Login login(renderer);
     login.start();
+    std::string user_name = login.get_user_name();
+
+    std::cout << "USERNAME: " << user_name << "\n";
     
     // sleep(5);
     // //TODO: need to encapsulate the chat
