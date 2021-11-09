@@ -42,8 +42,7 @@ $ ./CLIENT
 
 Or let our bash script do it four you! This will also execute the tests automatically.
 ```shell
-$ sh build.sh
-$ cd build/
+$ source build.sh
 $ ./SERVER
 $ ./CLIENT
 ```
