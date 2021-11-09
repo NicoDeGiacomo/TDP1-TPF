@@ -6,14 +6,14 @@ add_compile_options(-Wall -Wextra -pedantic -Werror)
 
 
 ################ WILDCARDS ################
-FILE(GLOB_RECURSE client_files "client/*.cpp")
-FILE(GLOB_RECURSE server_files "server/*.cpp")
-FILE(GLOB_RECURSE common_files "common/*.cpp")
-FILE(GLOB_RECURSE tests_files "tests/*.cpp")
+file(GLOB_RECURSE client_files "client/*.cpp")
+file(GLOB_RECURSE server_files "server/*.cpp")
+file(GLOB_RECURSE common_files "common/*.cpp")
+file(GLOB_RECURSE tests_files "tests/*.cpp")
 
-FILE(GLOB_RECURSE common_header_files "common/*.h")
-FILE(GLOB_RECURSE server_header_files "server/*.h" ${common_header_files})
-FILE(GLOB_RECURSE client_header_files "client/*.h" ${common_header_files})
+file(GLOB_RECURSE common_header_files "common/*.h")
+file(GLOB_RECURSE server_header_files "server/*.h" ${common_header_files})
+file(GLOB_RECURSE client_header_files "client/*.h" ${common_header_files})
 
 
 ################ DIRECTORIES ################
@@ -49,9 +49,9 @@ target_link_libraries(SERVER Threads::Threads)
 SET(SDL2PP_WITH_IMAGE ON)
 SET(SDL2PP_WITH_MIXER ON)
 SET(SDL2PP_WITH_TTF ON)
-ADD_SUBDIRECTORY(libs/libSDL2pp)
-INCLUDE_DIRECTORIES(${SDL2PP_INCLUDE_DIRS})
-TARGET_LINK_LIBRARIES(CLIENT ${SDL2PP_LIBRARIES})
+add_subdirectory(libs/libSDL2pp)
+include_directories(${SDL2PP_INCLUDE_DIRS})
+target_link_libraries(CLIENT ${SDL2PP_LIBRARIES})
 
 
 ################ PATHS ################
