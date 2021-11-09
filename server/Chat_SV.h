@@ -5,7 +5,7 @@
 #ifndef QUANTUM_CHESS_CHAT_SV_H
 #define QUANTUM_CHESS_CHAT_SV_H
 #include "ProtectedString.h"
-
+#include <Socket.h>
 
 class Chat_SV {
 
