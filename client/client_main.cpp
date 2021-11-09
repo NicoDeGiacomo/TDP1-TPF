@@ -2,12 +2,14 @@
 #include <Window.hh>
 #include <SDL.hh>
 #include <SDL.h>
+#include <SDL2pp/SDL2pp.hh>
 #include <cstdio>
 
 #include "Socket.h"
 #include <iostream>
 #include <vector>
 #include "Chat_CL.h"
+#include "Login.h"
 
 int main() {
     printf("STARTING CLIENT\n");
@@ -19,12 +21,19 @@ int main() {
                           480,
                           SDL_WINDOW_RESIZABLE);
 
-    sleep(5);
-    //TODO: need to encapsulate the chat
-    //create the room class
-    //handle the logic for client joining or leaving the room
-    Chat_CL chat;
-    chat.start();
-    std::cout << "closing client" << std::endl;
+    
+    // Create accelerated video renderer with default driver
+	SDL2pp::Renderer renderer(window, -1, SDL_RENDERER_ACCELERATED);
+
+    Login login(renderer);
+    login.start();
+    
+    // sleep(5);
+    // //TODO: need to encapsulate the chat
+    // //create the room class
+    // //handle the logic for client joining or leaving the room
+    // Chat_CL chat;
+    // chat.start();
+    // std::cout << "closing client" << std::endl;
     return 0;
 }
