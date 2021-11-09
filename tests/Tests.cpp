@@ -1,5 +1,5 @@
 #define DOCTEST_CONFIG_IMPLEMENT_WITH_MAIN
-#include "tests/doctest/doctest.h"  // NOLINT [build/c++11]
+#include "doctest.h"  // NOLINT [build/c++11]
 
 DOCTEST_MAKE_STD_HEADERS_CLEAN_FROM_WARNINGS_ON_WALL_BEGIN
 #include <list>  // NOLINT [build/c++11]

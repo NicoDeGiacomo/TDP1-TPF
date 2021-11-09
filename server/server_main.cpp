@@ -2,8 +2,8 @@
 #include <iostream>
 #include <vector>
 
-#include "common/chess_game/Board.h"
-#include "common/Socket.h"
+#include "Board.h"
+#include "Socket.h"
 
 void start_socket_and_receive_2_bytes_to_test();
 
