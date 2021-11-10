@@ -4,6 +4,7 @@
 #include <SDL.h>
 #include <SDL2pp/SDL2pp.hh>
 #include <cstdio>
+#include <Renderer.cc>
 
 #include "Socket.h"
 #include <iostream>
@@ -30,7 +31,6 @@ int main() {
     std::string user_name = login.get_user_name();
 
     std::cout << "USERNAME: " << user_name << "\n";
-    
     // sleep(5);
     // //TODO: need to encapsulate the chat
     // //create the room class
