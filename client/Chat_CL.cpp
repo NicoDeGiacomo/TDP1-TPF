@@ -11,25 +11,21 @@
 
 void Chat_CL::start() {
     Socket client;
-    //TODO: fix this having copy of socket without accessing private file descriptor
     client.connect("localhost", "7777");
     std::thread sender, receiver;
-    sender = std::thread(&Chat_CL::runSenderThread, this, client.fd);
-    receiver = std::thread(&Chat_CL::runReceiverThread, this, client.fd);
+    sender = std::thread(&Chat_CL::runSenderThread, this, &client);
+    receiver = std::thread(&Chat_CL::runReceiverThread, this, &client);
     sender.join();
     receiver.join();
 }
 
-void Chat_CL::runReceiverThread(int fd){
-    Socket client(fd);
+void Chat_CL::runReceiverThread(Socket* client){
     while (true) {
         //TODO: remove this 4 hardcoded, need to add protocol
         char received[4];
         try {
-            client.receive(received, 4);
+            client->receive(received, 4);
         } catch (ClosedSocketException& e){
-            //for some reason this catch isnt catching, the socket
-            //is throwing the error receiving bytes exception instead
             std::cout << e.what() << std::endl;
             return;
         }
@@ -41,8 +37,7 @@ void Chat_CL::runReceiverThread(int fd){
     }
 }
 
-void Chat_CL::runSenderThread(int fd){
-    Socket client(fd);
+void Chat_CL::runSenderThread(Socket* client){
     std::string input;
     while (true) {
         input = "";
@@ -51,7 +46,7 @@ void Chat_CL::runSenderThread(int fd){
             break;
         }
         try {
-            client.send(input.c_str(), input.length());
+            client->send(input.c_str(), input.length());
         } catch (ClosedSocketException& e){
             //TODO: for some reason this catch isnt catching, the socket
             //is throwing the error receiving bytes exception instead

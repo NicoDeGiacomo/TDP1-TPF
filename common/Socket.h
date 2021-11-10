@@ -58,14 +58,12 @@ class Socket {
   /// Shutdowns the Socket.
   void shutdown();
 
+    bool isNotActive();
 
-  //TODO fix this, move to private after fixing multiple of the same socket use
+private:
     int fd;
     explicit Socket(int fd);
-
- private:
-
-  static int get_addresses(const char *host,
+    static int get_addresses(const char *host,
                            const char *port,
                            struct addrinfo **addresses);
 };

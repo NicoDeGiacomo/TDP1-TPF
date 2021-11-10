@@ -12,9 +12,9 @@ class Chat_CL {
 public:
     void start();
 
-    void runSenderThread(int client);
+    void runSenderThread(Socket* client);
 
-    void runReceiverThread(int client);
+    void runReceiverThread(Socket* client);
 };
 
 

@@ -11,32 +11,53 @@
 void Chat_SV::start() {
     Socket acceptor;
     acceptor.bind("7777");
-    acceptor.listen(1);
+    acceptor.listen(6);
 
-    //TODO: need to add the accept peer loop, look for dead threads and shutdown everything after finish chat.
-    //TODO: big issue by needing two copies of same socket im accessing private file descriptor
-    Socket peer = acceptor.accept();
-    std::thread receiver, sender;
-    ProtectedString pString;
-    receiver = std::thread(&Chat_SV::runReceiverThread, this, peer.fd, &pString);
-    std::list<Socket> sockets;
-    sockets.push_front(std::move(peer));
-    sender = std::thread(&Chat_SV::runSenderThread, this, &sockets, &pString);
-    receiver.join();
-    sender.join();
+
+    //TODO: need to look for dead threads and shutdown everything after finish chat.
+    //TODO: remove this placeholder variable, move this accept to a ROOM or another class
+    int i = 0;
+    while (true && i != 2){
+        Socket peer = acceptor.accept();
+        if (peer.isNotActive())
+            //proceed to clean and shutdown threads
+            break;
+        std::cout << "valid socket accepted" << std::endl;
+        this->listOfPeers.push_front(std::move(peer));
+        this->senderThreads.push_front(
+                std::thread(&Chat_SV::runSenderThread,
+                            this,
+                            &this->listOfPeers,
+                            &this->protectedString));
+        this->receiverThreads.push_front(
+                std::thread(&Chat_SV::runReceiverThread,
+                            this,
+                            &this->listOfPeers.front(),
+                            &this->protectedString));
+
+        //this->deleteDeadWorkers();
+        i++;
+    }
+    this->joinAllThreads();
+
+    //std::thread receiver, sender;
+    //std::list<Socket> sockets;
+    //sockets.push_front(std::move(peer));
+    //receiver = std::thread(&Chat_SV::runReceiverThread, this, &sockets.front(), &pString);
+    //sender = std::thread(&Chat_SV::runSenderThread, this, &sockets, &pString);
+    //receiver.join();
+    //sender.join();
 
 }
 
-void Chat_SV::runReceiverThread(int fd, ProtectedString* pString){
-    Socket peer(fd);
+void Chat_SV::runReceiverThread(Socket* peer, ProtectedString* pString){
+    std::cout << "running receiver sv thread" << std::endl;
     while (true) {
         //TODO: remove this 4 hardcoded, need to add protocol
         char received[4];
         try {
-            peer.receive(received, 4);
+            peer->receive(received, 4);
         } catch (ClosedSocketException& e){
-            //TODO: for some reason this catch isnt catching, the socket
-            //is throwing the error receiving bytes exception instead
             std::cout << e.what() << std::endl;
             return;
         }
@@ -51,6 +72,7 @@ void Chat_SV::runReceiverThread(int fd, ProtectedString* pString){
 }
 
 void Chat_SV::runSenderThread(std::list<Socket>* sockets, ProtectedString* pString){
+    std::cout << "running sender sv thread" << std::endl;
     while (true) {
         std::string toSend;
         pString->getStringIfNotEmpty(toSend);
@@ -66,4 +88,12 @@ void Chat_SV::runSenderThread(std::list<Socket>* sockets, ProtectedString* pStri
         }
         std::cout << "-server just sent: " << toSend << std::endl;
     }
+}
+
+void Chat_SV::joinAllThreads() {
+    for(auto & t : receiverThreads)
+        t.join();
+    for(auto & t : senderThreads)
+        t.join();
+    std::cout << "all threads joined" << std::endl;
 }

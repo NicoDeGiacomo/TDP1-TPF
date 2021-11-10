@@ -2,25 +2,8 @@
 
 #include <unistd.h>
 #include <cstring>
-
-#if defined (__WIN32__)
-    #include <winsock2.h>
-    #include <windows.h>
-    #include <WinSock2.h>
-    #include <ws2tcpip.h>
-    #include <iostream>
-    #include <stdexcept>
-
-    #ifndef MSG_NOSIGNAL
-        #define MSG_NOSIGNAL 0
-    #endif
-    #ifndef SHUT_RDWR
-        #define SHUT_RDWR 2
-    #endif
-#else
-    #include <sys/socket.h>
-    #include <netdb.h>
-#endif
+#include <sys/socket.h>
+#include <netdb.h>
 
 Socket::Socket() : fd(-1) {}
 
@@ -29,28 +12,12 @@ Socket::Socket(int fd) : fd(fd) {}
 int Socket::get_addresses(const char *host,
                           const char *port,
                           struct addrinfo **addresses) {
-    #if defined (__WIN32__)
-    WSADATA wsaData;
-    int ret;
-
-    // Initialize Winsock version 2.2
-    ret = WSAStartup(MAKEWORD(2, 2), &wsaData);
-    if (ret != 0) {
-        std::cout << "WSAStartup failed with error " << ret << "\n";
-        return 0;
-    }
-
-    std::cout << "The current status is:" << wsaData.szSystemStatus << "\n";
-    #endif
     struct addrinfo hints {};
     memset(&hints, 0, sizeof(struct addrinfo));
     hints.ai_family = AF_INET;
     hints.ai_socktype = SOCK_STREAM;
     hints.ai_flags = 0;
     if (getaddrinfo(host, port, &hints, addresses) != 0) {
-        #if defined (__WIN32__)
-            WSACleanup();
-        #endif
         throw SocketException("Failed getting address information.");
     }
     return 0;
@@ -160,9 +127,6 @@ Socket &Socket::operator=(Socket &&other)  noexcept {
 
 void Socket::shutdown() {
     if (fd != -1) {
-        #if defined (__WIN32__)
-            WSACleanup();
-        #endif
         ::shutdown(fd, SHUT_RDWR);
         close(fd);
         fd = -1;
@@ -171,4 +135,8 @@ void Socket::shutdown() {
 
 Socket::~Socket() {
     shutdown();
+}
+
+bool Socket::isNotActive() {
+    return this->fd == -1;
 }

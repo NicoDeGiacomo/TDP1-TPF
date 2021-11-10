@@ -31,12 +31,11 @@ int main() {
     std::string user_name = login.get_user_name();
 
     std::cout << "USERNAME: " << user_name << "\n";
-    // sleep(5);
-    // //TODO: need to encapsulate the chat
-    // //create the room class
-    // //handle the logic for client joining or leaving the room
-    // Chat_CL chat;
-    // chat.start();
-    // std::cout << "closing client" << std::endl;
+    //TODO: need to encapsulate the chat
+    //create the room class
+    //handle the logic for client joining or leaving the room
+    Chat_CL chat;
+    chat.start();
+    std::cout << "closing client" << std::endl;
     return 0;
 }

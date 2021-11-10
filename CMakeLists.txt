@@ -32,10 +32,10 @@ add_executable(TESTS
     ${tests_files} ${common_files})
 
 add_executable(CLIENT
-    ${client_files} ${common_files} client/Chat_CL.cpp client/Chat_CL.h)
+    ${client_files} ${common_files})
 
 add_executable(SERVER
-    ${server_files} ${common_files} server/Chat_SV.cpp server/Chat_SV.h)
+    ${server_files} ${common_files})
 
 
 ################ LIBRARIES ################
@@ -83,9 +83,9 @@ list(REMOVE_DUPLICATES all_the_paths)
 target_include_directories(TESTS PRIVATE ${all_the_paths})
 
 
-################ WINDOWS ################
-if (WIN32)
-    target_link_libraries(CLIENT wsock32 ws2_32)
-    target_link_libraries(SERVER wsock32 ws2_32)
-    target_link_libraries(TESTS wsock32 ws2_32)
-endif (WIN32)
+################ WINDOWS ################ DEPRECATED :(
+#if (WIN32)
+#    target_link_libraries(CLIENT wsock32 ws2_32)
+#    target_link_libraries(SERVER wsock32 ws2_32)
+#    target_link_libraries(TESTS wsock32 ws2_32)
+#endif (WIN32)
