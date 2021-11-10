@@ -192,6 +192,7 @@ TEST_CASE("Double split") {
 
     board.move(Position(8, 7), Position(8, 6));
     board.split(Position(2, 3), Position(2, 4), Position(2, 5));
+    CHECK_EQ(34, countPieces_(board));
 
     CHECK_EQ(board.getPiece(Position(2, 3)), nullptr);
     CHECK_EQ(board.getPiece(Position(2, 4))->getProbability(), 0.25f);
@@ -252,5 +253,32 @@ TEST_CASE("Valid merge - non empty square") {
         CHECK_NE(board.getPiece(Position("c2")), nullptr);
         CHECK_EQ(board.getPiece(Position("c2"))->getProbability(), 1.0);
     }
+}
+
+TEST_CASE("Double split and merge") {
+    Board board;
+    board.move(Position("c2"), Position("c3"));
+    board.move(Position("d7"), Position("d6"));
+
+    board.split(Position("d1"), Position("c2"), Position("b3"));
+    board.move(Position("h7"), Position("h6"));
+    board.split(Position("b3"), Position("b4"), Position("a4"));
+
+    board.merge(Position("b4"), Position("c2"), Position("b3"));
+
+    CHECK_EQ(33, countPieces_(board));
+    CHECK_EQ(board.getPiece(Position("b4")), nullptr);
+    CHECK_EQ(board.getPiece(Position("c2")), nullptr);
+    CHECK_NE(board.getPiece(Position("b3")), nullptr);
+    CHECK_NE(board.getPiece(Position("a4")), nullptr);
+    CHECK_EQ(board.getPiece(Position("b3"))->getProbability(), 0.75f);
+    CHECK_EQ(board.getPiece(Position("a4"))->getProbability(), 0.25f);
+
+    board.merge(Position("b3"), Position("a4"), Position("a4"));
+
+    CHECK_EQ(32, countPieces_(board));
+    CHECK_EQ(board.getPiece(Position("b3")), nullptr);
+    CHECK_NE(board.getPiece(Position("a4")), nullptr);
+    CHECK_EQ(board.getPiece(Position("a4"))->getProbability(), 1.0f);
 }
 }
