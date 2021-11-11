@@ -1,5 +1,5 @@
-#ifndef BLOCKINGQUEUE_H_
-#define BLOCKINGQUEUE_H_
+#ifndef SERVER_SRC_BLOCKINGQUEUE_H_
+#define SERVER_SRC_BLOCKINGQUEUE_H_
 
 #include <mutex>  // NOLINT [build/c++11]
 #include <condition_variable>  // NOLINT [build/c++11]
@@ -7,10 +7,11 @@
 
 /// Implementation of a Blocking Queue.
 /// \tparam T Content type of the Queue.
-template <typename T> class BlockingQueue {
-  std::mutex mutex;
-  std::condition_variable condition;
-  std::queue<T> queue;
+template <typename T>
+class BlockingQueue {
+  std::mutex mutex_;
+  std::condition_variable condition_;
+  std::queue<T> queue_;
   bool closed;
 
  public:
@@ -18,17 +19,22 @@ template <typename T> class BlockingQueue {
   BlockingQueue();
 
   /// Destroys the Blocking Queue.
-  ~BlockingQueue();
+  virtual ~BlockingQueue() = default;
 
   /// Adds an element to the Queue.
   /// \throws ClosedQueueException when the Queue is closed.
   /// \param e Reference to the element to add.
   void produce(T const &e);
 
-  /// Returns and pops the top element from the Queue
+  /// Returns the top element from the Queue
   /// \throws ClosedQueueException when the Queue is closed and empty.
   /// \return Element
-  T consume();
+  T top();
+
+  /// Pops the top element from the Queue
+  /// \throws ClosedQueueException when the Queue is closed and empty.
+  /// \return Element
+  void pop();
 
   /// Closes the Queue.
   void close();
@@ -37,48 +43,53 @@ template <typename T> class BlockingQueue {
 /// Exception thrown when the Queue is already closed.
 struct ClosedQueueException : public std::exception {
   const char *what() const noexcept override {
-      return "The queue is already closed";
+      return "The queue_ is already closed";
   }
 };
 
 /****************** IMPLEMENTATION ******************/
 template<typename T>
 BlockingQueue<T>::BlockingQueue()
-    : mutex(), condition(), queue(), closed(false) {
+    : mutex_(), condition_(), queue_(), closed(false) {
 }
 
 template<typename T>
-BlockingQueue<T>::~BlockingQueue() = default;
-
-template<typename T>
-void BlockingQueue<T>::produce(const T &e) {
-    std::unique_lock<std::mutex> lock(this->mutex);
-    if (this->closed) {
+void BlockingQueue<T>::produce(T const &e) {
+    std::unique_lock<std::mutex> lock(mutex_);
+    if (closed) {
         throw ClosedQueueException();
     }
 
-    queue.push(e);
-    this->condition.notify_all();
+    queue_.push(e);
+    condition_.notify_all();
 }
 
 template<typename T>
-T BlockingQueue<T>::consume() {
-    std::unique_lock<std::mutex> lock(this->mutex);
-    while (queue.empty()) {
-        if (this->closed) {
+T BlockingQueue<T>::top() {
+    std::unique_lock<std::mutex> lock(mutex_);
+    while (queue_.empty()) {
+        if (closed) {
             throw ClosedQueueException();
         }
-        condition.wait(lock);
+        condition_.wait(lock);
     }
 
-    T v = queue.front();
-    queue.pop();
-    return v;
+    return queue_.front();
+}
+
+template<typename T>
+void BlockingQueue<T>::pop() {
+    std::unique_lock<std::mutex> lock(mutex_);
+    if (closed && queue_.empty()) {
+        throw ClosedQueueException();
+    }
+
+    queue_.pop();
 }
 
 template<typename T>
 void BlockingQueue<T>::close() {
-    this->closed = true;
+    closed = true;
 }
 
-#endif  // BLOCKINGQUEUE_H_
+#endif  // SERVER_SRC_BLOCKINGQUEUE_H_
