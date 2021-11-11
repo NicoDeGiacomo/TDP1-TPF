@@ -13,7 +13,6 @@ class Pawn : public Piece {
   std::list<std::pair<int, int>> getVectorBeamMoves_() const override;
   std::list<std::pair<int, int>> getVectorStepMoves_() const override;
   Piece * createSplit_(Position to) override;
- protected:
   void merge_() override;
 };
 

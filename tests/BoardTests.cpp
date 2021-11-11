@@ -50,6 +50,14 @@ TEST_CASE("Invalid move") {
     CHECK_THROWS_WITH_AS(board.move(Position(5, 2), Position(5, 5)),
                          "Invalid move: not possible.",
                          std::invalid_argument);
+
+    CHECK_THROWS_WITH_AS(board.getPossibleMoves(Position("e4")),
+                         "Error: Empty square.",
+                         std::invalid_argument);
+
+    CHECK_THROWS_WITH_AS(board.move(Position("e7"), Position("e6")),
+                         "Invalid move: out of turn.",
+                         std::invalid_argument);
 }
 
 TEST_CASE("Capture") {
@@ -160,6 +168,12 @@ TEST_CASE("Invalid split") {
                          "Invalid move: not possible.",
                          std::invalid_argument);
 
+    CHECK_THROWS_WITH_AS(board.split(Position(4, 1),
+                                     Position(4, 3),
+                                     Position(4, 3)),
+                         "Invalid move: equal split positions.",
+                         std::invalid_argument);
+
     CHECK_EQ(32, countPieces_(board));
 }
 
@@ -203,6 +217,26 @@ TEST_CASE("Double split") {
 
 TEST_SUITE("Merge") {
 TEST_CASE("Invalid merge") {
+    Board board;
+    CHECK_THROWS_WITH_AS(board.merge(Position("e2"),
+                                     Position("e2"),
+                                     Position("e3")),
+                         "Invalid move: merging same position.",
+                         std::invalid_argument);
+
+    CHECK_THROWS_WITH_AS(board.merge(Position("e3"),
+                                     Position("e4"),
+                                     Position("e5")),
+                         "Invalid move: empty square.",
+                         std::invalid_argument);
+
+    CHECK_THROWS_WITH_AS(board.merge(Position("e2"),
+                                     Position("d2"),
+                                     Position("e3")),
+                         "Invalid move: cannot merge a pawn.",
+                         std::invalid_argument);
+
+    CHECK_EQ(32, countPieces_(board));
 }
 
 TEST_CASE("Valid merge - empty square") {

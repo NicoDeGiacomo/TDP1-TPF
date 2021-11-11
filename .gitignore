@@ -34,4 +34,5 @@
 # Extras
 .idea/
 cmake-build-debug/
+cmake-build-debug-coverage/
 build/

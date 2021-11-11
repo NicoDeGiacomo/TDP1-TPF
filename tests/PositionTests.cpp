@@ -70,6 +70,12 @@ TEST_CASE("Invalid position") {
     CHECK_THROWS_WITH_AS(Position("a0"),
                          "Invalid position.",
                          std::invalid_argument);
+    CHECK_THROWS_WITH_AS(Position("aaa"),
+                         "Invalid position.",
+                         std::invalid_argument);
+    CHECK_THROWS_WITH_AS(Position("a"),
+                         "Invalid position.",
+                         std::invalid_argument);
 }
 
 TEST_CASE("Compare positions") {

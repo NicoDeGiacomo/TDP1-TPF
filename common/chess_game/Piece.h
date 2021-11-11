@@ -40,11 +40,11 @@ class Piece : public Drawable {
   float probability_;
   std::list<Piece*> splits_;
 
-  virtual Piece * createSplit_(Position to) = 0;
   virtual std::list<std::pair<int, int>> getVectorBeamMoves_() const = 0;
   virtual std::list<std::pair<int, int>> getVectorStepMoves_() const = 0;
-  Piece* getPieceFromBoard_(Position &position) const;
+  virtual Piece * createSplit_(Position to) = 0;
   virtual void merge_();
+  Piece* getPieceFromBoard_(Position &position) const;
 
  private:
   std::list<Position> getPossibleStepPositions_() const;

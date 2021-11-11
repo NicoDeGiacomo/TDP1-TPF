@@ -35,7 +35,7 @@ Piece *Board::getPiece(Position position) const {
 std::list<Position> Board::getPossibleMoves(Position position) const {
     auto piece = getPiece(position);
     if (piece == nullptr) {
-        return {};
+        throw std::invalid_argument("Error: Empty square.");;
     }
 
     return piece->getPossibleMoves();

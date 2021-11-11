@@ -128,7 +128,7 @@ void Piece::merge(Position to, Piece* other) {
         toDelete = other;
         probability_ += other->probability_;
     } else {
-        throw std::invalid_argument("Invalid move: invalid merge");
+        throw std::invalid_argument("Invalid move: invalid merge.");
     }
 
     for (auto piece : toDelete->splits_) {

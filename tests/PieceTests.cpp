@@ -118,6 +118,14 @@ TEST_CASE("Valid moves") {
 }
 
 TEST_SUITE("Moves tests (default board)") {
+TEST_CASE("Invalid moves") {
+    Board board;
+    Rook rook(PieceColor::BLACK, Position(1, 7), &board);
+    Rook rook2(PieceColor::BLACK, Position(1, 1), &board);
+    CHECK_THROWS_WITH_AS(rook.merge(Position(1, 8), &rook2),
+                         "Invalid move: invalid merge.",
+                         std::invalid_argument);
+}
 TEST_CASE("Possible positions") {
     Board board;
     Pawn whitePawn(PieceColor::WHITE, Position(1, 2), &board);
