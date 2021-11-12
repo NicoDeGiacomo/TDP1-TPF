@@ -297,8 +297,10 @@ TEST_CASE("Double split and merge") {
     board.split(Position("d1"), Position("c2"), Position("b3"));
     board.move(Position("h7"), Position("h6"));
     board.split(Position("b3"), Position("b4"), Position("a4"));
+    board.move(Position("h6"), Position("h5"));
 
     board.merge(Position("b4"), Position("c2"), Position("b3"));
+    board.move(Position("h5"), Position("h4"));
 
     CHECK_EQ(33, countPieces_(board));
     CHECK_EQ(board.getPiece(Position("b4")), nullptr);
@@ -314,5 +316,18 @@ TEST_CASE("Double split and merge") {
     CHECK_EQ(board.getPiece(Position("b3")), nullptr);
     CHECK_NE(board.getPiece(Position("a4")), nullptr);
     CHECK_EQ(board.getPiece(Position("a4"))->getProbability(), 1.0f);
+}
+
+TEST_CASE("Measurements") {
+    Board board;
+    board.move(Position("e2"), Position("e4"));
+    board.move(Position("e7"), Position("e5"));
+
+    board.split(Position("f1"), Position("b5"), Position("a6"));
+    REQUIRE_EQ(33, countPieces_(board));
+
+    board.move(Position("b7"), Position("a6"));
+
+    // Clase BoardTest? Para asegurar un outcome al hacer un measurement
 }
 }

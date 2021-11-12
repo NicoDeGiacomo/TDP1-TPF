@@ -16,6 +16,7 @@ std::list<std::pair<int, int>> King::getVectorStepMoves_() const {
 }
 
 void King::eat() {
+//    Piece::eat();  // todo: finish game when effectively eaten
     if (board_ != nullptr) {
         board_->finishGame(
             color_ == PieceColor::WHITE ? PieceColor::BLACK

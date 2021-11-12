@@ -1,7 +1,6 @@
 #include "Position.h"
 
 #include <stdexcept>
-#include <map>
 
 Position::Position(int x, int y) : x_(x), y_(y) {
     validate_position();

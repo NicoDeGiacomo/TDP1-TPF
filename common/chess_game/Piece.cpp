@@ -1,5 +1,6 @@
 #include <stdexcept>
 #include <algorithm>
+#include <random>
 #include "Piece.h"
 
 Piece::Piece(PieceColor color, Position position, Board *board)
@@ -95,7 +96,26 @@ void Piece::validateMove_(const Position &position) const {
     }
 }
 
-void Piece::eat() {}
+void Piece::eat() {
+    // todo
+//    if (this->probability_ < 1.0f) {
+//        // performMeasurement();
+//        std::random_device rd;
+//        std::uniform_int_distribution<int> distribution(1, 100);
+//        std::mt19937 engine(rd());
+//        int value = distribution(engine);
+//          FOR EACH PIECE IN SPLITS
+//        if(value < ((int) this->probability_ * 100)) {
+//            // the piece will be eaten
+//        } else {
+//            // piece will not be eaten
+//
+//        }
+//    }
+
+    board_->pieces_.remove(this);
+    delete this;
+}
 
 void Piece::split(Position position1, Position position2) {
     validateMove_(position1);
@@ -104,9 +124,13 @@ void Piece::split(Position position1, Position position2) {
     auto* split = createSplit_(position2);
     appendToBoard_(split);
     split->splits_.push_back(this);
+    split->splits_.insert(split->splits_.begin(), splits_.begin(), splits_.end());
     split->probability_ = probability_ / 2;
 
     move(position1);
+    for (auto* piece : splits_) {
+        piece->splits_.push_back(split);
+    }
     splits_.push_back(split);
     probability_ = probability_ / 2;
 }
@@ -115,7 +139,11 @@ void Piece::merge(Position to, Piece* other) {
     merge_();
     other->merge_();
 
-    Piece* toDelete = nullptr;
+    if (!isSplit_(other)) {
+        throw std::invalid_argument("Invalid move: non split.");
+    }
+
+    Piece* toDelete;
 
     if (position_ == to) {
         toDelete = other;
@@ -131,7 +159,7 @@ void Piece::merge(Position to, Piece* other) {
         throw std::invalid_argument("Invalid move: invalid merge.");
     }
 
-    for (auto piece : toDelete->splits_) {
+    for (auto* piece : toDelete->splits_) {
         piece->splits_.remove(toDelete);
     }
     board_->pieces_.remove(toDelete);

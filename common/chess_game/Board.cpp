@@ -60,11 +60,7 @@ void Board::move(Position from, Position to) {
 
     if (pieceTo != nullptr) {
         pieceTo->eat();
-        pieces_.remove(pieceTo);
-        delete pieceTo;
     }
-
-    // todo: Promotion
 
     changeTurn();
 }
@@ -83,6 +79,9 @@ void Board::split(Position from, Position to1, Position to2) {
     if (pieceFrom == nullptr) {
         throw std::invalid_argument("Invalid move: empty square.");
     }
+    if (pieceFrom->getColor() != turn_) {
+        throw std::invalid_argument("Invalid move: out of turn.");
+    }
 
     pieceFrom->split(to1, to2);
     changeTurn();
@@ -97,6 +96,9 @@ void Board::merge(Position from1, Position from2, Position to) {
     auto* pieceFrom2 = getPiece(from2);
     if (pieceFrom1 == nullptr || pieceFrom2 == nullptr) {
         throw std::invalid_argument("Invalid move: empty square.");
+    }
+    if (pieceFrom1->getColor() != turn_ || pieceFrom2->getColor() != turn_) {
+        throw std::invalid_argument("Invalid move: out of turn.");
     }
 
     pieceFrom1->merge(to, pieceFrom2);

@@ -123,7 +123,7 @@ TEST_CASE("Invalid moves") {
     Rook rook(PieceColor::BLACK, Position(1, 7), &board);
     Rook rook2(PieceColor::BLACK, Position(1, 1), &board);
     CHECK_THROWS_WITH_AS(rook.merge(Position(1, 8), &rook2),
-                         "Invalid move: invalid merge.",
+                         "Invalid move: non split.",
                          std::invalid_argument);
 }
 TEST_CASE("Possible positions") {
