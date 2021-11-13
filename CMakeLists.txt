@@ -35,7 +35,7 @@ add_executable(CLIENT
     ${client_files} ${common_files})
 
 add_executable(SERVER
-    ${server_files} ${common_files} server/RoomManager.cpp server/RoomManager.h server/Room.cpp server/Room.h server/Player.cpp server/Player.h)
+    ${server_files} ${common_files})
 
 
 ################ LIBRARIES ################

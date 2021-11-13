@@ -8,7 +8,8 @@ Piece::Piece(PieceColor color, Position position, Board *board)
       color_(color),
       has_moved_(false),
       board_(board),
-      probability_(1.0) {}
+      probability_(1.0),
+      splits2_(new PieceSplits(this)) {}
 
 Position Piece::getPosition() const {
     return position_;
@@ -98,23 +99,35 @@ void Piece::validateMove_(const Position &position) const {
 
 void Piece::eat() {
     // todo
-//    if (this->probability_ < 1.0f) {
-//        // performMeasurement();
-//        std::random_device rd;
-//        std::uniform_int_distribution<int> distribution(1, 100);
-//        std::mt19937 engine(rd());
-//        int value = distribution(engine);
-//          FOR EACH PIECE IN SPLITS
-//        if(value < ((int) this->probability_ * 100)) {
-//            // the piece will be eaten
-//        } else {
-//            // piece will not be eaten
-//
-//        }
-//    }
+    if (this->probability_ < 1.0f) {
+        // performMeasurement();
+        std::vector<std::pair<int, Piece*>> probabilities;
+        for (auto piece : splits_) {
+            probabilities.emplace_back((int) piece->probability_ * 100, piece);
+        }
 
-    board_->pieces_.remove(this);
-    delete this;
+
+
+        std::random_device rd;
+        std::uniform_int_distribution<int> distribution(1, 100);
+        std::mt19937 engine(rd());
+        int value = distribution(engine);
+
+        int sum = 0;
+        for (auto probability : probabilities) {
+            sum += probability.first;
+            if (sum > value) {
+                // pieza que queda viva
+                auto piece = probability.second;
+                for (auto split : piece->splits_) {
+                    removeFromBoard_(split);
+                }
+                piece->probability_ = 1.0f;
+            }
+        }
+    } else {
+        removeFromBoard_(this);
+    }
 }
 
 void Piece::split(Position position1, Position position2) {
@@ -162,8 +175,7 @@ void Piece::merge(Position to, Piece* other) {
     for (auto* piece : toDelete->splits_) {
         piece->splits_.remove(toDelete);
     }
-    board_->pieces_.remove(toDelete);
-    delete toDelete;
+    removeFromBoard_(toDelete);
 }
 
 void Piece::appendToBoard_(Piece* piece) {
@@ -181,3 +193,15 @@ bool Piece::isSplit_(Piece *other) const {
 }
 
 void Piece::merge_() {}
+
+void Piece::removeFromBoard_(Piece *piece) {
+    if (board_ != nullptr) {  // todo remove check and move method to Board
+        board_->pieces_.remove(piece);
+    }
+    delete piece;
+}
+
+void Piece::finishMeasure_() {
+    delete splits2_;
+    splits2_ = new PieceSplits(this);
+}

@@ -6,8 +6,10 @@
 #include "Position.h"
 #include "Drawable.h"
 #include "Board.h"
+#include "PieceSplits.h"
 
 class Board;
+class PieceSplits;
 enum class PieceColor { WHITE, BLACK };
 
 class Piece : public Drawable {
@@ -39,6 +41,7 @@ class Piece : public Drawable {
   Board* board_;
   float probability_;
   std::list<Piece*> splits_;
+  PieceSplits* splits2_;
 
   virtual std::list<std::pair<int, int>> getVectorBeamMoves_() const = 0;
   virtual std::list<std::pair<int, int>> getVectorStepMoves_() const = 0;
@@ -51,7 +54,11 @@ class Piece : public Drawable {
   std::list<Position> getPossibleBeamPositions_() const;
   void validateMove_(const Position &position) const;
   void appendToBoard_(Piece* piece);
+  void removeFromBoard_(Piece* piece);
   bool isSplit_(Piece *other) const;
+
+  friend PieceSplits;
+  void finishMeasure_();
 };
 
 #endif  // PIECE_H_
