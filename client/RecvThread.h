@@ -4,6 +4,7 @@
 #include "Thread.h"
 #include "ServerProxy.h"
 #include "BlockingQueue.h"
+#include "Action.h"
 #include <atomic>
 
 class RecvThread: public Thread {

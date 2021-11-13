@@ -3,7 +3,7 @@
 #include <vector>
 
 #include "Board.h"
-#include "Chat_SV.h"
+#include "RoomManager.h"
 
 void print_board(const Board &board) {
     char chessBoard[8][8]{};
@@ -39,7 +39,7 @@ int main() {
     print_board(board);
 
     //TODO: encapsulate chat in room
-    Chat_SV chat;
+    RoomManager chat;
     chat.start();
     return 0;
 }
