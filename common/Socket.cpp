@@ -137,6 +137,6 @@ Socket::~Socket() {
     shutdown();
 }
 
-bool Socket::isNotActive() {
+bool Socket::isNotActive() const {
     return this->fd == -1;
 }

@@ -15,13 +15,13 @@
 class Room {
 private:
     //std::list<Socket> listOfPeers;
-    BlockingQueue<std::string> queueToSend;
+    BlockingQueue<Message> queueToSend;
     std::thread senderThread;
-    std::list<std::thread> receiverThreads;
-    BlockingQueue<std::string> queueOfReceived;
+    /*std::list<std::thread> receiverThreads;*/
+    BlockingQueue<Message> queueOfReceived;
     Player playerWhite;
     Player playerBlack;
-    std::list<Player> spectators;
+    std::list<Player> _spectators;
 public:
     Room();
 
@@ -30,7 +30,7 @@ public:
     void runSenderThread(std::list<Player> *spectators,
                          Player* white,
                          Player* black,
-                         BlockingQueue<std::string> *queue);
+                         BlockingQueue<Message> *queue);
 
     void runReceiverThread(Player *player, BlockingQueue<std::string> *queue);
 

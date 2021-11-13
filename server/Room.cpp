@@ -4,6 +4,7 @@
 
 #include <iostream>
 #include "Room.h"
+#include "Protocol.h"
 
 Room::Room() {
     //TODO: use sender thread class
@@ -12,7 +13,7 @@ Room::Room() {
     this->senderThread =
             std::thread(&Room::runSenderThread,
                         this,
-                        &this->spectators,
+                        &this->_spectators,
                         &this->playerWhite,
                         &this->playerBlack,
                         &this->queueToSend);
@@ -21,25 +22,24 @@ Room::Room() {
 void Room::runSenderThread(std::list<Player>* spectators,
                            Player* white,
                            Player* black,
-                           BlockingQueue<std::string>* queue){
+                           BlockingQueue<Message>* queue){
     std::cout << "running sender sv thread" << std::endl;
     while (true) {
-        std::string toSend;
-        toSend = queue->top();
+        const Message message = queue->top();
         queue->pop();
         try {
             for (auto &spectator: *spectators) {
-                spectator.send(toSend.c_str(), toSend.length());
+                spectator.send(message);
             }
-            white->send(toSend.c_str(), toSend.length());
-            black->send(toSend.c_str(), toSend.length());
+            white->send(message);
+            black->send(message);
         } catch (ClosedSocketException& e){
             //TODO: for some reason this catch isnt catching, the socket
             //is throwing the error receiving bytes exception instead
             std::cout << e.what() << std::endl;
             return;
         }
-        std::cout << "-server just sent: " << toSend << std::endl;
+        std::cout << "-server just sent: " << message.getMessage() << std::endl;
     }
 }
 
@@ -48,25 +48,28 @@ void Room::addClient(Socket &&socket) {
     //this->listOfPeers.push_front(std::move(socket));
     //TODO: this is placeholder, it shouldnt receive a socket, rooms should receive players
     if (this->playerWhite.isVacant()) {
-        this->playerWhite.initPlayer(std::move(socket), &this->queueOfReceived);
+        //TODO: think if passing Queue To Send is needed, right now is just for debugging
+        this->playerWhite.initPlayer(std::move(socket), &this->queueOfReceived, &this->queueToSend);
         std::cout << "white player created" << std::endl;
         this->playerWhite.startReceivingMessages();
     }
     else if (this->playerBlack.isVacant()) {
-        this->playerBlack.initPlayer(std::move(socket), &this->queueOfReceived);
+        //TODO: think if passing Queue To Send is needed, right now is just for debugging
+        this->playerBlack.initPlayer(std::move(socket), &this->queueOfReceived, &this->queueToSend);
         std::cout << "black player created" << std::endl;
         this->playerBlack.startReceivingMessages();
     }
     else {
-        this->spectators.emplace_front(std::move(socket), &this->queueOfReceived);
+        //TODO: think if passing Queue To Send is needed, right now is just for debugging
+        this->_spectators.emplace_front(std::move(socket), &this->queueOfReceived, &this->queueToSend);
         std::cout << "spectator created" << std::endl;
-        this->spectators.front().startReceivingMessages();
+        this->_spectators.front().startReceivingMessages();
     }
     //TODO: use receiver thread class instead
     /*this->receiverThreads.push_front(
             std::thread(&Room::runReceiverThread,
                         this,
-                        &this->spectators.front(),
+                        &this->_spectators.front(),
                         &this->queueOfReceived));*/
 }
 
@@ -93,7 +96,7 @@ void Room::addClient(Socket &&socket) {
 }*/
 
 void Room::joinAllThreads() {
-    for(auto & player : spectators)
+    for(auto & player : _spectators)
         player.join();
     playerWhite.join();
     playerBlack.join();

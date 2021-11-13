@@ -58,7 +58,7 @@ class Socket {
   /// Shutdowns the Socket.
   void shutdown();
 
-    bool isNotActive();
+    bool isNotActive() const;
 
 private:
     int fd;

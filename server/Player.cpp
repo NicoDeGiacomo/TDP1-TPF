@@ -4,28 +4,28 @@
 
 #include <iostream>
 #include "Player.h"
+#include "Protocol.h"
+
 //TODO: player va a recibir MESSAGE en vez de (buffer y size), en send y recv
-void Player::receive(char *buffer, int size) {
-    //conoce al pprotocolo, devuelve un MESSAGE
-    this->socket.receive(buffer, size);
+void Player::send(const Message& message) const {
+    std::string string = Protocol::MessageToString(message);
+    this->socket.send(string.c_str(), string.length());
 }
 
-void Player::send(const char *string, int size) {
-    this->socket.send(string, size);
-}
-
-bool Player::isVacant() {
+bool Player::isVacant() const {
     return this->socket.isNotActive();
 }
 
-void Player::initPlayer(Socket &&connectedSocket, BlockingQueue<std::string> *queue) {
+void Player::initPlayer(Socket &&connectedSocket, BlockingQueue<Message> *queue , BlockingQueue<Message> *thisSenderQueueIsJustForDebugging) {
     this->socket = std::move(connectedSocket);
     this->queueOfReceived = queue;
+    this->_thisSenderQueueIsJustForDebugging = thisSenderQueueIsJustForDebugging;
 }
 
-Player::Player(Socket&& socket, BlockingQueue<std::string> *queue) {
+Player::Player(Socket&& socket, BlockingQueue<Message> *queue , BlockingQueue<Message> *thisSenderQueueIsJustForDebugging) {
     this->socket = std::move(socket);
     this->queueOfReceived = queue;
+    this->_thisSenderQueueIsJustForDebugging = thisSenderQueueIsJustForDebugging;
 }
 
 void Player::startReceivingMessages() {
@@ -49,7 +49,13 @@ void Player::runReceiverThread(){
             std::cout << c;
         }
         std::string buffer(received, received + 4);
-        this->queueOfReceived->produce(std::move(buffer));
+        Message message = Protocol::StringToMessage(buffer);
+        this->queueOfReceived->produce(message);
+
+        //TODO: remove this, is just for debugging
+        //after server receives message from a client, it loads it in the sender queue
+        //but it needs to first be processed
+        this->_thisSenderQueueIsJustForDebugging->produce(message);
         std::cout << std::endl << "---" << std::endl;
     }
 }
