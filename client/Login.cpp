@@ -1,9 +1,10 @@
 #include "Login.h"
+#include "Screen.h"
 #include <SDL2pp/SDL2pp.hh>
 
-Login::Login(SDL2pp::Renderer &renderer) : renderer(renderer) {}
+Login::Login(SDL2pp::Renderer &renderer) : Screen(renderer) {}
 
-void Login::start() {
+int Login::start() {
 	
 	SDL_bool done = SDL_FALSE;
 
@@ -44,6 +45,7 @@ void Login::start() {
 		SDL_Delay(1);
     }
 	SDL_StopTextInput();
+	return 0;
 }
 
 void Login::redraw() {
@@ -51,41 +53,13 @@ void Login::redraw() {
 	renderer.Clear();
 
 	std::string title = "Welcome to Quantum Chess";
-	this->insert_text(title, 30, 50, 20);
+	this->insert_text(title, 30, 50, 20, A_CENTER);
 	std::string choose_text("Please choose a username:");
-	this->insert_text(choose_text, 20, 50, 40);
-	this->insert_text(this->user_name, 20, 50, 50);
+	this->insert_text(choose_text, 20, 50, 40, A_CENTER);
+	this->insert_text(this->user_name, 20, 50, 50, A_CENTER);
 
 	// Show rendered frame
 	renderer.Present();
-}
-
-void Login::insert_text(std::string &text, 
-						int font_size, 
-						int rel_pos_x, 
-						int rel_pos_y) {
-    if (text.empty()) return;
-	// Initialize SDL_ttf library
-	SDL2pp::SDLTTF ttf;
-
-    // Load font, 12pt size
-	SDL2pp::Font font("../assets/fonts/Vera.ttf", font_size);
-
-    // Render the text into new texture. Note that SDL_ttf render
-    // text into Surface, which is converted into texture on the fly
-    SDL2pp::Texture text_sprite(
-            renderer,
-            font.RenderText_Blended(text, SDL_Color{255, 255, 255, 255})
-        );
-
-    int x_text_pos = renderer.GetOutputWidth() * rel_pos_x / 100 - text_sprite.GetWidth() * 0.5;
-    int y_text_pos = renderer.GetOutputHeight() * rel_pos_y / 100;
-
-    // Copy texture into top-left corner of the window
-    renderer.Copy(text_sprite, 
-                SDL2pp::NullOpt, 
-                SDL2pp::Rect(x_text_pos, y_text_pos, 
-                            text_sprite.GetWidth(), text_sprite.GetHeight()));
 }
 
 std::string Login::get_user_name() {

@@ -11,6 +11,12 @@
 #include <vector>
 #include "Chat_CL.h"
 #include "Login.h"
+#include "GameLobby.h"
+
+void close_client() {
+    std::cout << "closing client" << std::endl;
+}
+
 
 int main() {
     printf("STARTING CLIENT\n");
@@ -31,11 +37,17 @@ int main() {
     std::string user_name = login.get_user_name();
 
     std::cout << "USERNAME: " << user_name << "\n";
+    GameLobby gameLobby(renderer, user_name);
+    if (gameLobby.start() == 1) {
+        close_client();
+        return 0;
+    }
+    
     //TODO: need to encapsulate the chat
     //create the room class
     //handle the logic for client joining or leaving the room
     Chat_CL chat;
     chat.start();
-    std::cout << "closing client" << std::endl;
+    close_client();
     return 0;
 }
