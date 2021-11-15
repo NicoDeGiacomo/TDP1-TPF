@@ -22,8 +22,13 @@ private:
     Player playerWhite;
     Player playerBlack;
     std::list<Player> _spectators;
+    int roomNumber;
 public:
     Room();
+    //TODO: fix error when putting this in constructor
+    void setRoomNumber(int number);
+
+    bool isRoom(int number);
 
     void addClient(Socket &&socket);
 

@@ -6,7 +6,7 @@
 #include "Room.h"
 #include "Protocol.h"
 
-Room::Room() {
+Room::Room(){
     //TODO: use sender thread class
     //start the send thread
     //habria que diferenciar entre jugador blanco negro y espectador en el send?
@@ -17,6 +17,14 @@ Room::Room() {
                         &this->playerWhite,
                         &this->playerBlack,
                         &this->queueToSend);
+}
+
+void Room::setRoomNumber(int number){
+    roomNumber = number;
+}
+
+bool Room::isRoom(int number){
+    return number == roomNumber;
 }
 
 void Room::runSenderThread(std::list<Player>* spectators,

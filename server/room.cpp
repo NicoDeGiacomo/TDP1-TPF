@@ -4,17 +4,17 @@
 #include "client.h"
 
 
-Room::Room(int room_number): room_number(room_number){
-}
+// Room::Room(int room_number): room_number(room_number){
+// }
 
-int Room::getRoomNumber(){
-    return room_number;
-}
+// int Room::getRoomNumber(){
+//     return room_number;
+// }
 
-bool Room::addWhites(Client whites){
-    this->whites = whites;
-    return true;
-}
+// bool Room::addWhites(Client whites){
+//     this->whites = whites;
+//     return true;
+// }
 
 bool Room::addBlacks(Client blacks){
     this->blacks = blacks;

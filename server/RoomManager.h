@@ -15,7 +15,7 @@ private:
     Socket acceptor;
     ProtectedString protectedString;
     //std::list<Socket> listOfPeers;
-    std::list<Room> listOfRooms;
+    //std::list<Room> listOfRooms;
     //Room room;
     //std::list<std::thread> receiverThreads;
     std::list<std::thread> senderThreads;
