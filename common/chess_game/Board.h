@@ -9,7 +9,7 @@ enum class PieceColor;
 
 class Board {
  public:
-  Board();
+  Board(bool empty = false);
 
   std::list<Piece*>::const_iterator begin() const;
 

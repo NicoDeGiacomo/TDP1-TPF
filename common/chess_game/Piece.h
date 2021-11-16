@@ -3,6 +3,7 @@
 
 #include <list>
 #include <vector>
+#include <memory>
 #include "Position.h"
 #include "Drawable.h"
 #include "Board.h"
@@ -14,8 +15,6 @@ enum class PieceColor { WHITE, BLACK };
 
 class Piece : public Drawable {
  public:
-  Piece(PieceColor color, Position position, Board* board);
-
   Position getPosition() const;
 
   PieceColor getColor() const;
@@ -32,7 +31,7 @@ class Piece : public Drawable {
 
   void merge(Position to, Piece* other);
 
-  virtual ~Piece() = default;
+  virtual ~Piece();
 
  protected:
   Position position_;
@@ -42,7 +41,11 @@ class Piece : public Drawable {
   float probability_;
   std::list<Piece*> splits_;
   PieceSplits* splits2_;
+  // std::unique_ptr<PieceSplits> splits2_;
 
+  Piece(PieceColor color, Position position);
+  Piece(PieceColor color, Position position, Board* board);
+  Piece(PieceColor color, Position position, Board* board, PieceSplits* splits);
   virtual std::list<std::pair<int, int>> getVectorBeamMoves_() const = 0;
   virtual std::list<std::pair<int, int>> getVectorStepMoves_() const = 0;
   virtual Piece * createSplit_(Position to) = 0;
@@ -54,11 +57,12 @@ class Piece : public Drawable {
   std::list<Position> getPossibleBeamPositions_() const;
   void validateMove_(const Position &position) const;
   void appendToBoard_(Piece* piece);
-  void removeFromBoard_(Piece* piece);
+  void removeFromBoardAndDelete_(Piece* piece);
   bool isSplit_(Piece *other) const;
 
   friend PieceSplits;
   void finishMeasure_();
+  void removeFromBoard_(Piece *piece);
 };
 
 #endif  // PIECE_H_

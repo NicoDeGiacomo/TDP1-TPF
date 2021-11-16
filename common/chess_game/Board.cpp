@@ -9,9 +9,11 @@
 #include <algorithm>
 #include <stdexcept>
 
-Board::Board() : turn_(PieceColor::WHITE), finished_(false) {
-    generatePiecesForColor_(PieceColor::WHITE);
-    generatePiecesForColor_(PieceColor::BLACK);
+Board::Board(bool empty) : turn_(PieceColor::WHITE), finished_(false) {
+    if (!empty) {
+        generatePiecesForColor_(PieceColor::WHITE);
+        generatePiecesForColor_(PieceColor::BLACK);
+    }
 }
 
 std::list<Piece*>::const_iterator Board::begin() const {
@@ -98,7 +100,7 @@ void Board::merge(Position from1, Position from2, Position to) {
         throw std::invalid_argument("Invalid move: empty square.");
     }
     if (pieceFrom1->getColor() != turn_ || pieceFrom2->getColor() != turn_) {
-        throw std::invalid_argument("Invalid move: out of turn.");
+        throw std::invalid_argument("Invalid move: out of turn.");  // todo function
     }
 
     pieceFrom1->merge(to, pieceFrom2);

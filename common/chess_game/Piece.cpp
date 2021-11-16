@@ -3,6 +3,14 @@
 #include <random>
 #include "Piece.h"
 
+Piece::Piece(PieceColor color, Position position)
+    : position_(position),
+      color_(color),
+      has_moved_(false),
+      board_(nullptr),
+      probability_(1.0),
+      splits2_(new PieceSplits(this)) {}
+
 Piece::Piece(PieceColor color, Position position, Board *board)
     : position_(position),
       color_(color),
@@ -10,6 +18,14 @@ Piece::Piece(PieceColor color, Position position, Board *board)
       board_(board),
       probability_(1.0),
       splits2_(new PieceSplits(this)) {}
+
+Piece::Piece(PieceColor color, Position position, Board *board, PieceSplits* splits)
+    : position_(position),
+      color_(color),
+      has_moved_(false),
+      board_(board),
+      probability_(1.0),
+      splits2_(splits) {}
 
 Position Piece::getPosition() const {
     return position_;
@@ -120,13 +136,13 @@ void Piece::eat() {
                 // pieza que queda viva
                 auto piece = probability.second;
                 for (auto split : piece->splits_) {
-                    removeFromBoard_(split);
+                    removeFromBoardAndDelete_(split);
                 }
                 piece->probability_ = 1.0f;
             }
         }
     } else {
-        removeFromBoard_(this);
+        removeFromBoardAndDelete_(this);
     }
 }
 
@@ -134,18 +150,21 @@ void Piece::split(Position position1, Position position2) {
     validateMove_(position1);
     validateMove_(position2);
 
-    auto* split = createSplit_(position2);
-    appendToBoard_(split);
-    split->splits_.push_back(this);
-    split->splits_.insert(split->splits_.begin(), splits_.begin(), splits_.end());
-    split->probability_ = probability_ / 2;
-
-    move(position1);
-    for (auto* piece : splits_) {
-        piece->splits_.push_back(split);
-    }
-    splits_.push_back(split);
-    probability_ = probability_ / 2;
+//    auto* split = createSplit_(position2);
+//    appendToBoard_(split);
+//    split->splits_.push_back(this);
+//    split->splits_.insert(split->splits_.begin(), splits_.begin(), splits_.end());
+//    split->probability_ = probability_ / 2;
+//
+//    move(position1);
+//    for (auto* piece : splits_) {
+//        piece->splits_.push_back(split);
+//    }
+//    splits_.push_back(split);
+//    probability_ = probability_ / 2;
+    auto* split1 = createSplit_(position1);
+    auto* split2 = createSplit_(position2);
+    splits2_->addSplit(this, split1, split2);
 }
 
 void Piece::merge(Position to, Piece* other) {
@@ -156,32 +175,15 @@ void Piece::merge(Position to, Piece* other) {
         throw std::invalid_argument("Invalid move: non split.");
     }
 
-    Piece* toDelete;
-
-    if (position_ == to) {
-        toDelete = other;
-        probability_ += other->probability_;
-    } else if (other->position_ == to) {
-        toDelete = this;
-        other->probability_ += probability_;
-    } else if (getPieceFromBoard_(to) == nullptr) {
-        this->move(to);
-        toDelete = other;
-        probability_ += other->probability_;
-    } else {
-        throw std::invalid_argument("Invalid move: invalid merge.");
+    // todo: Move must be valid. Not exception safe strong.
+    splits2_->mergeSplits(this, other);
+    if (position_ != to) {
+        move(to);
     }
-
-    for (auto* piece : toDelete->splits_) {
-        piece->splits_.remove(toDelete);
-    }
-    removeFromBoard_(toDelete);
 }
 
 void Piece::appendToBoard_(Piece* piece) {
-    if (board_ != nullptr) {  // todo remove check
-        board_->pieces_.push_back(piece);
-    }
+    board_->pieces_.push_back(piece);
 }
 
 float Piece::getProbability() const {
@@ -189,19 +191,25 @@ float Piece::getProbability() const {
 }
 
 bool Piece::isSplit_(Piece *other) const {
-    return std::find(splits_.begin(), splits_.end(), other) != splits_.end();
+    return splits2_->contains(this) && splits2_->contains(other);
 }
 
 void Piece::merge_() {}
 
-void Piece::removeFromBoard_(Piece *piece) {
-    if (board_ != nullptr) {  // todo remove check and move method to Board
-        board_->pieces_.remove(piece);
-    }
+void Piece::removeFromBoardAndDelete_(Piece *piece) {
+    removeFromBoard_(piece);
     delete piece;
+}
+
+void Piece::removeFromBoard_(Piece *piece) {
+    board_->pieces_.remove(piece);
 }
 
 void Piece::finishMeasure_() {
     delete splits2_;
     splits2_ = new PieceSplits(this);
+}
+
+Piece::~Piece() {
+    // todo
 }
