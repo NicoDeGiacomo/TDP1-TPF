@@ -46,8 +46,13 @@ int main() {
     //TODO: need to encapsulate the chat
     //create the room class
     //handle the logic for client joining or leaving the room
-    Chat_CL chat;
+    Chat_CL chat; // Chat --> Client
     chat.start();
+    // board()
     close_client();
+
+    // refresh
+    // click -> move -> .......
+    // refresh
     return 0;
 }

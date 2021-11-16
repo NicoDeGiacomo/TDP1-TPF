@@ -13,10 +13,10 @@ namespace Protocol {
     std::string MessageToString(const Message& message) {
         return message.getMessage();
     }
-    std::unique_ptr<Message> StringToMessage(const std::string& string) {
+    std::unique_ptr<Message> StringToMessage(const std::string& string, id) {
         //TODO: return different types of message, use polymorphism
         if (string.at(0) == MESSAGE_REQUEST){
-            return std::make_unique<ChatMessage>(string);
+            return std::make_unique<ChatMessage>(string, id);
         } else if (string.at(0) == MOVE_REQUEST){
             return std::make_unique<MoveMessage>(string);
         } else if (string.at(0) == SELECT_REQUEST){

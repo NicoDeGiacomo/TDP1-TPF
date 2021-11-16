@@ -9,6 +9,8 @@
 
 void Player::send(const Message& message) const {
     std::string string = Protocol::MessageToString(message);
+    // double dispatch
+    // message.getId() != this.id
     this->socket.send(string.c_str(), string.length());
 }
 
@@ -50,7 +52,7 @@ void Player::runReceiverThread(){
         }
         std::cout << std::endl;
         std::string buffer(received, received + 4);
-        std::unique_ptr<Message> message = Protocol::StringToMessage(buffer);
+        std::unique_ptr<Message> message = Protocol::StringToMessage(buffer, this.id);
         std::string bufferfordebugging = message->getMessage();
         this->queueOfReceived->produce(std::move(message));
 
