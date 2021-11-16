@@ -6,24 +6,7 @@
 #include "Room.h"
 #include "Protocol.h"
 
-Room::Room(){
-    //TODO: use sender thread class
-    //start the send thread
-    //habria que diferenciar entre jugador blanco negro y espectador en el send?
-    this->senderThread =
-            std::thread(&Room::runSenderThread,
-                        this,
-                        &this->_spectators,
-                        &this->playerWhite,
-                        &this->playerBlack,
-                        &this->queueToSend);
-}
-
-void Room::setRoomNumber(int number){
-    roomNumber = number;
-}
-
-bool Room::isRoom(int number){
+bool Room::isRoom(int number) const{
     return number == roomNumber;
 }
 
@@ -39,15 +22,20 @@ void Room::runSenderThread(std::list<Player>* spectators,
             for (auto &spectator: *spectators) {
                 spectator.send(message);
             }
-            white->send(message);
-            black->send(message);
+            //this if itsVacant is just not to break things
+            //better send logic needs to be added
+            if (!white->isVacant())
+                white->send(message);
+            if (!black->isVacant())
+                black->send(message);
         } catch (ClosedSocketException& e){
             //TODO: for some reason this catch isnt catching, the socket
             //is throwing the error receiving bytes exception instead
             std::cout << e.what() << std::endl;
             return;
         }
-        std::cout << "-server just sent: " << message.getMessage() << std::endl;
+        std::cout << "-server just sent: " << std::endl <<
+        message.getMessage() << std::endl;
     }
 }
 
@@ -73,40 +61,37 @@ void Room::addClient(Socket &&socket) {
         std::cout << "spectator created" << std::endl;
         this->_spectators.front().startReceivingMessages();
     }
-    //TODO: use receiver thread class instead
-    /*this->receiverThreads.push_front(
-            std::thread(&Room::runReceiverThread,
-                        this,
-                        &this->_spectators.front(),
-                        &this->queueOfReceived));*/
 }
 
-/*void Room::runReceiverThread(Player *player, BlockingQueue<std::string>* queue){
-    std::cout << "running receiver sv thread" << std::endl;
-    while (true) {
-        //TODO: remove this 4 hardcoded, need to add protocol
-        char received[4];
-        try {
-            player->receive(received, 4);
-        } catch (ClosedSocketException& e){
-            std::cout << e.what() << std::endl;
-            return;
-        }
-        std::cout << "--server received" << std::endl;
-        //Message* msg = Protocol::getMessageFromBytes(received);
-        for (auto &c : received){
-            std::cout << c;
-        }
-        std::string buffer(received, received + 4);
-        queue->produce(std::move(buffer));
-        std::cout << std::endl << "---" << std::endl;
-    }
-}*/
-
 void Room::joinAllThreads() {
+    //TODO: read and fix this join issue
+    // its debatable if manually joining violates RAII, does
+    // . "this->playerBlack.startReceivingMessages();" .
+    // implies that we are throwing a new thread
+    // and we need to manually join it? idk,
+    // each player could join its threads in their destructor
     for(auto & player : _spectators)
         player.join();
     playerWhite.join();
     playerBlack.join();
+    //now here the join of sender thread its ok because we launch it
+    if (senderThread.joinable())
+        senderThread.join();
     std::cout << "all threads joined" << std::endl;
+}
+
+Room::Room(int number, Socket&& socket) : roomNumber(number) {
+    this->senderThread =
+            std::thread(&Room::runSenderThread,
+                        this,
+                        &this->_spectators,
+                        &this->playerWhite,
+                        &this->playerBlack,
+                        &this->queueToSend);
+    this->addClient(std::move(socket));
+}
+
+Room::~Room() {
+    //TODO: need to force join threads from destructor
+    //this->joinAllThreads();
 }

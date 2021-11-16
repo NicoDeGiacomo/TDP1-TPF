@@ -38,8 +38,7 @@ int main() {
 
     print_board(board);
 
-    //TODO: encapsulate chat in room
-    RoomManager chat;
-    chat.start();
+    RoomManager roomManager;
+    roomManager.start();
     return 0;
 }

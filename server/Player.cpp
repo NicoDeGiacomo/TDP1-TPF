@@ -3,10 +3,10 @@
 //
 
 #include <iostream>
+#include <ChatMessage.h>
 #include "Player.h"
 #include "Protocol.h"
 
-//TODO: player va a recibir MESSAGE en vez de (buffer y size), en send y recv
 void Player::send(const Message& message) const {
     std::string string = Protocol::MessageToString(message);
     this->socket.send(string.c_str(), string.length());
@@ -16,13 +16,13 @@ bool Player::isVacant() const {
     return this->socket.isNotActive();
 }
 
-void Player::initPlayer(Socket &&connectedSocket, BlockingQueue<Message> *queue , BlockingQueue<Message> *thisSenderQueueIsJustForDebugging) {
+void Player::initPlayer(Socket &&connectedSocket, BlockingQueue<std::unique_ptr<Message>> *queue , BlockingQueue<Message> *thisSenderQueueIsJustForDebugging) {
     this->socket = std::move(connectedSocket);
     this->queueOfReceived = queue;
     this->_thisSenderQueueIsJustForDebugging = thisSenderQueueIsJustForDebugging;
 }
 
-Player::Player(Socket&& socket, BlockingQueue<Message> *queue , BlockingQueue<Message> *thisSenderQueueIsJustForDebugging) {
+Player::Player(Socket&& socket, BlockingQueue<std::unique_ptr<Message>> *queue , BlockingQueue<Message> *thisSenderQueueIsJustForDebugging) {
     this->socket = std::move(socket);
     this->queueOfReceived = queue;
     this->_thisSenderQueueIsJustForDebugging = thisSenderQueueIsJustForDebugging;
@@ -48,21 +48,32 @@ void Player::runReceiverThread(){
         for (auto &c : received){
             std::cout << c;
         }
+        std::cout << std::endl;
         std::string buffer(received, received + 4);
-        Message message = Protocol::StringToMessage(buffer);
-        this->queueOfReceived->produce(message);
+        std::unique_ptr<Message> message = Protocol::StringToMessage(buffer);
+        std::string bufferfordebugging = message->getMessage();
+        this->queueOfReceived->produce(std::move(message));
 
         //TODO: remove this, is just for debugging
         //after server receives message from a client, it loads it in the sender queue
         //but it needs to first be processed
-        this->_thisSenderQueueIsJustForDebugging->produce(message);
+        //using ChatMessage instead of Message for testing inheritance, its the same thing for now
+        ChatMessage bufferMessageForDebugging(bufferfordebugging);
+        this->_thisSenderQueueIsJustForDebugging->produce(std::move(bufferMessageForDebugging));
         std::cout << std::endl << "---" << std::endl;
     }
 }
 
 void Player::join() {
-    this->receiverThread.join();
+    if (this->receiverThread.joinable())
+        this->receiverThread.join();
 }
 
 Player::Player() {
+}
+
+Player::~Player() {
+    //could join by force here, and make join private
+    //std::cout << "joining player by destructor" << std::endl;
+    //this->join();
 }

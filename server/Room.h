@@ -14,21 +14,18 @@
 
 class Room {
 private:
-    //std::list<Socket> listOfPeers;
     BlockingQueue<Message> queueToSend;
     std::thread senderThread;
-    /*std::list<std::thread> receiverThreads;*/
-    BlockingQueue<Message> queueOfReceived;
-    Player playerWhite;
-    Player playerBlack;
+    BlockingQueue<std::unique_ptr<Message>> queueOfReceived;
     std::list<Player> _spectators;
+    Player playerBlack;
+    Player playerWhite;
     int roomNumber;
 public:
-    Room();
-    //TODO: fix error when putting this in constructor
-    void setRoomNumber(int number);
+    Room() = delete;
+    Room(int number, Socket&& socket);
 
-    bool isRoom(int number);
+    bool isRoom(int number) const;
 
     void addClient(Socket &&socket);
 
@@ -37,9 +34,9 @@ public:
                          Player* black,
                          BlockingQueue<Message> *queue);
 
-    void runReceiverThread(Player *player, BlockingQueue<std::string> *queue);
-
     void joinAllThreads();
+
+    ~Room();
 };
 
 

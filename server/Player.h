@@ -14,7 +14,7 @@
 class Player {
 private:
     Socket socket;
-    BlockingQueue <Message> *queueOfReceived;
+    BlockingQueue <std::unique_ptr<Message>> *queueOfReceived;
     std::thread receiverThread;
 
     //TODO: remove this sender queue, is just for debugging
@@ -28,13 +28,15 @@ public:
 
     void startReceivingMessages();
     //TODO: remove this sender queue, is just for debugging
-    void initPlayer(Socket &&socket, BlockingQueue<Message> *queue, BlockingQueue<Message> *thisSenderQueueIsJustForDebugging);
+    void initPlayer(Socket &&socket, BlockingQueue<std::unique_ptr<Message>> *queue, BlockingQueue<Message> *thisSenderQueueIsJustForDebugging);
     //TODO: remove this sender queue, is just for debugging
-    Player(Socket&& socket, BlockingQueue<Message> *queue, BlockingQueue<Message> *thisSenderQueueIsJustForDebugging);
+    Player(Socket&& socket, BlockingQueue<std::unique_ptr<Message>> *queue, BlockingQueue<Message> *thisSenderQueueIsJustForDebugging);
 
     void runReceiverThread();
 
     void join();
+
+    ~Player();
 };
 
 

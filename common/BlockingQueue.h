@@ -24,7 +24,7 @@ class BlockingQueue {
   /// Adds an element to the Queue.
   /// \throws ClosedQueueException when the Queue is closed.
   /// \param e Reference to the element to add.
-  void produce(T const &e);
+  void produce(T &&e);
 
   /// Returns the top element from the Queue
   /// \throws ClosedQueueException when the Queue is closed and empty.
@@ -54,13 +54,13 @@ BlockingQueue<T>::BlockingQueue()
 }
 
 template<typename T>
-void BlockingQueue<T>::produce(T const &e) {
+void BlockingQueue<T>::produce(T &&e) {
     std::unique_lock<std::mutex> lock(mutex_);
     if (closed) {
         throw ClosedQueueException();
     }
 
-    queue_.push(e);
+    queue_.push(std::move(e));
     condition_.notify_all();
 }
 

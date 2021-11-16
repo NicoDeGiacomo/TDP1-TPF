@@ -4,18 +4,16 @@
 
 #include <iostream>
 #include <thread>
-#include <ProtectedString.h>
 #include <list>
 #include "RoomManager.h"
 
 RoomManager::RoomManager(){
     this->acceptor.bind("7777");
     this->acceptor.listen(6);
-    //TODO: placeholder, only using one room and one list of clients
 }
 
 void RoomManager::start() {
-    std::list<std::reference_wrapper<Room>> listOfRooms;
+    //std::list<std::reference_wrapper<Room>> listOfRooms;
     //TODO: need to look for dead threads and shutdown everything after finish chat.
     //placeholder to only accept i clients, then go join the threads
     int i = 0;
@@ -35,17 +33,17 @@ void RoomManager::start() {
             break;
         }
         if (!roomExists){
-            Room room;
-            room.setRoomNumber(roomNumber);
-            room.addClient(std::move(peer));
-            listOfRooms.push_back(room);
+            listOfRooms.emplace_back(roomNumber, std::move(peer));
         }
         
         //TODO: process where the new client wants to go, which room spectator or player
         //placeholder, added new client to first room
         i++;//keep this until other method of closing it is implemented
     }
+    //TODO: this is bad, roomManager is never throwing new thread, how does he know that
+    //he needs to join the rooms, join should be in the destructor of rooms in this case
     for (auto& room : listOfRooms) {
-        room.get().joinAllThreads();
+        room.joinAllThreads();
     }
+    //listOfRooms.clear();
 }

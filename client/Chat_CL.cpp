@@ -7,7 +7,6 @@
 #include <Socket.h>
 #include <thread>
 #include "Chat_CL.h"
-#include "ProtectedString.h"
 
 void Chat_CL::start() {
     Socket client;

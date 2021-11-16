@@ -9,12 +9,12 @@
 #include <string>
 
 class Message {
-private:
+protected:
     std::string _message;
 public:
     explicit Message(const std::string& message);
-    const std::string& getMessage() const;
-    void setMessage(const std::string& message);
+    virtual const std::string& getMessage() const;
+    virtual ~Message() {}
 };
 
 

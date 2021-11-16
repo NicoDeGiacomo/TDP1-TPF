@@ -20,7 +20,7 @@ void close_client() {
 
 int main() {
     printf("STARTING CLIENT\n");
-    SDL2pp::SDL sdl(SDL_INIT_VIDEO | SDL_INIT_AUDIO);
+    /*SDL2pp::SDL sdl(SDL_INIT_VIDEO | SDL_INIT_AUDIO);
     SDL2pp::Window window("libSDL2pp demo: fill",
                           SDL_WINDOWPOS_UNDEFINED,
                           SDL_WINDOWPOS_UNDEFINED,
@@ -41,7 +41,7 @@ int main() {
     if (gameLobby.start() == 1) {
         close_client();
         return 0;
-    }
+    }*/
     
     //TODO: need to encapsulate the chat
     //create the room class
