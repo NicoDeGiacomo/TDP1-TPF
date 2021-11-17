@@ -7,22 +7,28 @@ struct SplitNode_ {
   Piece* piece;
   std::shared_ptr<SplitNode_> left;
   std::shared_ptr<SplitNode_> right;
-  std::shared_ptr<SplitNode_> father;
+  std::weak_ptr<SplitNode_> father;
   bool leaf;
 
   explicit SplitNode_(Piece *piece)
       : piece(piece),
         left(nullptr),
         right(nullptr),
-        father(nullptr),
+        father(),
         leaf(true) {}
 
-  SplitNode_(Piece *piece, std::shared_ptr<SplitNode_> father)
+  SplitNode_(Piece *piece, const std::shared_ptr<SplitNode_>& father)
       : piece(piece),
         left(nullptr),
         right(nullptr),
-        father(std::move(father)),
+        father(father),
         leaf(true) {}
+
+  ~SplitNode_() {
+      if (!leaf) {
+          //delete piece;
+      }
+  }
 };
 
 PieceSplits::PieceSplits(Piece *piece)
@@ -55,7 +61,7 @@ void PieceSplits::removeSplit(Piece* piece) {
         throw std::invalid_argument("Invalid action.");
     }
 
-    std::shared_ptr<SplitNode_> father = node->father;
+    std::shared_ptr<SplitNode_> father = node->father.lock();
     if (father->right == node) {
         father->right = nullptr;
         if (father->left != nullptr) {
@@ -91,8 +97,8 @@ void PieceSplits::mergeSplits(Piece *piece, Piece *with) {
         throw std::invalid_argument("Invalid move: split not found.");
     }
 
-    if (!_areBrothers(node1, node2) && !_areBrothers(node1->father, node2)
-        && !_areBrothers(node1, node2->father)) {
+    if (!_areBrothers(node1, node2) && !_areBrothers(node1->father.lock(), node2)
+        && !_areBrothers(node1, node2->father.lock())) {
         throw std::invalid_argument("Invalid move: non mergeable splits.");
     }
 
@@ -163,7 +169,7 @@ bool PieceSplits::_areBrothers(std::shared_ptr<SplitNode_> node1, std::shared_pt
         return false;
     }
 
-    if (node1->father != node2->father) {
+    if (node1->father.lock() != node2->father.lock()) {
         return false;
     }
 
