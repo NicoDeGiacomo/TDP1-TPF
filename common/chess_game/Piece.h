@@ -33,6 +33,8 @@ class Piece : public Drawable {
 
   virtual ~Piece();
 
+
+
  protected:
   Position position_;
   PieceColor color_;

@@ -116,37 +116,39 @@ void Piece::validateMove_(const Position &position) const {
 
 void Piece::eat() {
     // todo
-    if (this->probability_ < 1.0f) {
-        // performMeasurement();
-        std::vector<std::pair<int, Piece*>> probabilities;
-        for (auto piece : splits_) {
-            probabilities.emplace_back((int) piece->probability_ * 100, piece);
-        }
-
-
-
-        std::random_device rd;
-        std::uniform_int_distribution<int> distribution(1, 100);
-        std::mt19937 engine(rd());
-        int value = distribution(engine);
-
-        int sum = 0;
-        for (auto probability : probabilities) {
-            sum += probability.first;
-            if (sum > value) {
-                // pieza que queda viva
-                auto piece = probability.second;
-                for (auto split : piece->splits_) {
-                    removeFromBoard_(split);
-                    delete split;
-                }
-                piece->probability_ = 1.0f;
-            }
-        }
-    } else {
-        removeFromBoard_(this);
-        delete this;
-    }
+//    if (this->probability_ < 1.0f) {
+//        // performMeasurement();
+//        std::vector<std::pair<int, Piece*>> probabilities;
+//        for (auto piece : splits_) {
+//            probabilities.emplace_back((int) piece->probability_ * 100, piece);
+//        }
+//
+//
+//
+//        std::random_device rd;
+//        std::uniform_int_distribution<int> distribution(1, 100);
+//        std::mt19937 engine(rd());
+//        int value = distribution(engine);
+//
+//        int sum = 0;
+//        for (auto probability : probabilities) {
+//            sum += probability.first;
+//            if (sum > value) {
+//                // pieza que queda viva
+//                auto piece = probability.second;
+//                for (auto split : piece->splits_) {
+//                    removeFromBoard_(split);
+//                    delete split;
+//                }
+//                piece->probability_ = 1.0f;
+//            }
+//        }
+//    } else {
+//        removeFromBoard_(this);
+//        delete this;
+//    }
+    removeFromBoard_(this);
+    delete this;
 }
 
 void Piece::split(Position position1, Position position2) {

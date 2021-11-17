@@ -33,7 +33,6 @@ class Board {
 
  private:
   std::list<Piece*> pieces_;
-  // std::list<Piece*> hiddenPieces_;
   PieceColor turn_;
   bool finished_;
 
