@@ -1,11 +1,11 @@
 #include "Board.h"
 
-#include <chess_game/pieces/Pawn.h>  // todo fix
-#include <chess_game/pieces/Rook.h>
-#include <chess_game/pieces/Knight.h>
-#include <chess_game/pieces/Bishop.h>
-#include <chess_game/pieces/Queen.h>
-#include <chess_game/pieces/King.h>
+#include <Pawn.h>  // todo fix
+#include <Rook.h>
+#include <Knight.h>
+#include <Bishop.h>
+#include <Queen.h>
+#include <King.h>
 #include <algorithm>
 #include <stdexcept>
 
