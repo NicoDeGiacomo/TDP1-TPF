@@ -2,59 +2,59 @@
 #include <algorithm>
 #include "PieceSplits.h"
 
-struct Node {
+struct SplitNode_ {
   Piece* piece;
-  struct Node* left;
-  struct Node* right;
-  struct Node* father;
-  bool show;
+  struct SplitNode_* left;
+  struct SplitNode_* right;
+  struct SplitNode_* father;
+  bool leaf;
 
-  explicit Node(Piece *piece)
+  explicit SplitNode_(Piece *piece)
       : piece(piece),
         left(nullptr),
         right(nullptr),
         father(nullptr),
-        show(true) {}
+        leaf(true) {}
 
-  Node(Piece *piece, Node *father)
+  SplitNode_(Piece *piece, SplitNode_ *father)
       : piece(piece),
         left(nullptr),
         right(nullptr),
         father(father),
-        show(true) {}
+        leaf(true) {}
 };
 
 PieceSplits::PieceSplits(Piece *piece)
-    : root_(new Node(piece)), nodes_() {
+    : root_(new SplitNode_(piece)), nodes_() {
     nodes_.push_back(root_);
 }
 
 void PieceSplits::addSplit(Piece *piece, Piece *split1, Piece *split2) {
-    Node* node = findNode_(piece);
-    if (node == nullptr || !node->show) {
+    SplitNode_* node = findNode_(piece);
+    if (node == nullptr || !node->leaf) {
         throw std::invalid_argument("Invalid action.");
     }
 
     split1->probability_ = piece->probability_ / 2;
     split2->probability_ = piece->probability_ / 2;
-    node->left = new Node(split1, node);
-    node->right = new Node(split2, node);
+    node->left = new SplitNode_(split1, node);
+    node->right = new SplitNode_(split2, node);
     nodes_.push_back(node->left);
     nodes_.push_back(node->right);
     appendToBoard_(split1);
     appendToBoard_(split2);
 
-    node->show = false;
+    node->leaf = false;
     removeFromBoard_(node->piece);
 }
 
 void PieceSplits::removeSplit(Piece *piece) {
-    Node* node = findNode_(piece);
+    SplitNode_* node = findNode_(piece);
     if (node == nullptr) {
         throw std::invalid_argument("Invalid action.");
     }
 
-    Node* father = node->father;
+    SplitNode_* father = node->father;
     if (father->right == node) {
         father->right = nullptr;
         if (father->left != nullptr) {
@@ -71,8 +71,8 @@ void PieceSplits::removeSplit(Piece *piece) {
         }
     }
 
-    if (node->show) {
-        node->show = false;
+    if (node->leaf) {
+        node->leaf = false;
         removeFromBoard_(piece);
         delete piece;  // todo check
     }
@@ -85,9 +85,9 @@ void PieceSplits::removeSplit(Piece *piece) {
 }
 
 void PieceSplits::mergeSplits(Piece *piece, Piece *with) {
-    Node* node1 = findNode_(piece);
-    Node* node2 = findNode_(with);
-    if (node1 == nullptr || node2 == nullptr || !node1->show || !node2->show) {
+    SplitNode_* node1 = findNode_(piece);
+    SplitNode_* node2 = findNode_(with);
+    if (node1 == nullptr || node2 == nullptr || !node1->leaf || !node2->leaf) {
         throw std::invalid_argument("Invalid move: split not found.");
     }
 
@@ -105,7 +105,7 @@ void PieceSplits::mergeSplits(Piece *piece, Piece *with) {
     piece->removeFromBoard_(with);
 }
 
-Node *PieceSplits::findNode_(const Piece *piece) const {
+SplitNode_ *PieceSplits::findNode_(const Piece *piece) const {
     for (auto* node : nodes_) {
         if (node->piece == piece) {
             return node;
@@ -122,9 +122,9 @@ void PieceSplits::appendToBoard_(Piece *piece) {
     root_->piece->appendToBoard_(piece);
 }
 
-bool PieceSplits::propagateProbability_(Node *node, float probability) {
+bool PieceSplits::propagateProbability_(SplitNode_ *node, float probability) {
     node->piece->probability_ += probability;
-    if (node->piece->probability_ == 1.0f && node->show) {
+    if (node->piece->probability_ == 1.0f && node->leaf) {
         node->piece->finishMeasure_();
         return true;
     }
@@ -145,15 +145,20 @@ bool PieceSplits::propagateProbability_(Node *node, float probability) {
 
 PieceSplits::~PieceSplits() {
     for (auto node : nodes_) {
+        node->piece->splits2_ = nullptr;
+        if (!node->leaf) {
+            delete node->piece;
+        }
         delete node;
     }
+    nodes_.clear();
 }
 
 bool PieceSplits::contains(const Piece *piece) const {
     return findNode_(piece) != nullptr;
 }
 
-bool PieceSplits::_areBrothers(Node *node1, Node *node2) {
+bool PieceSplits::_areBrothers(SplitNode_ *node1, SplitNode_ *node2) {
     if (node1 == nullptr || node2 == nullptr) {
         return false;
     }

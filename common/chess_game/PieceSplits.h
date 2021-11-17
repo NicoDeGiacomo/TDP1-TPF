@@ -3,7 +3,7 @@
 
 #include "Piece.h"
 
-struct Node;
+struct SplitNode_;
 class Piece;
 
 class PieceSplits {
@@ -20,14 +20,14 @@ class PieceSplits {
   bool contains(const Piece* piece) const;
 
  private:
-  Node* root_;
-  std::list<Node*> nodes_;
+  SplitNode_* root_;
+  std::list<SplitNode_*> nodes_;
 
-  Node *findNode_(const Piece *piece) const;
+  SplitNode_ *findNode_(const Piece *piece) const;
   void removeFromBoard_(Piece *piece);
   void appendToBoard_(Piece *piece);
-  bool propagateProbability_(Node *node, float probability);
-  static bool _areBrothers(Node *node1, Node *node2);
+  bool propagateProbability_(SplitNode_ *node, float probability);
+  static bool _areBrothers(SplitNode_ *node1, SplitNode_ *node2);
 };
 
 #endif  // QUANTUM_CHESS_COMMON_CHESS_GAME_PIECESPLITS_H_

@@ -212,4 +212,7 @@ void Piece::finishMeasure_() {
 
 Piece::~Piece() {
     // todo
+    if (splits2_ != nullptr) {
+        delete splits2_;
+    }
 }
