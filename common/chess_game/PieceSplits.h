@@ -20,8 +20,6 @@ class PieceSplits {
   bool contains(const Piece* piece) const;
 
  private:
-  // SplitNode_* root_;
-  std::shared_ptr<SplitNode_> root_;
   std::list<std::shared_ptr<SplitNode_>> nodes_;
 
   std::shared_ptr<SplitNode_> findNode_(const Piece *piece) const;

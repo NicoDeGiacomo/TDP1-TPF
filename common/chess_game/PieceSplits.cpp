@@ -31,9 +31,8 @@ struct SplitNode_ {
   }
 };
 
-PieceSplits::PieceSplits(Piece *piece)
-    : root_(std::make_shared<SplitNode_>(piece)), nodes_() {
-    nodes_.push_back(root_);
+PieceSplits::PieceSplits(Piece *piece) : nodes_() {
+    nodes_.push_back(std::make_shared<SplitNode_>(piece));
 }
 
 void PieceSplits::addSplit(Piece *piece, Piece *split1, Piece *split2) {
@@ -121,11 +120,11 @@ std::shared_ptr<SplitNode_> PieceSplits::findNode_(const Piece *piece) const {
 }
 
 void PieceSplits::removeFromBoard_(Piece *piece) {
-    root_->piece->removeFromBoard_(piece);
+    nodes_.front()->piece->removeFromBoard_(piece);
 }
 
 void PieceSplits::appendToBoard_(Piece *piece) {
-    root_->piece->appendToBoard_(piece);
+    nodes_.front()->piece->appendToBoard_(piece);
 }
 
 bool PieceSplits::propagateProbability_(std::shared_ptr<SplitNode_> node, float probability) {
