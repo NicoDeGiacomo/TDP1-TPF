@@ -9,7 +9,7 @@ class Rook : public Piece {
   char getDrawing() const override;
 
  private:
-  Rook(PieceColor color, Position position, Board* board, PieceSplits* splits);
+  Rook(PieceColor color, Position position, Board* board, std::shared_ptr<PieceSplits> splits);
   std::list<std::pair<int, int>> getVectorBeamMoves_() const override;
   std::list<std::pair<int, int>> getVectorStepMoves_() const override;
   Piece * createSplit_(Position to) override;

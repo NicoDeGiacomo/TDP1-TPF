@@ -40,12 +40,12 @@ class Piece : public Drawable {
   Board* board_;
   float probability_;
   std::list<Piece*> splits_;
-  PieceSplits* splits2_;
-  // std::unique_ptr<PieceSplits> splits2_;
+  // PieceSplits* splits2_;
+  std::shared_ptr<PieceSplits> splits2_;
 
   Piece(PieceColor color, Position position);
   Piece(PieceColor color, Position position, Board* board);
-  Piece(PieceColor color, Position position, Board* board, PieceSplits* splits);
+  Piece(PieceColor color, Position position, Board* board, std::shared_ptr<PieceSplits> splits);
   virtual std::list<std::pair<int, int>> getVectorBeamMoves_() const = 0;
   virtual std::list<std::pair<int, int>> getVectorStepMoves_() const = 0;
   virtual Piece * createSplit_(Position to) = 0;
@@ -57,12 +57,11 @@ class Piece : public Drawable {
   std::list<Position> getPossibleBeamPositions_() const;
   void validateMove_(const Position &position) const;
   void appendToBoard_(Piece* piece);
-  void removeFromBoardAndDelete_(Piece* piece);
   bool isSplit_(Piece *other) const;
 
   friend PieceSplits;
   void finishMeasure_();
-  void removeFromBoard_(Piece *piece);
+  void removeFromBoard_(Piece* piece);
 };
 
 #endif  // PIECE_H_

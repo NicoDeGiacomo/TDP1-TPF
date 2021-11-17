@@ -1,6 +1,7 @@
 #include <stdexcept>
 #include <algorithm>
 #include <random>
+#include <utility>
 #include "Piece.h"
 
 Piece::Piece(PieceColor color, Position position)
@@ -9,7 +10,7 @@ Piece::Piece(PieceColor color, Position position)
       has_moved_(false),
       board_(nullptr),
       probability_(1.0),
-      splits2_(new PieceSplits(this)) {}
+      splits2_(std::make_shared<PieceSplits>(this)) {}
 
 Piece::Piece(PieceColor color, Position position, Board *board)
     : position_(position),
@@ -17,15 +18,15 @@ Piece::Piece(PieceColor color, Position position, Board *board)
       has_moved_(false),
       board_(board),
       probability_(1.0),
-      splits2_(new PieceSplits(this)) {}
+      splits2_(std::make_shared<PieceSplits>(this)) {}
 
-Piece::Piece(PieceColor color, Position position, Board *board, PieceSplits* splits)
+Piece::Piece(PieceColor color, Position position, Board *board, std::shared_ptr<PieceSplits> splits)
     : position_(position),
       color_(color),
       has_moved_(false),
       board_(board),
       probability_(1.0),
-      splits2_(splits) {}
+      splits2_(std::move(splits)) {}
 
 Position Piece::getPosition() const {
     return position_;
@@ -136,13 +137,15 @@ void Piece::eat() {
                 // pieza que queda viva
                 auto piece = probability.second;
                 for (auto split : piece->splits_) {
-                    removeFromBoardAndDelete_(split);
+                    removeFromBoard_(split);
+                    delete split;
                 }
                 piece->probability_ = 1.0f;
             }
         }
     } else {
-        removeFromBoardAndDelete_(this);
+        removeFromBoard_(this);
+        delete this;
     }
 }
 
@@ -196,23 +199,17 @@ bool Piece::isSplit_(Piece *other) const {
 
 void Piece::merge_() {}
 
-void Piece::removeFromBoardAndDelete_(Piece *piece) {
-    removeFromBoard_(piece);
-    delete piece;
-}
-
-void Piece::removeFromBoard_(Piece *piece) {
+void Piece::removeFromBoard_(Piece* piece) {
     board_->pieces_.remove(piece);
 }
 
 void Piece::finishMeasure_() {
-    delete splits2_;
-    splits2_ = new PieceSplits(this);
+    splits2_ = std::make_shared<PieceSplits>(this);
 }
 
 Piece::~Piece() {
-    // todo
-    if (splits2_ != nullptr) {
-        delete splits2_;
-    }
+//    // todo
+//    if (splits2_ != nullptr) {
+//        delete splits2_;
+//    }
 }

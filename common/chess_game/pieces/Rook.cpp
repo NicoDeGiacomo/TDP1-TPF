@@ -1,8 +1,10 @@
 #include "Rook.h"
 
+#include <utility>
+
 Rook::Rook(PieceColor color, Position position, Board* board) : Piece(color, position, board) {}
 
-Rook::Rook(PieceColor color, Position position, Board* board, PieceSplits* splits) : Piece(color, position, board, splits) {}
+Rook::Rook(PieceColor color, Position position, Board* board, std::shared_ptr<PieceSplits> splits) : Piece(color, position, board, std::move(splits)) {}
 
 char Rook::getDrawing() const {
     return 'R';

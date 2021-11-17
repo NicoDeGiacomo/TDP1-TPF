@@ -1,8 +1,10 @@
 #include "King.h"
 
+#include <utility>
+
 King::King(PieceColor color, Position position, Board* board) : Piece(color, position, board) {}
 
-King::King(PieceColor color, Position position, Board* board, PieceSplits* splits) : Piece(color, position, board, splits) {}
+King::King(PieceColor color, Position position, Board* board, std::shared_ptr<PieceSplits> splits) : Piece(color, position, board, std::move(splits)) {}
 
 char King::getDrawing() const {
     return 'W';

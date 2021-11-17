@@ -9,7 +9,7 @@ class Queen : public Piece {
   char getDrawing() const override;
 
  private:
-  Queen(PieceColor color, Position position, Board* board, PieceSplits* splits);
+  Queen(PieceColor color, Position position, Board* board, std::shared_ptr<PieceSplits> splits);
   std::list<std::pair<int, int>> getVectorBeamMoves_() const override;
   std::list<std::pair<int, int>> getVectorStepMoves_() const override;
   Piece * createSplit_(Position to) override;

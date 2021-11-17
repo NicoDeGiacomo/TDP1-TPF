@@ -1,12 +1,13 @@
 #include <stdexcept>
 #include <algorithm>
+#include <utility>
 #include "PieceSplits.h"
 
 struct SplitNode_ {
   Piece* piece;
-  struct SplitNode_* left;
-  struct SplitNode_* right;
-  struct SplitNode_* father;
+  std::shared_ptr<SplitNode_> left;
+  std::shared_ptr<SplitNode_> right;
+  std::shared_ptr<SplitNode_> father;
   bool leaf;
 
   explicit SplitNode_(Piece *piece)
@@ -16,29 +17,29 @@ struct SplitNode_ {
         father(nullptr),
         leaf(true) {}
 
-  SplitNode_(Piece *piece, SplitNode_ *father)
+  SplitNode_(Piece *piece, std::shared_ptr<SplitNode_> father)
       : piece(piece),
         left(nullptr),
         right(nullptr),
-        father(father),
+        father(std::move(father)),
         leaf(true) {}
 };
 
 PieceSplits::PieceSplits(Piece *piece)
-    : root_(new SplitNode_(piece)), nodes_() {
+    : root_(std::make_shared<SplitNode_>(piece)), nodes_() {
     nodes_.push_back(root_);
 }
 
 void PieceSplits::addSplit(Piece *piece, Piece *split1, Piece *split2) {
-    SplitNode_* node = findNode_(piece);
+    std::shared_ptr<SplitNode_> node = findNode_(piece);
     if (node == nullptr || !node->leaf) {
         throw std::invalid_argument("Invalid action.");
     }
 
     split1->probability_ = piece->probability_ / 2;
     split2->probability_ = piece->probability_ / 2;
-    node->left = new SplitNode_(split1, node);
-    node->right = new SplitNode_(split2, node);
+    node->left = std::make_shared<SplitNode_>(split1, node);
+    node->right = std::make_shared<SplitNode_>(split2, node);
     nodes_.push_back(node->left);
     nodes_.push_back(node->right);
     appendToBoard_(split1);
@@ -48,13 +49,13 @@ void PieceSplits::addSplit(Piece *piece, Piece *split1, Piece *split2) {
     removeFromBoard_(node->piece);
 }
 
-void PieceSplits::removeSplit(Piece *piece) {
-    SplitNode_* node = findNode_(piece);
+void PieceSplits::removeSplit(Piece* piece) {
+    std::shared_ptr<SplitNode_> node = findNode_(piece);
     if (node == nullptr) {
         throw std::invalid_argument("Invalid action.");
     }
 
-    SplitNode_* father = node->father;
+    std::shared_ptr<SplitNode_> father = node->father;
     if (father->right == node) {
         father->right = nullptr;
         if (father->left != nullptr) {
@@ -77,7 +78,6 @@ void PieceSplits::removeSplit(Piece *piece) {
         delete piece;  // todo check
     }
     nodes_.remove(node);
-    delete node;
 
     if (father->right == nullptr && father->left == nullptr) {
         removeSplit(father->piece);
@@ -85,8 +85,8 @@ void PieceSplits::removeSplit(Piece *piece) {
 }
 
 void PieceSplits::mergeSplits(Piece *piece, Piece *with) {
-    SplitNode_* node1 = findNode_(piece);
-    SplitNode_* node2 = findNode_(with);
+    std::shared_ptr<SplitNode_> node1 = findNode_(piece);
+    std::shared_ptr<SplitNode_> node2 = findNode_(with);
     if (node1 == nullptr || node2 == nullptr || !node1->leaf || !node2->leaf) {
         throw std::invalid_argument("Invalid move: split not found.");
     }
@@ -97,7 +97,7 @@ void PieceSplits::mergeSplits(Piece *piece, Piece *with) {
     }
 
     if (propagateProbability_(node1, node2->piece->probability_)) {
-        piece->removeFromBoardAndDelete_(with);
+        piece->removeFromBoard_(with);
         return;
     }
     node2->piece->probability_ = 0;
@@ -105,8 +105,8 @@ void PieceSplits::mergeSplits(Piece *piece, Piece *with) {
     piece->removeFromBoard_(with);
 }
 
-SplitNode_ *PieceSplits::findNode_(const Piece *piece) const {
-    for (auto* node : nodes_) {
+std::shared_ptr<SplitNode_> PieceSplits::findNode_(const Piece *piece) const {
+    for (const auto& node : nodes_) {
         if (node->piece == piece) {
             return node;
         }
@@ -122,7 +122,7 @@ void PieceSplits::appendToBoard_(Piece *piece) {
     root_->piece->appendToBoard_(piece);
 }
 
-bool PieceSplits::propagateProbability_(SplitNode_ *node, float probability) {
+bool PieceSplits::propagateProbability_(std::shared_ptr<SplitNode_> node, float probability) {
     node->piece->probability_ += probability;
     if (node->piece->probability_ == 1.0f && node->leaf) {
         node->piece->finishMeasure_();
@@ -144,21 +144,21 @@ bool PieceSplits::propagateProbability_(SplitNode_ *node, float probability) {
 }
 
 PieceSplits::~PieceSplits() {
-    for (auto node : nodes_) {
-        node->piece->splits2_ = nullptr;
-        if (!node->leaf) {
-            delete node->piece;
-        }
-        delete node;
-    }
-    nodes_.clear();
+//    for (auto node : nodes_) {
+//        node->piece->splits2_ = nullptr;
+//        if (!node->leaf) {
+//            delete node->piece;
+//        }
+//        delete node;
+//    }
+//    nodes_.clear();
 }
 
-bool PieceSplits::contains(const Piece *piece) const {
+bool PieceSplits::contains(const Piece* piece) const {
     return findNode_(piece) != nullptr;
 }
 
-bool PieceSplits::_areBrothers(SplitNode_ *node1, SplitNode_ *node2) {
+bool PieceSplits::_areBrothers(std::shared_ptr<SplitNode_> node1, std::shared_ptr<SplitNode_> node2) {
     if (node1 == nullptr || node2 == nullptr) {
         return false;
     }

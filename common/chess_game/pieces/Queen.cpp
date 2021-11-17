@@ -1,8 +1,10 @@
 #include "Queen.h"
 
+#include <utility>
+
 Queen::Queen(PieceColor color, Position position, Board* board) : Piece(color, position, board) {}
 
-Queen::Queen(PieceColor color, Position position, Board* board, PieceSplits* splits) : Piece(color, position, board, splits) {}
+Queen::Queen(PieceColor color, Position position, Board* board, std::shared_ptr<PieceSplits> splits) : Piece(color, position, board, std::move(splits)) {}
 
 char Queen::getDrawing() const {
     return 'Q';

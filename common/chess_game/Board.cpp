@@ -1,6 +1,6 @@
 #include "Board.h"
 
-#include <chess_game/pieces/Pawn.h>
+#include <chess_game/pieces/Pawn.h>  // todo fix
 #include <chess_game/pieces/Rook.h>
 #include <chess_game/pieces/Knight.h>
 #include <chess_game/pieces/Bishop.h>
@@ -37,7 +37,7 @@ Piece *Board::getPiece(Position position) const {
 std::list<Position> Board::getPossibleMoves(Position position) const {
     auto piece = getPiece(position);
     if (piece == nullptr) {
-        throw std::invalid_argument("Error: Empty square.");;
+        throw std::invalid_argument("Error: Empty square.");
     }
 
     return piece->getPossibleMoves();

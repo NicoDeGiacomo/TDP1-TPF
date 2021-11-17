@@ -20,14 +20,15 @@ class PieceSplits {
   bool contains(const Piece* piece) const;
 
  private:
-  SplitNode_* root_;
-  std::list<SplitNode_*> nodes_;
+  // SplitNode_* root_;
+  std::shared_ptr<SplitNode_> root_;
+  std::list<std::shared_ptr<SplitNode_>> nodes_;
 
-  SplitNode_ *findNode_(const Piece *piece) const;
+  std::shared_ptr<SplitNode_> findNode_(const Piece *piece) const;
   void removeFromBoard_(Piece *piece);
   void appendToBoard_(Piece *piece);
-  bool propagateProbability_(SplitNode_ *node, float probability);
-  static bool _areBrothers(SplitNode_ *node1, SplitNode_ *node2);
+  bool propagateProbability_(std::shared_ptr<SplitNode_> node, float probability);
+  static bool _areBrothers(std::shared_ptr<SplitNode_> node1, std::shared_ptr<SplitNode_> node2);
 };
 
 #endif  // QUANTUM_CHESS_COMMON_CHESS_GAME_PIECESPLITS_H_
