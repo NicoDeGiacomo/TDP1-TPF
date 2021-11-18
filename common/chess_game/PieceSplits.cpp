@@ -29,8 +29,7 @@ struct SplitNode_ {
   ~SplitNode_() = default;
 };
 
-PieceSplits::PieceSplits(Piece* piece) : nodes_() {
-    nodes_.push_back(std::make_shared<SplitNode_>(piece));
+PieceSplits::PieceSplits(Piece* piece) : root_(std::make_shared<SplitNode_>(piece)) {
 }
 
 void PieceSplits::addSplit(Piece* piece, Piece* split1, Piece* split2) {
@@ -41,8 +40,6 @@ void PieceSplits::addSplit(Piece* piece, Piece* split1, Piece* split2) {
 
     father->left = std::make_shared<SplitNode_>(split1, father);
     father->right = std::make_shared<SplitNode_>(split2, father);
-    nodes_.push_back(father->left);
-    nodes_.push_back(father->right);
     split1->appendToBoard_();
     split2->appendToBoard_();
 
@@ -58,9 +55,7 @@ void PieceSplits::removeSplit(Piece* piece) {
         throw std::invalid_argument("Invalid action.");
     }
 
-    nodes_.remove(node);
     piece->removeFromBoard_();
-
     std::shared_ptr<SplitNode_> father = node->father.lock();
     if (father->right == node) {
         father->right = nullptr;
@@ -86,7 +81,6 @@ void PieceSplits::mergeSplits(Piece *piece, Piece *with) {
     }
 
     with->removeFromBoard_();
-    nodes_.remove(node2);
     std::shared_ptr<SplitNode_> father = node2->father.lock();
     if (father->right == node2) {
         father->right = nullptr;
@@ -100,15 +94,45 @@ void PieceSplits::mergeSplits(Piece *piece, Piece *with) {
 }
 
 void PieceSplits::removeAllSplits() {
-    deletePiecesRecursive_(nodes_.front());
+    removeAllSplits_(root_);
+}
+
+void PieceSplits::removeAllSplits_(const std::shared_ptr<SplitNode_>& node) {
+    if (node->leaf) {
+        node->piece->removeFromBoard_();
+        delete node->piece;
+        return;
+    }
+    if (node->left) {
+        removeAllSplits_(node->left);
+    }
+    if (node->right) {
+        removeAllSplits_(node->right);
+    }
 }
 
 std::shared_ptr<SplitNode_> PieceSplits::findNode_(const Piece *piece) const {
-    for (const auto& node : nodes_) {
-        if (node->piece == piece) {
-            return node;
+    return findNode_(root_, piece);
+}
+
+std::shared_ptr<SplitNode_> PieceSplits::findNode_(const std::shared_ptr<SplitNode_> &node, const Piece *piece) const {
+    if (node->piece == piece) {
+        return node;
+    }
+
+    if (node->left) {
+        std::shared_ptr<SplitNode_> found = findNode_(node->left, piece);
+        if (found) {
+            return found;
         }
     }
+    if (node->right) {
+        std::shared_ptr<SplitNode_> found = findNode_(node->right, piece);
+        if (found) {
+            return found;
+        }
+    }
+
     return nullptr;
 }
 
@@ -121,7 +145,6 @@ bool PieceSplits::propagateProbability_(const std::shared_ptr<SplitNode_>& node,
         }
     } else {
         if(!node->left && !node->right) {
-            nodes_.remove(node);
             return propagateProbability_(node->father.lock(), probability / 2);
         }
     }
@@ -158,17 +181,4 @@ bool PieceSplits::_areBrothers(const std::shared_ptr<SplitNode_>& node1, const s
 
 float PieceSplits::getProbability(const Piece *piece) const {
     return findNode_(piece)->probability;
-}
-
-void PieceSplits::deletePiecesRecursive_(const std::shared_ptr<SplitNode_>& node) {
-    if (node->leaf) {
-        node->piece->removeFromBoard_();
-        delete node->piece;
-    }
-    if (node->left) {
-        deletePiecesRecursive_(node->left);
-    }
-    if (node->right) {
-        deletePiecesRecursive_(node->right);
-    }
 }

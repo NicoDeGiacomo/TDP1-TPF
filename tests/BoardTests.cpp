@@ -354,7 +354,6 @@ TEST_CASE("Double split and merge") {
 
 TEST_SUITE("Measurements") {
 TEST_CASE("Eating split - confirm") {
-    // todo
     Board board(false, 1);
     board.move(Position("e2"), Position("e4"));
     board.move(Position("e7"), Position("e5"));
