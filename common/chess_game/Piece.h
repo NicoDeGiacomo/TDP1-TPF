@@ -31,7 +31,7 @@ class Piece : public Drawable {
 
   void merge(Position to, Piece* other);
 
-  virtual ~Piece();
+  virtual ~Piece() = default;
 
 
 
@@ -40,10 +40,7 @@ class Piece : public Drawable {
   PieceColor color_;
   bool has_moved_;
   Board* board_;
-  float probability_;
-  std::list<Piece*> splits_;
-  // PieceSplits* splits2_;
-  std::shared_ptr<PieceSplits> splits2_;
+  std::shared_ptr<PieceSplits> splits2_;  // todo rename
 
   Piece(PieceColor color, Position position);
   Piece(PieceColor color, Position position, Board* board);
@@ -58,12 +55,12 @@ class Piece : public Drawable {
   std::list<Position> getPossibleStepPositions_() const;
   std::list<Position> getPossibleBeamPositions_() const;
   void validateMove_(const Position &position) const;
-  void appendToBoard_(Piece* piece);
+  void appendToBoard_();
   bool isSplit_(Piece *other) const;
 
   friend PieceSplits;
   void finishMeasure_();
-  void removeFromBoard_(Piece* piece);
+  void removeFromBoard_();
 };
 
 #endif  // PIECE_H_

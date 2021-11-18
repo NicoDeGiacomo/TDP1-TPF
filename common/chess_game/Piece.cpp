@@ -9,7 +9,6 @@ Piece::Piece(PieceColor color, Position position)
       color_(color),
       has_moved_(false),
       board_(nullptr),
-      probability_(1.0),
       splits2_(std::make_shared<PieceSplits>(this)) {}
 
 Piece::Piece(PieceColor color, Position position, Board *board)
@@ -17,7 +16,6 @@ Piece::Piece(PieceColor color, Position position, Board *board)
       color_(color),
       has_moved_(false),
       board_(board),
-      probability_(1.0),
       splits2_(std::make_shared<PieceSplits>(this)) {}
 
 Piece::Piece(PieceColor color, Position position, Board *board, std::shared_ptr<PieceSplits> splits)
@@ -25,7 +23,6 @@ Piece::Piece(PieceColor color, Position position, Board *board, std::shared_ptr<
       color_(color),
       has_moved_(false),
       board_(board),
-      probability_(1.0),
       splits2_(std::move(splits)) {}
 
 Position Piece::getPosition() const {
@@ -147,8 +144,8 @@ void Piece::eat() {
 //        removeFromBoard_(this);
 //        delete this;
 //    }
-    removeFromBoard_(this);
-    delete this;
+    removeFromBoard_();
+    // delete this;
 }
 
 void Piece::split(Position position1, Position position2) {
@@ -187,12 +184,12 @@ void Piece::merge(Position to, Piece* other) {
     }
 }
 
-void Piece::appendToBoard_(Piece* piece) {
-    board_->pieces_.push_back(piece);
+void Piece::appendToBoard_() {
+    board_->pieces_.push_back(this);
 }
 
 float Piece::getProbability() const {
-    return probability_;
+    return splits2_->getProbability(this);
 }
 
 bool Piece::isSplit_(Piece *other) const {
@@ -201,17 +198,10 @@ bool Piece::isSplit_(Piece *other) const {
 
 void Piece::merge_() {}
 
-void Piece::removeFromBoard_(Piece* piece) {
-    board_->pieces_.remove(piece);
+void Piece::removeFromBoard_() {
+    board_->pieces_.remove(this);
 }
 
 void Piece::finishMeasure_() {
     splits2_ = std::make_shared<PieceSplits>(this);
-}
-
-Piece::~Piece() {
-//    // todo
-//    if (splits2_ != nullptr) {
-//        delete splits2_;
-//    }
 }
