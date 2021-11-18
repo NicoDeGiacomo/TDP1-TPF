@@ -29,5 +29,5 @@ void King::eat() {
 }
 
 Piece * King::createSplit_(Position to) {
-    return new King(color_, to, board_, splits2_);
+    return new King(color_, to, board_, splits_);
 }

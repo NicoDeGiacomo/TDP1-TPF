@@ -40,7 +40,7 @@ class Piece : public Drawable {
   PieceColor color_;
   bool has_moved_;
   Board* board_;
-  std::shared_ptr<PieceSplits> splits2_;  // todo rename
+  std::shared_ptr<PieceSplits> splits_;
 
   Piece(PieceColor color, Position position);
   Piece(PieceColor color, Position position, Board* board);

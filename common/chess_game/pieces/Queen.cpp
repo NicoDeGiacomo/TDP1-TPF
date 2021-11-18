@@ -19,5 +19,5 @@ std::list<std::pair<int, int>> Queen::getVectorStepMoves_() const {
 }
 
 Piece * Queen::createSplit_(Position to) {
-    return new Queen(color_, to, board_, splits2_);
+    return new Queen(color_, to, board_, splits_);
 }

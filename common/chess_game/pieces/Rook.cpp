@@ -19,5 +19,5 @@ std::list<std::pair<int, int>> Rook::getVectorStepMoves_() const {
 }
 
 Piece * Rook::createSplit_(Position to) {
-    return new Rook(color_, to, board_, splits2_);
+    return new Rook(color_, to, board_, splits_);
 }

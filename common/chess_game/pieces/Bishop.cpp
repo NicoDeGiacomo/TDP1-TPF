@@ -19,5 +19,5 @@ std::list<std::pair<int, int>> Bishop::getVectorStepMoves_() const {
 }
 
 Piece * Bishop::createSplit_(Position to) {
-    return new Bishop(color_, to, board_, splits2_);
+    return new Bishop(color_, to, board_, splits_);
 }

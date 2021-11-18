@@ -9,21 +9,21 @@ Piece::Piece(PieceColor color, Position position)
       color_(color),
       has_moved_(false),
       board_(nullptr),
-      splits2_(std::make_shared<PieceSplits>(this)) {}
+      splits_(std::make_shared<PieceSplits>(this)) {}
 
 Piece::Piece(PieceColor color, Position position, Board *board)
     : position_(position),
       color_(color),
       has_moved_(false),
       board_(board),
-      splits2_(std::make_shared<PieceSplits>(this)) {}
+      splits_(std::make_shared<PieceSplits>(this)) {}
 
 Piece::Piece(PieceColor color, Position position, Board *board, std::shared_ptr<PieceSplits> splits)
     : position_(position),
       color_(color),
       has_moved_(false),
       board_(board),
-      splits2_(std::move(splits)) {}
+      splits_(std::move(splits)) {}
 
 Position Piece::getPosition() const {
     return position_;
@@ -117,9 +117,9 @@ void Piece::eat() {
         std::mt19937 engine(board_->seed_);
         int value = distribution(engine);
         if (((float) value)  / 100 <= getProbability()) {
-            splits2_->removeAllSplits();
+            splits_->removeAllSplits();
         } else {
-            splits2_->removeSplit(this);
+            splits_->removeSplit(this);
         }
     } else {
         removeFromBoard_();
@@ -133,7 +133,7 @@ void Piece::split(Position position1, Position position2) {
 
     auto* split1 = createSplit_(position1);
     auto* split2 = createSplit_(position2);
-    splits2_->addSplit(this, split1, split2);
+    splits_->addSplit(this, split1, split2);
 }
 
 void Piece::merge(Position to, Piece* other) {
@@ -147,7 +147,7 @@ void Piece::merge(Position to, Piece* other) {
     if (position_ != to) {
         move(to);
     }
-    splits2_->mergeSplits(this, other);
+    splits_->mergeSplits(this, other);
 }
 
 void Piece::appendToBoard_() {
@@ -155,11 +155,11 @@ void Piece::appendToBoard_() {
 }
 
 float Piece::getProbability() const {
-    return splits2_->getProbability(this);
+    return splits_->getProbability(this);
 }
 
 bool Piece::isSplit_(Piece *other) const {
-    return splits2_->contains(this) && splits2_->contains(other);
+    return splits_->contains(this) && splits_->contains(other);
 }
 
 void Piece::merge_() {}
@@ -169,5 +169,5 @@ void Piece::removeFromBoard_() {
 }
 
 void Piece::finishMeasure_() {
-    splits2_ = std::make_shared<PieceSplits>(this);
+    splits_ = std::make_shared<PieceSplits>(this);
 }
