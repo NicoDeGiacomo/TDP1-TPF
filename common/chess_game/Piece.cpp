@@ -1,15 +1,29 @@
 #include <stdexcept>
 #include <algorithm>
 #include <random>
+#include <utility>
 #include "Piece.h"
+
+Piece::Piece(PieceColor color, Position position)
+    : position_(position),
+      color_(color),
+      has_moved_(false),
+      board_(nullptr),
+      splits_(std::make_shared<PieceSplits>(this)) {}
 
 Piece::Piece(PieceColor color, Position position, Board *board)
     : position_(position),
       color_(color),
       has_moved_(false),
       board_(board),
-      probability_(1.0),
-      splits2_(new PieceSplits(this)) {}
+      splits_(std::make_shared<PieceSplits>(this)) {}
+
+Piece::Piece(PieceColor color, Position position, Board *board, std::shared_ptr<PieceSplits> splits)
+    : position_(position),
+      color_(color),
+      has_moved_(false),
+      board_(board),
+      splits_(std::move(splits)) {}
 
 Position Piece::getPosition() const {
     return position_;
@@ -98,35 +112,18 @@ void Piece::validateMove_(const Position &position) const {
 }
 
 void Piece::eat() {
-    // todo
-    if (this->probability_ < 1.0f) {
-        // performMeasurement();
-        std::vector<std::pair<int, Piece*>> probabilities;
-        for (auto piece : splits_) {
-            probabilities.emplace_back((int) piece->probability_ * 100, piece);
-        }
-
-
-
-        std::random_device rd;
+    if (getProbability() < 1.0f) {
         std::uniform_int_distribution<int> distribution(1, 100);
-        std::mt19937 engine(rd());
+        std::mt19937 engine(board_->seed_);
         int value = distribution(engine);
-
-        int sum = 0;
-        for (auto probability : probabilities) {
-            sum += probability.first;
-            if (sum > value) {
-                // pieza que queda viva
-                auto piece = probability.second;
-                for (auto split : piece->splits_) {
-                    removeFromBoard_(split);
-                }
-                piece->probability_ = 1.0f;
-            }
+        if (((float) value)  / 100 <= getProbability()) {
+            splits_->removeAllSplits();
+        } else {
+            splits_->removeSplit(this);
         }
     } else {
-        removeFromBoard_(this);
+        removeFromBoard_();
+        delete this;
     }
 }
 
@@ -134,18 +131,9 @@ void Piece::split(Position position1, Position position2) {
     validateMove_(position1);
     validateMove_(position2);
 
-    auto* split = createSplit_(position2);
-    appendToBoard_(split);
-    split->splits_.push_back(this);
-    split->splits_.insert(split->splits_.begin(), splits_.begin(), splits_.end());
-    split->probability_ = probability_ / 2;
-
-    move(position1);
-    for (auto* piece : splits_) {
-        piece->splits_.push_back(split);
-    }
-    splits_.push_back(split);
-    probability_ = probability_ / 2;
+    auto* split1 = createSplit_(position1);
+    auto* split2 = createSplit_(position2);
+    splits_->addSplit(this, split1, split2);
 }
 
 void Piece::merge(Position to, Piece* other) {
@@ -156,52 +144,30 @@ void Piece::merge(Position to, Piece* other) {
         throw std::invalid_argument("Invalid move: non split.");
     }
 
-    Piece* toDelete;
-
-    if (position_ == to) {
-        toDelete = other;
-        probability_ += other->probability_;
-    } else if (other->position_ == to) {
-        toDelete = this;
-        other->probability_ += probability_;
-    } else if (getPieceFromBoard_(to) == nullptr) {
-        this->move(to);
-        toDelete = other;
-        probability_ += other->probability_;
-    } else {
-        throw std::invalid_argument("Invalid move: invalid merge.");
+    if (position_ != to) {
+        move(to);
     }
-
-    for (auto* piece : toDelete->splits_) {
-        piece->splits_.remove(toDelete);
-    }
-    removeFromBoard_(toDelete);
+    splits_->mergeSplits(this, other);
 }
 
-void Piece::appendToBoard_(Piece* piece) {
-    if (board_ != nullptr) {  // todo remove check
-        board_->pieces_.push_back(piece);
-    }
+void Piece::appendToBoard_() {
+    board_->pieces_.push_back(this);
 }
 
 float Piece::getProbability() const {
-    return probability_;
+    return splits_->getProbability(this);
 }
 
 bool Piece::isSplit_(Piece *other) const {
-    return std::find(splits_.begin(), splits_.end(), other) != splits_.end();
+    return splits_->contains(this) && splits_->contains(other);
 }
 
 void Piece::merge_() {}
 
-void Piece::removeFromBoard_(Piece *piece) {
-    if (board_ != nullptr) {  // todo remove check and move method to Board
-        board_->pieces_.remove(piece);
-    }
-    delete piece;
+void Piece::removeFromBoard_() {
+    board_->pieces_.remove(this);
 }
 
 void Piece::finishMeasure_() {
-    delete splits2_;
-    splits2_ = new PieceSplits(this);
+    splits_ = std::make_shared<PieceSplits>(this);
 }

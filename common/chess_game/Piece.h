@@ -3,6 +3,7 @@
 
 #include <list>
 #include <vector>
+#include <memory>
 #include "Position.h"
 #include "Drawable.h"
 #include "Board.h"
@@ -14,23 +15,21 @@ enum class PieceColor { WHITE, BLACK };
 
 class Piece : public Drawable {
  public:
-  Piece(PieceColor color, Position position, Board* board);
+  void move(Position position);
 
-  Position getPosition() const;
+  virtual void split(Position position1, Position position2);
 
-  PieceColor getColor() const;
+  void merge(Position to, Piece* other);
+
+  virtual void eat();
 
   std::list<Position> getPossibleMoves() const;
 
   float getProbability() const;
 
-  void move(Position position);
+  Position getPosition() const;
 
-  virtual void eat();
-
-  virtual void split(Position position1, Position position2);
-
-  void merge(Position to, Piece* other);
+  PieceColor getColor() const;
 
   virtual ~Piece() = default;
 
@@ -39,10 +38,11 @@ class Piece : public Drawable {
   PieceColor color_;
   bool has_moved_;
   Board* board_;
-  float probability_;
-  std::list<Piece*> splits_;
-  PieceSplits* splits2_;
+  std::shared_ptr<PieceSplits> splits_;
 
+  Piece(PieceColor color, Position position);
+  Piece(PieceColor color, Position position, Board* board);
+  Piece(PieceColor color, Position position, Board* board, std::shared_ptr<PieceSplits> splits);
   virtual std::list<std::pair<int, int>> getVectorBeamMoves_() const = 0;
   virtual std::list<std::pair<int, int>> getVectorStepMoves_() const = 0;
   virtual Piece * createSplit_(Position to) = 0;
@@ -53,12 +53,12 @@ class Piece : public Drawable {
   std::list<Position> getPossibleStepPositions_() const;
   std::list<Position> getPossibleBeamPositions_() const;
   void validateMove_(const Position &position) const;
-  void appendToBoard_(Piece* piece);
-  void removeFromBoard_(Piece* piece);
+  void appendToBoard_();
   bool isSplit_(Piece *other) const;
+  void finishMeasure_();
+  void removeFromBoard_();
 
   friend PieceSplits;
-  void finishMeasure_();
 };
 
 #endif  // PIECE_H_

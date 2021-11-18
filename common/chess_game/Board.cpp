@@ -1,17 +1,25 @@
 #include "Board.h"
 
-#include <chess_game/pieces/Pawn.h>
-#include <chess_game/pieces/Rook.h>
-#include <chess_game/pieces/Knight.h>
-#include <chess_game/pieces/Bishop.h>
-#include <chess_game/pieces/Queen.h>
-#include <chess_game/pieces/King.h>
+#include <Pawn.h>
+#include <Rook.h>
+#include <Knight.h>
+#include <Bishop.h>
+#include <Queen.h>
+#include <King.h>
 #include <algorithm>
 #include <stdexcept>
+#include <random>
 
-Board::Board() : turn_(PieceColor::WHITE), finished_(false) {
-    generatePiecesForColor_(PieceColor::WHITE);
-    generatePiecesForColor_(PieceColor::BLACK);
+Board::Board(bool empty, unsigned int seed) : turn_(PieceColor::WHITE), finished_(false), seed_(seed) {
+    if (!empty) {
+        generatePiecesForColor_(PieceColor::WHITE);
+        generatePiecesForColor_(PieceColor::BLACK);
+    }
+
+    if (seed_ == 0) {
+        std::random_device rd;
+        seed_ = rd();
+    }
 }
 
 std::list<Piece*>::const_iterator Board::begin() const {
@@ -20,29 +28,6 @@ std::list<Piece*>::const_iterator Board::begin() const {
 
 std::list<Piece*>::const_iterator Board::end() const {
     return pieces_.end();
-}
-
-Piece *Board::getPiece(Position position) const {
-    // todo: hacer que pieces_ sea un mapa, para mejor eficiencia?
-    for (const auto &piece : *this) {
-        if (piece->getPosition() == position) {
-            return piece;
-        }
-    }
-    return nullptr;
-}
-
-std::list<Position> Board::getPossibleMoves(Position position) const {
-    auto piece = getPiece(position);
-    if (piece == nullptr) {
-        throw std::invalid_argument("Error: Empty square.");;
-    }
-
-    return piece->getPossibleMoves();
-}
-
-bool Board::isFinished() const {
-    return finished_;
 }
 
 void Board::move(Position from, Position to) {
@@ -62,7 +47,7 @@ void Board::move(Position from, Position to) {
         pieceTo->eat();
     }
 
-    changeTurn();
+    changeTurn_();
 }
 
 void Board::split(Position from, Position to1, Position to2) {
@@ -84,7 +69,7 @@ void Board::split(Position from, Position to1, Position to2) {
     }
 
     pieceFrom->split(to1, to2);
-    changeTurn();
+    changeTurn_();
 }
 
 void Board::merge(Position from1, Position from2, Position to) {
@@ -98,15 +83,41 @@ void Board::merge(Position from1, Position from2, Position to) {
         throw std::invalid_argument("Invalid move: empty square.");
     }
     if (pieceFrom1->getColor() != turn_ || pieceFrom2->getColor() != turn_) {
-        throw std::invalid_argument("Invalid move: out of turn.");
+        throw std::invalid_argument("Invalid move: out of turn.");  // todo function
     }
 
     pieceFrom1->merge(to, pieceFrom2);
-    changeTurn();
+    changeTurn_();
 }
 
 void Board::finishGame(__attribute__((unused)) PieceColor winner) {
     finished_ = true;
+}
+
+Piece *Board::getPiece(Position position) const {
+    for (const auto &piece : *this) {
+        if (piece->getPosition() == position) {
+            return piece;
+        }
+    }
+    return nullptr;
+}
+
+std::list<Position> Board::getPossibleMoves(Position position) const {
+    auto piece = getPiece(position);
+    if (piece == nullptr) {
+        throw std::invalid_argument("Error: Empty square.");
+    }
+
+    return piece->getPossibleMoves();
+}
+
+bool Board::isFinished() const {
+    return finished_;
+}
+
+void Board::changeTurn_() {
+    turn_ = turn_ == PieceColor::WHITE ? PieceColor::BLACK : PieceColor::WHITE;
 }
 
 void Board::generatePiecesForColor_(PieceColor color) {
@@ -128,10 +139,6 @@ void Board::generatePiecesForColor_(PieceColor color) {
     pieces_.push_back(new Queen(color, Position(4, rank), this));
 
     pieces_.push_back(new King(color, Position(5, rank), this));
-}
-
-void Board::changeTurn() {
-    turn_ = turn_ == PieceColor::WHITE ? PieceColor::BLACK : PieceColor::WHITE;
 }
 
 Board::~Board() {

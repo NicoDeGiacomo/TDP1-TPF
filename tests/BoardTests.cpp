@@ -213,6 +213,39 @@ TEST_CASE("Double split") {
     CHECK_EQ(board.getPiece(Position(2, 5))->getProbability(), 0.25f);
     CHECK_EQ(board.getPiece(Position(3, 2))->getProbability(), 0.5f);
 }
+
+TEST_CASE("Two double splits") {
+    Board board;
+    board.move(Position(3, 2), Position(3, 3));
+    board.move(Position(4, 7), Position(4, 6));
+
+    CHECK_EQ(board.getPiece(Position(4, 1))->getProbability(), 1.0f);
+    board.split(Position(4, 1), Position(3, 2), Position(2, 3));
+    CHECK_EQ(33, countPieces_(board));
+
+    CHECK_EQ(board.getPiece(Position(4, 1)), nullptr);
+    CHECK_EQ(board.getPiece(Position(3, 2))->getProbability(), 0.5f);
+    CHECK_EQ(board.getPiece(Position(2, 3))->getProbability(), 0.5f);
+
+    board.move(Position(8, 7), Position(8, 6));
+    board.split(Position(2, 3), Position(2, 4), Position(2, 5));
+    CHECK_EQ(34, countPieces_(board));
+
+    CHECK_EQ(board.getPiece(Position(2, 3)), nullptr);
+    CHECK_EQ(board.getPiece(Position(2, 4))->getProbability(), 0.25f);
+    CHECK_EQ(board.getPiece(Position(2, 5))->getProbability(), 0.25f);
+    CHECK_EQ(board.getPiece(Position(3, 2))->getProbability(), 0.5f);
+
+    board.move(Position(8, 6), Position(8, 5));
+    board.split(Position(3, 2), Position(4, 3), Position(1, 4));
+    CHECK_EQ(35, countPieces_(board));
+
+    CHECK_EQ(board.getPiece(Position(2, 3)), nullptr);
+    CHECK_EQ(board.getPiece(Position(2, 4))->getProbability(), 0.25f);
+    CHECK_EQ(board.getPiece(Position(2, 5))->getProbability(), 0.25f);
+    CHECK_EQ(board.getPiece(Position(4, 3))->getProbability(), 0.25f);
+    CHECK_EQ(board.getPiece(Position(1, 4))->getProbability(), 0.25f);
+}
 }
 
 TEST_SUITE("Merge") {
@@ -317,17 +350,50 @@ TEST_CASE("Double split and merge") {
     CHECK_NE(board.getPiece(Position("a4")), nullptr);
     CHECK_EQ(board.getPiece(Position("a4"))->getProbability(), 1.0f);
 }
+}
 
-TEST_CASE("Measurements") {
-    Board board;
+TEST_SUITE("Measurements") {
+TEST_CASE("Eating split - confirm") {
+    Board board(false, 1);
     board.move(Position("e2"), Position("e4"));
     board.move(Position("e7"), Position("e5"));
 
     board.split(Position("f1"), Position("b5"), Position("a6"));
     REQUIRE_EQ(33, countPieces_(board));
 
+    Piece* pieceInB7 = board.getPiece(Position("b7"));
     board.move(Position("b7"), Position("a6"));
 
-    // Clase BoardTest? Para asegurar un outcome al hacer un measurement
+    REQUIRE_EQ(31, countPieces_(board));
+    REQUIRE_NE(board.getPiece(Position("a6")), nullptr);
+    CHECK_EQ(board.getPiece(Position("a6")), pieceInB7);
+
+    CHECK_EQ(board.getPiece(Position("b7")), nullptr);
+    CHECK_EQ(board.getPiece(Position("b5")), nullptr);
+    CHECK_EQ(board.getPiece(Position("f1")), nullptr);
+}
+
+TEST_CASE("Eating split - deny") {
+    Board board(false, 3);
+    board.move(Position("e2"), Position("e4"));
+    board.move(Position("e7"), Position("e5"));
+
+    board.split(Position("f1"), Position("b5"), Position("a6"));
+    REQUIRE_EQ(33, countPieces_(board));
+
+    Piece* pieceInB7 = board.getPiece(Position("b7"));
+    board.move(Position("b7"), Position("a6"));
+
+    REQUIRE_EQ(32, countPieces_(board));
+    REQUIRE_NE(board.getPiece(Position("a6")), nullptr);
+    CHECK_EQ(board.getPiece(Position("a6")), pieceInB7);
+
+    CHECK_EQ(board.getPiece(Position("b7")), nullptr);
+    CHECK_EQ(board.getPiece(Position("f1")), nullptr);
+    CHECK_NE(board.getPiece(Position("b5")), nullptr);
+}
+
+TEST_CASE("Multiple splits") {
+    // todo: implement me!
 }
 }

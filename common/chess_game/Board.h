@@ -9,17 +9,11 @@ enum class PieceColor;
 
 class Board {
  public:
-  Board();
+  Board(bool empty = false, unsigned int seed = 0);
 
   std::list<Piece*>::const_iterator begin() const;
 
   std::list<Piece*>::const_iterator end() const;
-
-  std::list<Position> getPossibleMoves(Position position) const;
-
-  Piece* getPiece(Position position) const;
-
-  bool isFinished() const;
 
   void move(Position from, Position to);
 
@@ -29,17 +23,24 @@ class Board {
 
   void finishGame(__attribute__((unused)) PieceColor winner);
 
+  Piece* getPiece(Position position) const;
+
+  std::list<Position> getPossibleMoves(Position position) const;
+
+  bool isFinished() const;
+
   virtual ~Board();
 
  private:
   std::list<Piece*> pieces_;
   PieceColor turn_;
   bool finished_;
+  unsigned int seed_;
 
+  void changeTurn_();
   void generatePiecesForColor_(PieceColor color);
 
   friend Piece;
-  void changeTurn();
 };
 
 #endif  // BOARD_H_

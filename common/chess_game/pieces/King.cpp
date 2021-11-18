@@ -1,6 +1,10 @@
 #include "King.h"
 
+#include <utility>
+
 King::King(PieceColor color, Position position, Board* board) : Piece(color, position, board) {}
+
+King::King(PieceColor color, Position position, Board* board, std::shared_ptr<PieceSplits> splits) : Piece(color, position, board, std::move(splits)) {}
 
 char King::getDrawing() const {
     return 'W';
@@ -11,7 +15,7 @@ std::list<std::pair<int, int>> King::getVectorBeamMoves_() const {
 }
 
 std::list<std::pair<int, int>> King::getVectorStepMoves_() const {
-    // Castle: todo
+    // todo castling
     return {{1, 0}, {-1, 0}, {0, 1}, {0, -1}, {1, 1}, {1, -1}, {-1, 1}, {-1, -1}};
 }
 
@@ -25,5 +29,5 @@ void King::eat() {
 }
 
 Piece * King::createSplit_(Position to) {
-    return new King(color_, to, board_);
+    return new King(color_, to, board_, splits_);
 }

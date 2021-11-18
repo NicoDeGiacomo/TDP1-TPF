@@ -57,7 +57,7 @@ std::list<std::pair<int, int>> Pawn::getVectorStepMoves_() const {
         }
     } catch (std::invalid_argument &e) {}
 
-    // En passant: todo
+    // todo: en passant
 
     return moves;
 }
