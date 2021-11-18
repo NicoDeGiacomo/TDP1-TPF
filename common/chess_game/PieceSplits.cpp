@@ -96,7 +96,7 @@ void PieceSplits::mergeSplits(Piece *piece, Piece *with) {
     }
     propagateProbability_(node1, node2->probability);
 
-    delete piece;
+    delete with;
 }
 
 std::shared_ptr<SplitNode_> PieceSplits::findNode_(const Piece *piece) const {

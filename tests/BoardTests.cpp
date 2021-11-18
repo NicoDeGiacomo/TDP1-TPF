@@ -213,6 +213,39 @@ TEST_CASE("Double split") {
     CHECK_EQ(board.getPiece(Position(2, 5))->getProbability(), 0.25f);
     CHECK_EQ(board.getPiece(Position(3, 2))->getProbability(), 0.5f);
 }
+
+TEST_CASE("Two double splits") {
+    Board board;
+    board.move(Position(3, 2), Position(3, 3));
+    board.move(Position(4, 7), Position(4, 6));
+
+    CHECK_EQ(board.getPiece(Position(4, 1))->getProbability(), 1.0f);
+    board.split(Position(4, 1), Position(3, 2), Position(2, 3));
+    CHECK_EQ(33, countPieces_(board));
+
+    CHECK_EQ(board.getPiece(Position(4, 1)), nullptr);
+    CHECK_EQ(board.getPiece(Position(3, 2))->getProbability(), 0.5f);
+    CHECK_EQ(board.getPiece(Position(2, 3))->getProbability(), 0.5f);
+
+    board.move(Position(8, 7), Position(8, 6));
+    board.split(Position(2, 3), Position(2, 4), Position(2, 5));
+    CHECK_EQ(34, countPieces_(board));
+
+    CHECK_EQ(board.getPiece(Position(2, 3)), nullptr);
+    CHECK_EQ(board.getPiece(Position(2, 4))->getProbability(), 0.25f);
+    CHECK_EQ(board.getPiece(Position(2, 5))->getProbability(), 0.25f);
+    CHECK_EQ(board.getPiece(Position(3, 2))->getProbability(), 0.5f);
+
+    board.move(Position(8, 6), Position(8, 5));
+    board.split(Position(3, 2), Position(4, 3), Position(1, 4));
+    CHECK_EQ(35, countPieces_(board));
+
+    CHECK_EQ(board.getPiece(Position(2, 3)), nullptr);
+    CHECK_EQ(board.getPiece(Position(2, 4))->getProbability(), 0.25f);
+    CHECK_EQ(board.getPiece(Position(2, 5))->getProbability(), 0.25f);
+    CHECK_EQ(board.getPiece(Position(4, 3))->getProbability(), 0.25f);
+    CHECK_EQ(board.getPiece(Position(1, 4))->getProbability(), 0.25f);
+}
 }
 
 TEST_SUITE("Merge") {
@@ -319,6 +352,7 @@ TEST_CASE("Double split and merge") {
 }
 
 TEST_CASE("Measurements") {
+    // todo
     Board board;
     board.move(Position("e2"), Position("e4"));
     board.move(Position("e7"), Position("e5"));

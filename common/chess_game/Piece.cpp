@@ -145,7 +145,7 @@ void Piece::eat() {
 //        delete this;
 //    }
     removeFromBoard_();
-    // delete this;
+    delete this;
 }
 
 void Piece::split(Position position1, Position position2) {
@@ -177,7 +177,9 @@ void Piece::merge(Position to, Piece* other) {
         throw std::invalid_argument("Invalid move: non split.");
     }
 
-    // todo: Move must be valid. Not exception safe strong.
+    if (position_ != to) {
+        validateMove_(to);
+    }
     splits2_->mergeSplits(this, other);
     if (position_ != to) {
         move(to);
