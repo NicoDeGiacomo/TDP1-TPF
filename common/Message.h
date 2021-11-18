@@ -10,14 +10,14 @@
 
 class Message {
   bool server;
-  String from; // pepito
-  String id;
+  // String from; // pepito
+  // String id;
 protected:
     std::string _message;
 public:
     explicit Message(const std::string& message);
     virtual const std::string& getMessage() const;
-    virtual apply(Board, Chat)
+    // virtual apply(Board, Chat)
         // board.move(pos1, pos2)
         // chat
     // recv --> apply --> propagas

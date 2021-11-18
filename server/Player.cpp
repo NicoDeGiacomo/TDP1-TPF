@@ -52,7 +52,7 @@ void Player::runReceiverThread(){
         }
         std::cout << std::endl;
         std::string buffer(received, received + 4);
-        std::unique_ptr<Message> message = Protocol::StringToMessage(buffer, this.id);
+        std::unique_ptr<Message> message = Protocol::StringToMessage(buffer); // enviar this.id
         std::string bufferfordebugging = message->getMessage();
         this->queueOfReceived->produce(std::move(message));
 
