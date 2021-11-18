@@ -9,28 +9,24 @@
 #include <Socket.h>
 #include <thread>
 #include "BlockingQueue.h"
-#include "Message.h"
+#include "messages/Message.h"
 
 class Player {
 private:
     Socket socket;
-    BlockingQueue <std::unique_ptr<Message>> *queueOfReceived;
+    BlockingQueue <std::shared_ptr<Message>> *queueOfReceived;
     std::thread receiverThread;
-
-    //TODO: remove this sender queue, is just for debugging
-    BlockingQueue <Message> *_thisSenderQueueIsJustForDebugging;
+    std::string id;
 public:
     Player();
 
-    void send(const Message& message) const;
+    void send(const std::shared_ptr<Message>& message) const;
 
     bool isVacant() const;
 
     void startReceivingMessages();
-    //TODO: remove this sender queue, is just for debugging
-    void initPlayer(Socket &&socket, BlockingQueue<std::unique_ptr<Message>> *queue, BlockingQueue<Message> *thisSenderQueueIsJustForDebugging);
-    //TODO: remove this sender queue, is just for debugging
-    Player(Socket&& socket, BlockingQueue<std::unique_ptr<Message>> *queue, BlockingQueue<Message> *thisSenderQueueIsJustForDebugging);
+    void initPlayer(Socket &&socket, BlockingQueue<std::shared_ptr<Message>> *queue);
+    Player(Socket&& socket, BlockingQueue<std::shared_ptr<Message>> *queue);
 
     void runReceiverThread();
 

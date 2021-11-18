@@ -14,13 +14,13 @@
 
 class Room {
 private:
-    BlockingQueue<Message> queueToSend;
     std::thread senderThread;
-    BlockingQueue<std::unique_ptr<Message>> queueOfReceived;
+    BlockingQueue<std::shared_ptr<Message>> queueOfReceived;
     std::list<Player> _spectators;
     Player playerBlack;
     Player playerWhite;
     int roomNumber;
+    Board board;
 public:
     Room() = delete;
     Room(int number, Socket&& socket);
@@ -32,7 +32,7 @@ public:
     void runSenderThread(std::list<Player> *spectators,
                          Player* white,
                          Player* black,
-                         BlockingQueue<Message> *queue);
+                         BlockingQueue<std::shared_ptr<Message>>* queue);
 
     void joinAllThreads();
 

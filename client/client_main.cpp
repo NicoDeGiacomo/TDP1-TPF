@@ -9,7 +9,7 @@
 #include "Socket.h"
 #include <iostream>
 #include <vector>
-#include "Chat_CL.h"
+#include "Client.h"
 #include "Login.h"
 #include "GameLobby.h"
 
@@ -46,8 +46,8 @@ int main() {
     //TODO: need to encapsulate the chat
     //create the room class
     //handle the logic for client joining or leaving the room
-    Chat_CL chat; // Chat --> Client
-    chat.start();
+    Client client;
+    client.start();
     // board()
     close_client();
 

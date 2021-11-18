@@ -48,6 +48,8 @@ void Board::move(Position from, Position to) {
     }
 
     changeTurn_();
+    //for debugging
+    printBoard();
 }
 
 void Board::split(Position from, Position to1, Position to2) {
@@ -70,6 +72,8 @@ void Board::split(Position from, Position to1, Position to2) {
 
     pieceFrom->split(to1, to2);
     changeTurn_();
+    //for debugging
+    printBoard();
 }
 
 void Board::merge(Position from1, Position from2, Position to) {
@@ -88,6 +92,8 @@ void Board::merge(Position from1, Position from2, Position to) {
 
     pieceFrom1->merge(to, pieceFrom2);
     changeTurn_();
+    //for debugging
+    printBoard();
 }
 
 void Board::finishGame(__attribute__((unused)) PieceColor winner) {
@@ -144,5 +150,26 @@ void Board::generatePiecesForColor_(PieceColor color) {
 Board::~Board() {
     for (Piece* piece : pieces_) {
         delete piece;
+    }
+}
+
+void Board::printBoard() {
+    char chessBoard[8][8]{};
+    for (const auto &piece : (*this)) {
+        chessBoard[piece->getPosition().getY() - 1][piece->getPosition().getX() - 1] = piece->getDrawing();
+    }
+
+    for (auto &file : chessBoard) {
+        // printf("--------\n");
+        for (char square : file) {
+            printf("|");
+            if (square) {
+                printf("%c", square);
+            } else {
+                printf(" ");
+            }
+        }
+        printf("|");
+        printf("\n");
     }
 }

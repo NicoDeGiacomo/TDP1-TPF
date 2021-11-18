@@ -31,7 +31,9 @@ class Board {
 
   virtual ~Board();
 
- private:
+    void printBoard();
+
+private:
   std::list<Piece*> pieces_;
   PieceColor turn_;
   bool finished_;

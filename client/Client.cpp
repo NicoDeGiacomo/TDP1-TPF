@@ -6,24 +6,26 @@
 #include <iostream>
 #include <Socket.h>
 #include <thread>
-#include "Chat_CL.h"
+#include <Message.h>
+#include <Protocol.h>
+#include "Client.h"
 
-void Chat_CL::start() {
+void Client::start() {
     Socket client;
     client.connect("localhost", "7777");
     std::thread sender, receiver;
-    sender = std::thread(&Chat_CL::runSenderThread, this, &client);
-    receiver = std::thread(&Chat_CL::runReceiverThread, this, &client);
+    sender = std::thread(&Client::runSenderThread, this, &client);
+    receiver = std::thread(&Client::runReceiverThread, this, &client);
     sender.join();
     receiver.join();
 }
 
-void Chat_CL::runReceiverThread(Socket* client){
+void Client::runReceiverThread(Socket* client){
     while (true) {
-        //TODO: remove this 4 hardcoded, need to add protocol
-        char received[4];
+        //TODO: remove this 6 hardcoded, need to add protocol
+        char received[6];
         try {
-            client->receive(received, 4);
+            client->receive(received, 6);
         } catch (ClosedSocketException& e){
             std::cout << e.what() << std::endl;
             return;
@@ -32,11 +34,15 @@ void Chat_CL::runReceiverThread(Socket* client){
         for (auto &c : received){
             std::cout << c;
         }
+
+        std::string buffer(received, received + 6);
+        std::shared_ptr<Message> message = Protocol::StringToMessage(buffer, this->id);
         std::cout << std::endl << "---" << std::endl;
+        message->apply(this->board);
     }
 }
 
-void Chat_CL::runSenderThread(Socket* client){
+void Client::runSenderThread(Socket* client){
     std::string input;
     while (true) {
         input = "";
@@ -54,5 +60,9 @@ void Chat_CL::runSenderThread(Socket* client){
         }
         std::cout << "-client just sent: " << input << std::endl;
     }
+}
+
+Client::Client() {
+    this->id = "123asd";
 }
 

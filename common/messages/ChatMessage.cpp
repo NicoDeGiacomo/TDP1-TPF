@@ -11,7 +11,13 @@ const std::string &ChatMessage::getMessage() const {
     return this->_message;
 }
 
+const std::string &ChatMessage::getId() const {
+    std::cout << "get id from ChatMessage class" << std::endl;
+    return Message::getId();
+}
+
 //TODO: here i should encode the message
-ChatMessage::ChatMessage(const std::string &message) : Message(message){
+ChatMessage::ChatMessage(const std::string &message, const std::string& id) : Message(message, id){
+    this->_message = message;
     std::cout << "constructor of ChatMessage class" << std::endl;
 }

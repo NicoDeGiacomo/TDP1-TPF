@@ -9,8 +9,9 @@
 
 class SelectMessage : public Message {
 public:
-    SelectMessage(const std::string &message);
+    SelectMessage(const std::string &message, const std::string& id);
     const std::string& getMessage() const override;
+    const std::string& getId() const override;
 };
 
 

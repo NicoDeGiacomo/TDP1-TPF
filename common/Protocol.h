@@ -6,7 +6,7 @@
 #define QUANTUM_CHESS_PROTOCOL_H
 
 #include <string>
-#include <Message.h>
+#include <messages/Message.h>
 #include <memory>
 
 #define SELECT_REQUEST 's'
@@ -14,7 +14,7 @@
 #define MESSAGE_REQUEST 'm'
 
 namespace Protocol {
-    std::string MessageToString(const Message& message);
-    std::unique_ptr<Message> StringToMessage(const std::string& string);
+    std::string MessageToString(const std::shared_ptr<Message>& message);
+    std::shared_ptr<Message> StringToMessage(const std::string& string, const std::string& id);
 }
 #endif //QUANTUM_CHESS_PROTOCOL_H

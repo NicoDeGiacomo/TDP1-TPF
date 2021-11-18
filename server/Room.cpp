@@ -13,11 +13,12 @@ bool Room::isRoom(int number) const{
 void Room::runSenderThread(std::list<Player>* spectators,
                            Player* white,
                            Player* black,
-                           BlockingQueue<Message>* queue){
+                           BlockingQueue<std::shared_ptr<Message>>* queue){
     std::cout << "running sender sv thread" << std::endl;
     while (true) {
-        const Message message = queue->top();
+        std::shared_ptr<Message> message = queue->top();
         queue->pop();
+        message->apply(this->board);
         try {
             for (auto &spectator: *spectators) {
                 spectator.send(message);
@@ -35,7 +36,7 @@ void Room::runSenderThread(std::list<Player>* spectators,
             return;
         }
         std::cout << "-server just sent: " << std::endl <<
-        message.getMessage() << std::endl;
+        message->getMessage() << std::endl;
     }
 }
 
@@ -45,19 +46,19 @@ void Room::addClient(Socket &&socket) {
     //TODO: this is placeholder, it shouldnt receive a socket, rooms should receive players
     if (this->playerWhite.isVacant()) {
         //TODO: think if passing Queue To Send is needed, right now is just for debugging
-        this->playerWhite.initPlayer(std::move(socket), &this->queueOfReceived, &this->queueToSend);
+        this->playerWhite.initPlayer(std::move(socket), &this->queueOfReceived);
         std::cout << "white player created" << std::endl;
         this->playerWhite.startReceivingMessages();
     }
     else if (this->playerBlack.isVacant()) {
         //TODO: think if passing Queue To Send is needed, right now is just for debugging
-        this->playerBlack.initPlayer(std::move(socket), &this->queueOfReceived, &this->queueToSend);
+        this->playerBlack.initPlayer(std::move(socket), &this->queueOfReceived);
         std::cout << "black player created" << std::endl;
         this->playerBlack.startReceivingMessages();
     }
     else {
         //TODO: think if passing Queue To Send is needed, right now is just for debugging
-        this->_spectators.emplace_front(std::move(socket), &this->queueOfReceived, &this->queueToSend);
+        this->_spectators.emplace_front(std::move(socket), &this->queueOfReceived);
         std::cout << "spectator created" << std::endl;
         this->_spectators.front().startReceivingMessages();
     }
@@ -87,7 +88,7 @@ Room::Room(int number, Socket&& socket) : roomNumber(number) {
                         &this->_spectators,
                         &this->playerWhite,
                         &this->playerBlack,
-                        &this->queueToSend);
+                        &this->queueOfReceived);
     this->addClient(std::move(socket));
 }
 
