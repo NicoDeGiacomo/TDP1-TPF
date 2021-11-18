@@ -350,10 +350,33 @@ TEST_CASE("Double split and merge") {
     CHECK_NE(board.getPiece(Position("a4")), nullptr);
     CHECK_EQ(board.getPiece(Position("a4"))->getProbability(), 1.0f);
 }
+}
 
-TEST_CASE("Measurements") {
+TEST_SUITE("Measurements") {
+TEST_CASE("Eating split - confirm") {
     // todo
-    Board board;
+    Board board(false, 1);
+    board.move(Position("e2"), Position("e4"));
+    board.move(Position("e7"), Position("e5"));
+
+    board.split(Position("f1"), Position("b5"), Position("a6"));
+    REQUIRE_EQ(33, countPieces_(board));
+
+    Piece* pieceInB7 = board.getPiece(Position("b7"));
+    board.move(Position("b7"), Position("a6"));
+
+    REQUIRE_EQ(31, countPieces_(board));
+    REQUIRE_NE(board.getPiece(Position("a6")), nullptr);
+    CHECK_EQ(board.getPiece(Position("a6")), pieceInB7);
+
+    CHECK_EQ(board.getPiece(Position("b7")), nullptr);
+    CHECK_EQ(board.getPiece(Position("b5")), nullptr);
+    CHECK_EQ(board.getPiece(Position("f1")), nullptr);
+}
+
+TEST_CASE("Eating split - deny") {
+    // todo
+    Board board(false, 1);
     board.move(Position("e2"), Position("e4"));
     board.move(Position("e7"), Position("e5"));
 

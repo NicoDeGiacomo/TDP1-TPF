@@ -9,7 +9,7 @@ enum class PieceColor;
 
 class Board {
  public:
-  Board(bool empty = false);
+  Board(bool empty = false, unsigned int seed = 0);
 
   std::list<Piece*>::const_iterator begin() const;
 
@@ -35,6 +35,7 @@ class Board {
   std::list<Piece*> pieces_;
   PieceColor turn_;
   bool finished_;
+  unsigned int seed_;
 
   void generatePiecesForColor_(PieceColor color);
 

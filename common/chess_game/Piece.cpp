@@ -112,58 +112,25 @@ void Piece::validateMove_(const Position &position) const {
 }
 
 void Piece::eat() {
-    // todo
-//    if (this->probability_ < 1.0f) {
-//        // performMeasurement();
-//        std::vector<std::pair<int, Piece*>> probabilities;
-//        for (auto piece : splits_) {
-//            probabilities.emplace_back((int) piece->probability_ * 100, piece);
-//        }
-//
-//
-//
-//        std::random_device rd;
-//        std::uniform_int_distribution<int> distribution(1, 100);
-//        std::mt19937 engine(rd());
-//        int value = distribution(engine);
-//
-//        int sum = 0;
-//        for (auto probability : probabilities) {
-//            sum += probability.first;
-//            if (sum > value) {
-//                // pieza que queda viva
-//                auto piece = probability.second;
-//                for (auto split : piece->splits_) {
-//                    removeFromBoard_(split);
-//                    delete split;
-//                }
-//                piece->probability_ = 1.0f;
-//            }
-//        }
-//    } else {
-//        removeFromBoard_(this);
-//        delete this;
-//    }
-    removeFromBoard_();
-    delete this;
+    if (getProbability() < 1.0f) {
+        std::uniform_int_distribution<int> distribution(1, 100);
+        std::mt19937 engine(board_->seed_);
+        int value = distribution(engine);
+        if (((float) value)  / 100 <= getProbability()) {
+            splits2_->removeAllSplits();
+        } else {
+            splits2_->removeSplit(this);
+        }
+    } else {
+        removeFromBoard_();
+        delete this;
+    }
 }
 
 void Piece::split(Position position1, Position position2) {
     validateMove_(position1);
     validateMove_(position2);
 
-//    auto* split = createSplit_(position2);
-//    appendToBoard_(split);
-//    split->splits_.push_back(this);
-//    split->splits_.insert(split->splits_.begin(), splits_.begin(), splits_.end());
-//    split->probability_ = probability_ / 2;
-//
-//    move(position1);
-//    for (auto* piece : splits_) {
-//        piece->splits_.push_back(split);
-//    }
-//    splits_.push_back(split);
-//    probability_ = probability_ / 2;
     auto* split1 = createSplit_(position1);
     auto* split2 = createSplit_(position2);
     splits2_->addSplit(this, split1, split2);
@@ -178,12 +145,9 @@ void Piece::merge(Position to, Piece* other) {
     }
 
     if (position_ != to) {
-        validateMove_(to);
-    }
-    splits2_->mergeSplits(this, other);
-    if (position_ != to) {
         move(to);
     }
+    splits2_->mergeSplits(this, other);
 }
 
 void Piece::appendToBoard_() {

@@ -99,6 +99,10 @@ void PieceSplits::mergeSplits(Piece *piece, Piece *with) {
     delete with;
 }
 
+void PieceSplits::removeAllSplits() {
+    deletePiecesRecursive_(nodes_.front());
+}
+
 std::shared_ptr<SplitNode_> PieceSplits::findNode_(const Piece *piece) const {
     for (const auto& node : nodes_) {
         if (node->piece == piece) {
@@ -154,4 +158,17 @@ bool PieceSplits::_areBrothers(const std::shared_ptr<SplitNode_>& node1, const s
 
 float PieceSplits::getProbability(const Piece *piece) const {
     return findNode_(piece)->probability;
+}
+
+void PieceSplits::deletePiecesRecursive_(const std::shared_ptr<SplitNode_>& node) {
+    if (node->leaf) {
+        node->piece->removeFromBoard_();
+        delete node->piece;
+    }
+    if (node->left) {
+        deletePiecesRecursive_(node->left);
+    }
+    if (node->right) {
+        deletePiecesRecursive_(node->right);
+    }
 }

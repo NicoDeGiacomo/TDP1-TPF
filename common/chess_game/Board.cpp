@@ -1,6 +1,6 @@
 #include "Board.h"
 
-#include <Pawn.h>  // todo fix
+#include <Pawn.h>
 #include <Rook.h>
 #include <Knight.h>
 #include <Bishop.h>
@@ -8,11 +8,17 @@
 #include <King.h>
 #include <algorithm>
 #include <stdexcept>
+#include <random>
 
-Board::Board(bool empty) : turn_(PieceColor::WHITE), finished_(false) {
+Board::Board(bool empty, unsigned int seed) : turn_(PieceColor::WHITE), finished_(false), seed_(seed) {
     if (!empty) {
         generatePiecesForColor_(PieceColor::WHITE);
         generatePiecesForColor_(PieceColor::BLACK);
+    }
+
+    if (seed_ == 0) {
+        std::random_device rd;
+        seed_ = rd();
     }
 }
 
