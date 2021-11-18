@@ -15,12 +15,6 @@ class Board {
 
   std::list<Piece*>::const_iterator end() const;
 
-  std::list<Position> getPossibleMoves(Position position) const;
-
-  Piece* getPiece(Position position) const;
-
-  bool isFinished() const;
-
   void move(Position from, Position to);
 
   void split(Position from, Position to1, Position to2);
@@ -28,6 +22,12 @@ class Board {
   void merge(Position from1, Position from2, Position to);
 
   void finishGame(__attribute__((unused)) PieceColor winner);
+
+  Piece* getPiece(Position position) const;
+
+  std::list<Position> getPossibleMoves(Position position) const;
+
+  bool isFinished() const;
 
   virtual ~Board();
 
@@ -37,10 +37,10 @@ class Board {
   bool finished_;
   unsigned int seed_;
 
+  void changeTurn_();
   void generatePiecesForColor_(PieceColor color);
 
   friend Piece;
-  void changeTurn();
 };
 
 #endif  // BOARD_H_

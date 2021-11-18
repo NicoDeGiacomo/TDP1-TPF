@@ -374,16 +374,26 @@ TEST_CASE("Eating split - confirm") {
 }
 
 TEST_CASE("Eating split - deny") {
-    // todo
-    Board board(false, 1);
+    Board board(false, 3);
     board.move(Position("e2"), Position("e4"));
     board.move(Position("e7"), Position("e5"));
 
     board.split(Position("f1"), Position("b5"), Position("a6"));
     REQUIRE_EQ(33, countPieces_(board));
 
+    Piece* pieceInB7 = board.getPiece(Position("b7"));
     board.move(Position("b7"), Position("a6"));
 
-    // Clase BoardTest? Para asegurar un outcome al hacer un measurement
+    REQUIRE_EQ(32, countPieces_(board));
+    REQUIRE_NE(board.getPiece(Position("a6")), nullptr);
+    CHECK_EQ(board.getPiece(Position("a6")), pieceInB7);
+
+    CHECK_EQ(board.getPiece(Position("b7")), nullptr);
+    CHECK_EQ(board.getPiece(Position("f1")), nullptr);
+    CHECK_NE(board.getPiece(Position("b5")), nullptr);
+}
+
+TEST_CASE("Multiple splits") {
+    // todo: implement me!
 }
 }

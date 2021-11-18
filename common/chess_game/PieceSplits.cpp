@@ -75,8 +75,9 @@ void PieceSplits::mergeSplits(Piece *piece, Piece *with) {
         throw std::invalid_argument("Invalid move: split not found.");
     }
 
-    if (!_areBrothers(node1, node2) && !_areBrothers(node1->father.lock(), node2)
-        && !_areBrothers(node1, node2->father.lock())) {
+    if (!areBrothers_(node1, node2) && !areBrothers_(node1->father.lock(),
+                                                     node2)
+        && !areBrothers_(node1, node2->father.lock())) {
         throw std::invalid_argument("Invalid move: non mergeable splits.");
     }
 
@@ -91,6 +92,14 @@ void PieceSplits::mergeSplits(Piece *piece, Piece *with) {
     propagateProbability_(node1, node2->probability);
 
     delete with;
+}
+
+bool PieceSplits::contains(const Piece* piece) const {
+    return findNode_(piece) != nullptr;
+}
+
+float PieceSplits::getProbability(const Piece *piece) const {
+    return findNode_(piece)->probability;
 }
 
 void PieceSplits::removeAllSplits() {
@@ -163,11 +172,7 @@ bool PieceSplits::propagateProbability_(const std::shared_ptr<SplitNode_>& node,
     return false;
 }
 
-bool PieceSplits::contains(const Piece* piece) const {
-    return findNode_(piece) != nullptr;
-}
-
-bool PieceSplits::_areBrothers(const std::shared_ptr<SplitNode_>& node1, const std::shared_ptr<SplitNode_>& node2) {
+bool PieceSplits::areBrothers_(const std::shared_ptr<SplitNode_>& node1, const std::shared_ptr<SplitNode_>& node2) {
     if (node1 == nullptr || node2 == nullptr) {
         return false;
     }
@@ -177,8 +182,4 @@ bool PieceSplits::_areBrothers(const std::shared_ptr<SplitNode_>& node1, const s
     }
 
     return true;
-}
-
-float PieceSplits::getProbability(const Piece *piece) const {
-    return findNode_(piece)->probability;
 }

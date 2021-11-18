@@ -15,25 +15,23 @@ enum class PieceColor { WHITE, BLACK };
 
 class Piece : public Drawable {
  public:
-  Position getPosition() const;
-
-  PieceColor getColor() const;
-
-  std::list<Position> getPossibleMoves() const;
-
-  float getProbability() const;
-
   void move(Position position);
-
-  virtual void eat();
 
   virtual void split(Position position1, Position position2);
 
   void merge(Position to, Piece* other);
 
+  virtual void eat();
+
+  std::list<Position> getPossibleMoves() const;
+
+  float getProbability() const;
+
+  Position getPosition() const;
+
+  PieceColor getColor() const;
+
   virtual ~Piece() = default;
-
-
 
  protected:
   Position position_;
@@ -57,10 +55,10 @@ class Piece : public Drawable {
   void validateMove_(const Position &position) const;
   void appendToBoard_();
   bool isSplit_(Piece *other) const;
-
-  friend PieceSplits;
   void finishMeasure_();
   void removeFromBoard_();
+
+  friend PieceSplits;
 };
 
 #endif  // PIECE_H_

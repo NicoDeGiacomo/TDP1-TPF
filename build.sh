@@ -4,4 +4,4 @@ mkdir build || exit
 cd build || exit
 cmake .. || exit
 make || exit
-./TESTS
+valgrind  --leak-check=full --track-fds=yes ./TESTS

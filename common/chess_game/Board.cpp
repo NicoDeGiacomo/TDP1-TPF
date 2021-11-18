@@ -30,29 +30,6 @@ std::list<Piece*>::const_iterator Board::end() const {
     return pieces_.end();
 }
 
-Piece *Board::getPiece(Position position) const {
-    // todo: hacer que pieces_ sea un mapa, para mejor eficiencia?
-    for (const auto &piece : *this) {
-        if (piece->getPosition() == position) {
-            return piece;
-        }
-    }
-    return nullptr;
-}
-
-std::list<Position> Board::getPossibleMoves(Position position) const {
-    auto piece = getPiece(position);
-    if (piece == nullptr) {
-        throw std::invalid_argument("Error: Empty square.");
-    }
-
-    return piece->getPossibleMoves();
-}
-
-bool Board::isFinished() const {
-    return finished_;
-}
-
 void Board::move(Position from, Position to) {
     auto pieceFrom = getPiece(from);
     auto pieceTo = getPiece(to);
@@ -70,7 +47,7 @@ void Board::move(Position from, Position to) {
         pieceTo->eat();
     }
 
-    changeTurn();
+    changeTurn_();
 }
 
 void Board::split(Position from, Position to1, Position to2) {
@@ -92,7 +69,7 @@ void Board::split(Position from, Position to1, Position to2) {
     }
 
     pieceFrom->split(to1, to2);
-    changeTurn();
+    changeTurn_();
 }
 
 void Board::merge(Position from1, Position from2, Position to) {
@@ -110,11 +87,37 @@ void Board::merge(Position from1, Position from2, Position to) {
     }
 
     pieceFrom1->merge(to, pieceFrom2);
-    changeTurn();
+    changeTurn_();
 }
 
 void Board::finishGame(__attribute__((unused)) PieceColor winner) {
     finished_ = true;
+}
+
+Piece *Board::getPiece(Position position) const {
+    for (const auto &piece : *this) {
+        if (piece->getPosition() == position) {
+            return piece;
+        }
+    }
+    return nullptr;
+}
+
+std::list<Position> Board::getPossibleMoves(Position position) const {
+    auto piece = getPiece(position);
+    if (piece == nullptr) {
+        throw std::invalid_argument("Error: Empty square.");
+    }
+
+    return piece->getPossibleMoves();
+}
+
+bool Board::isFinished() const {
+    return finished_;
+}
+
+void Board::changeTurn_() {
+    turn_ = turn_ == PieceColor::WHITE ? PieceColor::BLACK : PieceColor::WHITE;
 }
 
 void Board::generatePiecesForColor_(PieceColor color) {
@@ -136,10 +139,6 @@ void Board::generatePiecesForColor_(PieceColor color) {
     pieces_.push_back(new Queen(color, Position(4, rank), this));
 
     pieces_.push_back(new King(color, Position(5, rank), this));
-}
-
-void Board::changeTurn() {
-    turn_ = turn_ == PieceColor::WHITE ? PieceColor::BLACK : PieceColor::WHITE;
 }
 
 Board::~Board() {

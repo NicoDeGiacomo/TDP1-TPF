@@ -9,6 +9,7 @@ class Piece;
 class PieceSplits {
  public:
   PieceSplits(Piece* piece);
+
   virtual ~PieceSplits() = default;
 
   void addSplit(Piece* piece, Piece* split1, Piece* split2);
@@ -17,20 +18,20 @@ class PieceSplits {
 
   void mergeSplits(Piece* piece, Piece* with);
 
-  void removeAllSplits();
-
   bool contains(const Piece* piece) const;
 
   float getProbability(const Piece* piece) const;
 
+  void removeAllSplits();
+
  private:
   std::shared_ptr<SplitNode_> root_;
 
+  void removeAllSplits_(const std::shared_ptr<SplitNode_>& node);
   std::shared_ptr<SplitNode_> findNode_(const Piece *piece) const;
   std::shared_ptr<SplitNode_> findNode_(const std::shared_ptr<SplitNode_>& node, const Piece *piece) const;
   bool propagateProbability_(const std::shared_ptr<SplitNode_>& node, float probability);
-  static bool _areBrothers(const std::shared_ptr<SplitNode_>& node1, const std::shared_ptr<SplitNode_>& node2);
-  void removeAllSplits_(const std::shared_ptr<SplitNode_>& node);
+  static bool areBrothers_(const std::shared_ptr<SplitNode_>& node1, const std::shared_ptr<SplitNode_>& node2);
 };
 
 #endif  // QUANTUM_CHESS_COMMON_CHESS_GAME_PIECESPLITS_H_
