@@ -7,28 +7,35 @@
 
 
 #include <Socket.h>
-#include <thread>
+// #include <thread>
 #include "BlockingQueue.h"
 #include "messages/Message.h"
+#include "ClientProxy.h"
+#include "RecvThread.h"
 
 class Player {
 private:
-    Socket socket;
-    BlockingQueue <std::shared_ptr<Message>> *queueOfReceived;
-    std::thread receiverThread;
-    std::string id;
+    // Socket socket;
+    ClientProxy proxy;
+    BlockingQueue <std::shared_ptr<Message>> &queueOfReceived;
+    // std::thread receiverThread;
+    RecvThread recvThread;
+    std::string name;
+    int id;
 public:
-    Player();
+    Player(BlockingQueue <std::shared_ptr<Message>> &queueOfReceived);
+
+    Player(Socket &socket, BlockingQueue<std::shared_ptr<Message>> &queue, int id);
+
+    void initPlayer(Socket &socket, int id);
 
     void send(const std::shared_ptr<Message>& message) const;
 
     bool isVacant() const;
 
     void startReceivingMessages();
-    void initPlayer(Socket &&socket, BlockingQueue<std::shared_ptr<Message>> *queue);
-    Player(Socket&& socket, BlockingQueue<std::shared_ptr<Message>> *queue);
 
-    void runReceiverThread();
+    // void runReceiverThread();
 
     void join();
 

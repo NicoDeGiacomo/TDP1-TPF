@@ -22,18 +22,18 @@ void RoomManager::start() {
         if (peer.isNotActive())
             //proceed to clean and shutdown threads
             break;
-        std::cout << "valid socket accepted" << std::endl;
+        // std::cout << "valid socket accepted" << std::endl;
         //TODO: protocol for reciving from the client the room number and position wanted
         int roomNumber = 1;
         bool roomExists = false;
         for (Room& room : listOfRooms){
             if (!room.isRoom(roomNumber)) continue;
-            room.addClient(std::move(peer));
+            room.addClient(peer);
             roomExists = true;
             break;
         }
         if (!roomExists){
-            listOfRooms.emplace_back(roomNumber, std::move(peer));
+            listOfRooms.emplace_back(roomNumber, peer);
         }
         
         //TODO: process where the new client wants to go, which room spectator or player

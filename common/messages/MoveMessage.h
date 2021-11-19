@@ -13,9 +13,9 @@
 class MoveMessage : public Message {
     std::unique_ptr<MovementCommand> movement;
 public:
-    MoveMessage(const std::string &message, const std::string& id);
+    MoveMessage(const std::string &message, int id);
     const std::string& getMessage() const override;
-    const std::string& getId() const override;
+    // const std::string& getId() const override;
     void apply(Board& board) const override;
 
     int charToInt(const char &i);

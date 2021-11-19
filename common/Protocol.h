@@ -13,8 +13,15 @@
 #define MOVE_REQUEST 'o'
 #define MESSAGE_REQUEST 'm'
 
+// #define CHAT_CHAR 'c'
+// #define NORMAL_MOVE_CHAR 'n'
+// #define SPLIT_MOVE_CHAR 's'
+// #define MERGE_MOVE_CHAR 'm'
+// #define SELECT_CHAR 's'
+
+
 namespace Protocol {
     std::string MessageToString(const std::shared_ptr<Message>& message);
-    std::shared_ptr<Message> StringToMessage(const std::string& string, const std::string& id);
+    std::shared_ptr<Message> StringToMessage(const std::string& string, int id);
 }
 #endif //QUANTUM_CHESS_PROTOCOL_H

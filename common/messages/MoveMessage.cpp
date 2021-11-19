@@ -15,13 +15,13 @@ const std::string &MoveMessage::getMessage() const {
     return this->_message;
 }
 
-const std::string &MoveMessage::getId() const {
-    std::cout << "get id from MoveMessage class" << std::endl;
-    return Message::getId();
-}
+// const std::string &MoveMessage::getId() const {
+//     std::cout << "get id from MoveMessage class" << std::endl;
+//     return Message::getId();
+// }
 
 //TODO: here i should encode the message
-MoveMessage::MoveMessage(const std::string &message, const std::string& id) : Message(message, id) {
+MoveMessage::MoveMessage(const std::string &message, int id) : Message(message, id) {
     std::cout << "constructor of MoveMessage class" << std::endl;
     this->movement.reset();
     if (message.at(1) == NORMAL_MOVE){

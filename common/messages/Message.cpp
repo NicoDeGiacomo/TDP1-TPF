@@ -6,15 +6,15 @@
 #include "Message.h"
 
 const std::string& Message::getMessage() const {
-    std::cout << "get message from Message class" << std::endl;
+    // std::cout << "get message from Message class" << std::endl;
     return this->_message;
 }
 
-const std::string& Message::getId() const {
-    std::cout << "get id from Message class" << std::endl;
-    return this->idOfCreator;
+int Message::getId() const {
+    // std::cout << "get id from Message class" << std::endl;
+    return this->id;
 }
 
-Message::Message(const std::string& message, const std::string& id) : idOfCreator(id), _message(message) {
-    std::cout << "constructor of Message class" << std::endl;
+Message::Message(const std::string& message, int id) : _message(message), id(id) {
+    // std::cout << "constructor of Message class" << std::endl;
 }

@@ -2,18 +2,15 @@
 #define _RECV_THREAD_H_
 
 #include "Thread.h"
-#include "ServerProxy.h"
+#include "ClientProxy.h"
 #include "BlockingQueue.h"
 #include "Message.h"
-#include "ServerProxy.h"
-#include "Board.h"
 #include <atomic>
 
 class RecvThread: public Thread {
 private:
-    ServerProxy &proxy;
-    // Socket &socket;
-    BlockingQueue<std::shared_ptr<Message>> &queue;
+    ClientProxy &proxy;
+    BlockingQueue <std::shared_ptr<Message>> &queueOfReceived;
     std::atomic<bool> keep_talking;
 
 protected:
@@ -27,7 +24,7 @@ public:
     /*
      *  Constructor
      */
-    RecvThread(ServerProxy &proxy, BlockingQueue<std::shared_ptr<Message>> &queue);
+    RecvThread(ClientProxy &proxy, BlockingQueue<std::shared_ptr<Message>> &queue);
     /*
      *  Constructor por copia
      */

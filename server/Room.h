@@ -11,28 +11,31 @@
 #include <thread>
 #include "BlockingQueue.h"
 #include "Player.h"
+#include "SendThread.h"
 
 class Room {
 private:
-    std::thread senderThread;
+    int roomNumber;
     BlockingQueue<std::shared_ptr<Message>> queueOfReceived;
     std::list<Player> _spectators;
     Player playerBlack;
     Player playerWhite;
-    int roomNumber;
     Board board;
+    SendThread sendThread;
+    int next_id;
 public:
     Room() = delete;
-    Room(int number, Socket&& socket);
+    
+    Room(int number, Socket &socket);
 
     bool isRoom(int number) const;
 
-    void addClient(Socket &&socket);
+    void addClient(Socket &socket);
 
-    void runSenderThread(std::list<Player> *spectators,
-                         Player* white,
-                         Player* black,
-                         BlockingQueue<std::shared_ptr<Message>>* queue);
+    // void runSenderThread(std::list<Player> *spectators,
+    //                      Player* white,
+    //                      Player* black,
+    //                      BlockingQueue<std::shared_ptr<Message>>* queue);
 
     void joinAllThreads();
 

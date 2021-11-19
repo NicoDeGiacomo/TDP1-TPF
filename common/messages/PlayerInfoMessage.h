@@ -1,15 +1,11 @@
-//
-// Created by ale on 16/11/21.
-//
-
-#ifndef QUANTUM_CHESS_CHATMESSAGE_H
-#define QUANTUM_CHESS_CHATMESSAGE_H
+#ifndef QUANTUM_CHESS_PLAYER_INFO_MESSAGE_H
+#define QUANTUM_CHESS_PLAYER_INFO_MESSAGE_H
 
 #include "Message.h"
 
-class ChatMessage : public Message {
+class PlayerInfoMessage : public Message {
 public:
-    ChatMessage(const std::string &message, int id);
+    PlayerInfoMessage(const std::string &message, int id);
     const std::string& getMessage() const override;
     // const std::string& getId() const override;
     virtual void apply(Board&) const override;

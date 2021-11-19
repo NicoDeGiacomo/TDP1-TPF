@@ -7,19 +7,23 @@
 
 
 #include <Board.h>
+#include "Socket.h"
+#include "BlockingQueue.h"
+#include "Message.h"
+#include "ServerProxy.h"
 
 class Client {
 private:
+    ServerProxy proxy;
     Board board;
-    std::string id;
+    int id;
+    std::string name;
+    BlockingQueue<std::shared_ptr<Message>> recvQueue;
+    // BlockingQueue<std::shared_ptr<Message>> sendQueue;
 public:
-    Client();
+    Client(const char *host, const char *service);
 
-    void start();
-
-    void runSenderThread(Socket* client);
-
-    void runReceiverThread(Socket* client);
+    void run();
 };
 
 

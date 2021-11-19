@@ -4,16 +4,18 @@
 #include "Thread.h"
 #include "ServerProxy.h"
 #include "BlockingQueue.h"
-#include "ServerProxy.h"
-#include "Message.h"
+#include "Player.h"
+#include "Board.h"
+#include <list>
 #include <atomic>
 
 class SendThread: public Thread {
 private:
-    // ServerProxy proxy;
-    // BlockingQueue<std::shared_ptr<Message>> &queue;
-    ServerProxy &proxy;
-    int id;
+    BlockingQueue <std::shared_ptr<Message>> &queueOfReceived;
+    Player &playerWhite;
+    Player &playerBlack;
+    std::list<Player> &spectators;
+    Board &board;
     std::atomic<bool> keep_talking;
 
 protected:
@@ -27,7 +29,11 @@ public:
     /*
      *  Constructor
      */
-    SendThread(ServerProxy &proxy, int id);
+    SendThread(BlockingQueue <std::shared_ptr<Message>> &queueOfReceived,
+               Player &playerWhite,
+               Player &playerBlack,
+               std::list<Player> &spectators,
+               Board &board);
     /*
      *  Constructor por copia
      */

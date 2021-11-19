@@ -12,12 +12,14 @@
 class Message {
 protected:
     bool server;
-    std::string idOfCreator;
+    // std::string idOfCreator;
     std::string _message;
+    int id;
 public:
-    explicit Message(const std::string& message, const std::string& id);
+    Message();
+    Message(const std::string& message, int id);
     virtual const std::string& getMessage() const;
-    virtual const std::string& getId() const;
+    int getId() const;
     virtual void apply(Board&) const {}
     // virtual apply(Board, Chat)
         // board.move(pos1, pos2)
