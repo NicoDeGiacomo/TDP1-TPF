@@ -15,13 +15,13 @@
 class Client {
 private:
     ServerProxy proxy;
-    Board board;
+    Board* _board;
     int id;
     std::string name;
     BlockingQueue<std::shared_ptr<Message>> recvQueue;
     // BlockingQueue<std::shared_ptr<Message>> sendQueue;
 public:
-    Client(const char *host, const char *service);
+    Client(const char *host, const char *service, Board* board);
 
     void run();
 };

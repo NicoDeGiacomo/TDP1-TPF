@@ -9,6 +9,12 @@ GameLobby::GameLobby(SDL2pp::Renderer &renderer, std::string user_name)
     // this->insert_text(room2, 20, 50, 50, A_CENTER);
 	Button b1(renderer, room1, 30, 50, 40, A_CENTER);
 	Button b2(renderer, room2, 30, 50, 50, A_CENTER);
+    //TODO: give buttons listener methods onClick(method)
+    //TODO: create event handler, needed to launch events
+    // so
+    // button.onClick ([](){ EventHandler::OnStartGamePressed() });
+    // and objects need to listen to that event so like
+    // EventHandler::onStartGame += DoSomething;
 	buttons.push_back(b1);
 	buttons.push_back(b2);
 }

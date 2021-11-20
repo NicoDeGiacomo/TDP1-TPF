@@ -7,7 +7,7 @@ King::King(PieceColor color, Position position, Board* board) : Piece(color, pos
 King::King(PieceColor color, Position position, Board* board, std::shared_ptr<PieceSplits> splits) : Piece(color, position, board, std::move(splits)) {}
 
 char King::getDrawing() const {
-    return 'W';
+    return 'K';
 }
 
 std::list<std::pair<int, int>> King::getVectorBeamMoves_() const {

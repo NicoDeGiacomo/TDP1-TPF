@@ -7,7 +7,7 @@ Knight::Knight(PieceColor color, Position position, Board* board) : Piece(color,
 Knight::Knight(PieceColor color, Position position, Board* board, std::shared_ptr<PieceSplits> splits) : Piece(color, position, board, std::move(splits)) {}
 
 char Knight::getDrawing() const {
-    return 'K';
+    return 'N';
 }
 
 std::list<std::pair<int, int>> Knight::getVectorBeamMoves_() const {

@@ -3,6 +3,7 @@
 #include <SDL.hh>
 #include <SDL.h>
 #include <SDL2pp/SDL2pp.hh>
+#include <SDL_image.h>
 #include <cstdio>
 #include <Renderer.cc>
 
@@ -12,6 +13,7 @@
 #include "Client.h"
 #include "Login.h"
 #include "GameLobby.h"
+#include "MainGameScreen.h"
 
 void close_client() {
     std::cout << "closing client" << std::endl;
@@ -20,7 +22,8 @@ void close_client() {
 
 int main(int argc, const char *argv[]) {
     printf("STARTING CLIENT\n");
-    /*SDL2pp::SDL sdl(SDL_INIT_VIDEO | SDL_INIT_AUDIO);
+    SDL2pp::SDL sdl(SDL_INIT_VIDEO | SDL_INIT_AUDIO);
+    IMG_Init(IMG_INIT_PNG);
     SDL2pp::Window window("libSDL2pp demo: fill",
                           SDL_WINDOWPOS_UNDEFINED,
                           SDL_WINDOWPOS_UNDEFINED,
@@ -32,16 +35,26 @@ int main(int argc, const char *argv[]) {
     // Create accelerated video renderer with default driver
 	SDL2pp::Renderer renderer(window, -1, SDL_RENDERER_ACCELERATED);
 
+    /////////////////////////////////
+    /// Testing board window, you can comment this block if you want (640x480 hardcoded)
+    Board board;
+    MainGameScreen mainGameScreen(renderer, &board);
+    std::cin.get(); //any key to continue
+    /////////////////////////////////
+
+
     Login login(renderer);
     login.start();
     std::string user_name = login.get_user_name();
 
     std::cout << "USERNAME: " << user_name << "\n";
     GameLobby gameLobby(renderer, user_name);
+
+
     if (gameLobby.start() == 1) {
         close_client();
         return 0;
-    }*/
+    }
     
     //TODO: need to encapsulate the chat
     //create the room class
@@ -63,7 +76,7 @@ int main(int argc, const char *argv[]) {
     }
     
     try {
-        Client client(argv[1], argv[2]);
+        Client client(argv[1], argv[2], &board);
         client.run();
         close_client();
     } catch(const std::exception &e) {

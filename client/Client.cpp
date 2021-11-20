@@ -20,7 +20,7 @@ void Client::run() {
 
     while (1) {
         std::shared_ptr<Message> msg_ptr = recvQueue.top();
-        msg_ptr->apply(board);
+        msg_ptr->apply((*_board));
         // sendQueue.produce(std::move(msg_ptr));
         recvQueue.pop();
     }
@@ -30,8 +30,9 @@ void Client::run() {
 }
 
 
-Client::Client(const char *host, const char *service) : proxy() {
+Client::Client(const char *host, const char *service, Board* board) : proxy() {
     proxy.connect(host, service);
+    this->_board = board;
     // std::cout << "Choose your name: ";
     // std::getline(std::cin, name);
     // int room_id;

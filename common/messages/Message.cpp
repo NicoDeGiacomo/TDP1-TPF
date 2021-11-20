@@ -18,3 +18,7 @@ int Message::getId() const {
 Message::Message(const std::string& message, int id) : _message(message), id(id) {
     // std::cout << "constructor of Message class" << std::endl;
 }
+
+Message::Message() {
+
+}

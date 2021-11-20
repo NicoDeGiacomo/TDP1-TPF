@@ -5,7 +5,7 @@
 Pawn::Pawn(PieceColor color, Position position, Board* board) : Piece(color, position, board) {}
 
 char Pawn::getDrawing() const {
-    return 'p';
+    return 'P';
 }
 
 std::list<std::pair<int, int>> Pawn::getVectorBeamMoves_() const {
