@@ -11,6 +11,7 @@ class King : public Piece {
   void eat() override;
 
  private:
+    const char PIECE_KEY = 'k';
   King(PieceColor color, Position position, Board* board, std::shared_ptr<PieceSplits> splits);
   std::list<std::pair<int, int>> getVectorBeamMoves_() const override;
   std::list<std::pair<int, int>> getVectorStepMoves_() const override;

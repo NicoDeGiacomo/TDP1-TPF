@@ -10,6 +10,7 @@ class Pawn : public Piece {
   char getDrawing() const override;
 
  private:
+    const char PIECE_KEY = 'p';
   std::list<std::pair<int, int>> getVectorBeamMoves_() const override;
   std::list<std::pair<int, int>> getVectorStepMoves_() const override;
   Piece * createSplit_(Position to) override;

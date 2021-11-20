@@ -8,12 +8,20 @@
 MainGameScreen::MainGameScreen(SDL2pp::Renderer &renderer, Board* board) : Screen(renderer) {
     this->_board = board;
     texturesMap.insert({BOARD_KEY, SDL2pp::Texture(renderer, BOARD_FILEPATH)});
-    texturesMap.insert({PAWN_KEY, SDL2pp::Texture(renderer, PAWN_FILEPATH)});
-    texturesMap.insert({ROOK_KEY, SDL2pp::Texture(renderer, ROOK_FILEPATH)});
-    texturesMap.insert({KNIGHT_KEY, SDL2pp::Texture(renderer, KNIGHT_FILEPATH)});
-    texturesMap.insert({BISHOP_KEY, SDL2pp::Texture(renderer, BISHOP_FILEPATH)});
-    texturesMap.insert({KING_KEY, SDL2pp::Texture(renderer, KING_FILEPATH)});
-    texturesMap.insert({QUEEN_KEY, SDL2pp::Texture(renderer, QUEEN_FILEPATH)});
+
+    texturesMap.insert({WHITE_PAWN_KEY, SDL2pp::Texture(renderer, WHITE_PAWN_FILEPATH)});
+    texturesMap.insert({WHITE_ROOK_KEY, SDL2pp::Texture(renderer, WHITE_ROOK_FILEPATH)});
+    texturesMap.insert({WHITE_KNIGHT_KEY, SDL2pp::Texture(renderer, WHITE_KNIGHT_FILEPATH)});
+    texturesMap.insert({WHITE_BISHOP_KEY, SDL2pp::Texture(renderer, WHITE_BISHOP_FILEPATH)});
+    texturesMap.insert({WHITE_KING_KEY, SDL2pp::Texture(renderer, WHITE_KING_FILEPATH)});
+    texturesMap.insert({WHITE_QUEEN_KEY, SDL2pp::Texture(renderer, WHITE_QUEEN_FILEPATH)});
+
+    texturesMap.insert({BLACK_PAWN_KEY, SDL2pp::Texture(renderer, BLACK_PAWN_FILEPATH)});
+    texturesMap.insert({BLACK_ROOK_KEY, SDL2pp::Texture(renderer, BLACK_ROOK_FILEPATH)});
+    texturesMap.insert({BLACK_KNIGHT_KEY, SDL2pp::Texture(renderer, BLACK_KNIGHT_FILEPATH)});
+    texturesMap.insert({BLACK_BISHOP_KEY, SDL2pp::Texture(renderer, BLACK_BISHOP_FILEPATH)});
+    texturesMap.insert({BLACK_KING_KEY, SDL2pp::Texture(renderer, BLACK_KING_FILEPATH)});
+    texturesMap.insert({BLACK_QUEEN_KEY, SDL2pp::Texture(renderer, BLACK_QUEEN_FILEPATH)});
     //renderer.Copy(texturesMap.at(PAWN_KEY), SDL2pp::NullOpt, SDL2pp::NullOpt);
     redraw();
 }

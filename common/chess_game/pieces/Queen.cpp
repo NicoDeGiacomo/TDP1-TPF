@@ -7,7 +7,9 @@ Queen::Queen(PieceColor color, Position position, Board* board) : Piece(color, p
 Queen::Queen(PieceColor color, Position position, Board* board, std::shared_ptr<PieceSplits> splits) : Piece(color, position, board, std::move(splits)) {}
 
 char Queen::getDrawing() const {
-    return 'Q';
+    if (color_ == PieceColor::WHITE)
+        return toupper(PIECE_KEY);
+    return tolower(PIECE_KEY);
 }
 
 std::list<std::pair<int, int>> Queen::getVectorBeamMoves_() const {

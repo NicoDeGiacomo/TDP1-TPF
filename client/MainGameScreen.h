@@ -11,21 +11,37 @@
 #include "Screen.h"
 
 #define BOARD_KEY 'Z'
-#define PAWN_KEY 'P'
-#define ROOK_KEY 'R'
-#define KNIGHT_KEY 'N'
-#define BISHOP_KEY 'B'
-#define KING_KEY 'K'
-#define QUEEN_KEY 'Q'
+
+#define WHITE_PAWN_KEY 'P'
+#define WHITE_ROOK_KEY 'R'
+#define WHITE_KNIGHT_KEY 'N'
+#define WHITE_BISHOP_KEY 'B'
+#define WHITE_KING_KEY 'K'
+#define WHITE_QUEEN_KEY 'Q'
+
+#define BLACK_PAWN_KEY 'p'
+#define BLACK_ROOK_KEY 'r'
+#define BLACK_KNIGHT_KEY 'n'
+#define BLACK_BISHOP_KEY 'b'
+#define BLACK_KING_KEY 'k'
+#define BLACK_QUEEN_KEY 'q'
 
 
 #define BOARD_FILEPATH "../assets/sprites/board.png"
-#define PAWN_FILEPATH "../assets/sprites/pawn.png"
-#define ROOK_FILEPATH "../assets/sprites/rook.png"
-#define KNIGHT_FILEPATH "../assets/sprites/knight.png"
-#define BISHOP_FILEPATH "../assets/sprites/bishop.png"
-#define KING_FILEPATH "../assets/sprites/king.png"
-#define QUEEN_FILEPATH "../assets/sprites/queen.png"
+
+#define WHITE_PAWN_FILEPATH "../assets/sprites/whitePawn.png"
+#define WHITE_ROOK_FILEPATH "../assets/sprites/whiteRook.png"
+#define WHITE_KNIGHT_FILEPATH "../assets/sprites/whiteKnight.png"
+#define WHITE_BISHOP_FILEPATH "../assets/sprites/whiteBishop.png"
+#define WHITE_KING_FILEPATH "../assets/sprites/whiteKing.png"
+#define WHITE_QUEEN_FILEPATH "../assets/sprites/whiteQueen.png"
+
+#define BLACK_PAWN_FILEPATH "../assets/sprites/blackPawn.png"
+#define BLACK_ROOK_FILEPATH "../assets/sprites/blackRook.png"
+#define BLACK_KNIGHT_FILEPATH "../assets/sprites/blackKnight.png"
+#define BLACK_BISHOP_FILEPATH "../assets/sprites/blackBishop.png"
+#define BLACK_KING_FILEPATH "../assets/sprites/blackKing.png"
+#define BLACK_QUEEN_FILEPATH "../assets/sprites/blackQueen.png"
 
 class MainGameScreen : public Screen {
 private:

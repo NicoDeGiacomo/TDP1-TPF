@@ -7,7 +7,9 @@ Bishop::Bishop(PieceColor color, Position position, Board* board) : Piece(color,
 Bishop::Bishop(PieceColor color, Position position, Board* board, std::shared_ptr<PieceSplits> splits) : Piece(color, position, board, std::move(splits)) {}
 
 char Bishop::getDrawing() const {
-    return 'B';
+    if (color_ == PieceColor::WHITE)
+        return toupper(PIECE_KEY);
+    return tolower(PIECE_KEY);
 }
 
 std::list<std::pair<int, int>> Bishop::getVectorBeamMoves_() const {
