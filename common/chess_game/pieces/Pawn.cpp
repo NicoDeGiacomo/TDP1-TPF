@@ -2,13 +2,8 @@
 
 #include <stdexcept>
 
-Pawn::Pawn(PieceColor color, Position position, Board* board) : Piece(color, position, board) {}
+Pawn::Pawn(PieceColor color, Position position, Board* board) : Piece(color, position, board, 'p') {}
 
-char Pawn::getDrawing() const {
-    if (color_ == PieceColor::WHITE)
-        return toupper(PIECE_KEY);
-    return tolower(PIECE_KEY);
-}
 
 std::list<std::pair<int, int>> Pawn::getVectorBeamMoves_() const {
     return {};

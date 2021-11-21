@@ -2,15 +2,10 @@
 
 #include <utility>
 
-Bishop::Bishop(PieceColor color, Position position, Board* board) : Piece(color, position, board) {}
+Bishop::Bishop(PieceColor color, Position position, Board* board) : Piece(color, position, board, 'b') {}
 
-Bishop::Bishop(PieceColor color, Position position, Board* board, std::shared_ptr<PieceSplits> splits) : Piece(color, position, board, std::move(splits)) {}
+Bishop::Bishop(PieceColor color, Position position, Board* board, std::shared_ptr<PieceSplits> splits) : Piece(color, position, board, std::move(splits), 'b') {}
 
-char Bishop::getDrawing() const {
-    if (color_ == PieceColor::WHITE)
-        return toupper(PIECE_KEY);
-    return tolower(PIECE_KEY);
-}
 
 std::list<std::pair<int, int>> Bishop::getVectorBeamMoves_() const {
     return {{1, 1}, {1, -1}, {-1, 1}, {-1, -1}};

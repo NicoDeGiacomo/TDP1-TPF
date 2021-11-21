@@ -2,15 +2,10 @@
 
 #include <utility>
 
-Knight::Knight(PieceColor color, Position position, Board* board) : Piece(color, position, board) {}
+Knight::Knight(PieceColor color, Position position, Board* board) : Piece(color, position, board, 'n') {}
 
-Knight::Knight(PieceColor color, Position position, Board* board, std::shared_ptr<PieceSplits> splits) : Piece(color, position, board, std::move(splits)) {}
+Knight::Knight(PieceColor color, Position position, Board* board, std::shared_ptr<PieceSplits> splits) : Piece(color, position, board, std::move(splits), 'n') {}
 
-char Knight::getDrawing() const {
-    if (color_ == PieceColor::WHITE)
-        return toupper(PIECE_KEY);
-    return tolower(PIECE_KEY);
-}
 
 std::list<std::pair<int, int>> Knight::getVectorBeamMoves_() const {
     return {};

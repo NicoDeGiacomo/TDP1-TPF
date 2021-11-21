@@ -31,6 +31,8 @@ class Piece : public Drawable {
 
   PieceColor getColor() const;
 
+    char getDrawing() const override;
+
   virtual ~Piece() = default;
 
  protected:
@@ -39,10 +41,11 @@ class Piece : public Drawable {
   bool has_moved_;
   Board* board_;
   std::shared_ptr<PieceSplits> splits_;
+    const char pieceKey_;
 
-  Piece(PieceColor color, Position position);
-  Piece(PieceColor color, Position position, Board* board);
-  Piece(PieceColor color, Position position, Board* board, std::shared_ptr<PieceSplits> splits);
+  Piece(PieceColor color, Position position, const char pieceKey);
+  Piece(PieceColor color, Position position, Board* board, const char pieceKey);
+  Piece(PieceColor color, Position position, Board* board, std::shared_ptr<PieceSplits> splits, const char pieceKey);
   virtual std::list<std::pair<int, int>> getVectorBeamMoves_() const = 0;
   virtual std::list<std::pair<int, int>> getVectorStepMoves_() const = 0;
   virtual Piece * createSplit_(Position to) = 0;

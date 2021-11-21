@@ -2,15 +2,10 @@
 
 #include <utility>
 
-King::King(PieceColor color, Position position, Board* board) : Piece(color, position, board) {}
+King::King(PieceColor color, Position position, Board* board) : Piece(color, position, board, 'k') {}
 
-King::King(PieceColor color, Position position, Board* board, std::shared_ptr<PieceSplits> splits) : Piece(color, position, board, std::move(splits)) {}
+King::King(PieceColor color, Position position, Board* board, std::shared_ptr<PieceSplits> splits) : Piece(color, position, board, std::move(splits), 'k') {}
 
-char King::getDrawing() const {
-    if (color_ == PieceColor::WHITE)
-        return toupper(PIECE_KEY);
-    return tolower(PIECE_KEY);
-}
 
 std::list<std::pair<int, int>> King::getVectorBeamMoves_() const {
     return {};

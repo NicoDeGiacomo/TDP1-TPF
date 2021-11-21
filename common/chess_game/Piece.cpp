@@ -4,26 +4,29 @@
 #include <utility>
 #include "Piece.h"
 
-Piece::Piece(PieceColor color, Position position)
+Piece::Piece(PieceColor color, Position position, const char pieceKey)
     : position_(position),
       color_(color),
       has_moved_(false),
       board_(nullptr),
-      splits_(std::make_shared<PieceSplits>(this)) {}
+      splits_(std::make_shared<PieceSplits>(this)),
+      pieceKey_(pieceKey) {}
 
-Piece::Piece(PieceColor color, Position position, Board *board)
+Piece::Piece(PieceColor color, Position position, Board *board, const char pieceKey)
     : position_(position),
       color_(color),
       has_moved_(false),
       board_(board),
-      splits_(std::make_shared<PieceSplits>(this)) {}
+      splits_(std::make_shared<PieceSplits>(this)),
+      pieceKey_(pieceKey) {}
 
-Piece::Piece(PieceColor color, Position position, Board *board, std::shared_ptr<PieceSplits> splits)
+Piece::Piece(PieceColor color, Position position, Board *board, std::shared_ptr<PieceSplits> splits, const char pieceKey)
     : position_(position),
       color_(color),
       has_moved_(false),
       board_(board),
-      splits_(std::move(splits)) {}
+      splits_(std::move(splits)),
+      pieceKey_(pieceKey) {}
 
 Position Piece::getPosition() const {
     return position_;
@@ -31,6 +34,12 @@ Position Piece::getPosition() const {
 
 PieceColor Piece::getColor() const {
     return color_;
+}
+
+char Piece::getDrawing() const {
+    if (color_ == PieceColor::WHITE)
+        return toupper(pieceKey_);
+    return tolower(pieceKey_);
 }
 
 void Piece::move(Position position) {
