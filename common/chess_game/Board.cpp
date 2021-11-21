@@ -172,4 +172,5 @@ void Board::printBoard() {
         printf("|");
         printf("\n");
     }
+    printf("-----------------\n");
 }

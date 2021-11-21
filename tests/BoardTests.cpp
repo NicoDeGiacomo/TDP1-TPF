@@ -12,17 +12,23 @@ TEST_CASE("Create Chess Board") {
     for (auto piece : board) {
         total++;
         switch (piece->getDrawing()) {
+            case 'P':
             case 'p': pawns++;
                 break;
+            case 'r':
             case 'R': rooks++;
                 break;
-            case 'K': knights++;
+            case 'n':
+            case 'N': knights++;
                 break;
+            case 'b':
             case 'B': bishops++;
                 break;
+            case 'q':
             case 'Q': queens++;
                 break;
-            case 'W': kings++;
+            case 'k':
+            case 'K': kings++;
                 break;
         }
     }
