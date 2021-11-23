@@ -47,6 +47,11 @@ class MainGameScreen : public Screen {
 private:
     std::unordered_map<char,SDL2pp::Texture> texturesMap;
     Board *_board;
+    std::vector<Button> buttons;
+    int screenWidth = 640;
+    int screenHeight = 480;
+    int pieceWidth = screenWidth / 8;
+    int pieceHeight = screenHeight / 8;
 public:
     MainGameScreen(SDL2pp::Renderer &renderer, Board* board);
     int start() override;

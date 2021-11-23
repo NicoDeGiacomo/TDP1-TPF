@@ -56,8 +56,11 @@ void Button::redraw() {
             break;
     }
 
-    renderer.Copy(text_sprite, 
-                SDL2pp::NullOpt, 
-                SDL2pp::Rect(x_text_pos, y_text_pos, 
-                            text_width, text_height));
+    renderer.Copy(text_sprite,
+                  SDL2pp::NullOpt,
+                  SDL2pp::Rect(x_text_pos, y_text_pos,text_width, text_height));
+}
+
+void Button::onClick(void (*buttonClicked)()) {
+    buttonClicked();
 }

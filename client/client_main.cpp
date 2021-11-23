@@ -39,6 +39,7 @@ int main(int argc, const char *argv[]) {
     /// Testing board window, you can comment this block if you want (640x480 hardcoded)
     Board board;
     MainGameScreen mainGameScreen(renderer, &board);
+    mainGameScreen.start();
     std::cin.get(); //any key to continue
     /////////////////////////////////
 
@@ -74,7 +75,7 @@ int main(int argc, const char *argv[]) {
         << "./client <host> <service>\n";
         return 1;
     }
-    
+
     try {
         Client client(argv[1], argv[2], &board);
         client.run();
