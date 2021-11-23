@@ -102,21 +102,23 @@ float PieceSplits::getProbability(const Piece *piece) const {
     return findNode_(piece)->probability;
 }
 
-void PieceSplits::removeAllSplits() {
-    removeAllSplits_(root_);
+void PieceSplits::confirmSplit(Piece *piece) {
+    removeAllSplits_(root_, piece);
+    piece->resetSplits();
 }
 
-void PieceSplits::removeAllSplits_(const std::shared_ptr<SplitNode_>& node) {
-    if (node->leaf) {
+void PieceSplits::removeAllSplits_(const std::shared_ptr<SplitNode_> &node,
+                                   Piece *piece) {
+    if (node->leaf && node->piece != piece) {
         node->piece->removeFromBoard_();
         delete node->piece;
         return;
     }
     if (node->left) {
-        removeAllSplits_(node->left);
+        removeAllSplits_(node->left, piece);
     }
     if (node->right) {
-        removeAllSplits_(node->right);
+        removeAllSplits_(node->right, piece);
     }
 }
 
@@ -149,7 +151,7 @@ bool PieceSplits::propagateProbability_(const std::shared_ptr<SplitNode_>& node,
     if (node->leaf) {
         node->probability += probability;
         if (node->probability >= 1.0f) {
-            node->piece->finishMeasure_();
+            node->piece->resetSplits();
             return true;
         }
     } else {

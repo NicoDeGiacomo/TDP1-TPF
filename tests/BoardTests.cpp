@@ -137,6 +137,10 @@ TEST_CASE("Finish game") {
     board.move(Position(1, 4), Position(5, 8));
     CHECK(board.isFinished());
 }
+
+TEST_CASE("Finish quantum game") {
+    // todo: implement me!
+}
 }
 }
 
@@ -391,15 +395,115 @@ TEST_CASE("Eating split - deny") {
     board.move(Position("b7"), Position("a6"));
 
     REQUIRE_EQ(32, countPieces_(board));
-    REQUIRE_NE(board.getPiece(Position("a6")), nullptr);
-    CHECK_EQ(board.getPiece(Position("a6")), pieceInB7);
+    REQUIRE_EQ(board.getPiece(Position("a6")), nullptr);
+    REQUIRE_NE(board.getPiece(Position("b7")), nullptr);
+    CHECK_EQ(board.getPiece(Position("b7")), pieceInB7);
 
-    CHECK_EQ(board.getPiece(Position("b7")), nullptr);
     CHECK_EQ(board.getPiece(Position("f1")), nullptr);
     CHECK_NE(board.getPiece(Position("b5")), nullptr);
 }
 
-TEST_CASE("Multiple splits") {
+TEST_CASE("Double split and Measurement - Confirm - 25%") {
+    Board board(false, 5);
+    board.move(Position("e2"), Position("e4"));
+    board.move(Position("e7"), Position("e5"));
+
+    board.split(Position("f1"), Position("e2"), Position("d3"));
+    REQUIRE_EQ(33, countPieces_(board));
+
+    board.move(Position("h7"), Position("h6"));
+    board.split(Position("d3"), Position("b5"), Position("a6"));
+    REQUIRE_EQ(34, countPieces_(board));
+
+    Piece* b7Pawn = board.getPiece(Position("b7"));
+    board.move(Position("b7"), Position("a6"));
+
+    REQUIRE_EQ(31, countPieces_(board));
+    CHECK_NE(board.getPiece(Position("a6")), nullptr);
+    CHECK_EQ(board.getPiece(Position("a6"))->getProbability(), 1.0f);
+    CHECK_EQ(board.getPiece(Position("a6")), b7Pawn);
+    CHECK_EQ(board.getPiece(Position("e2")), nullptr);
+    CHECK_EQ(board.getPiece(Position("d3")), nullptr);
+    CHECK_EQ(board.getPiece(Position("b5")), nullptr);
+}
+
+TEST_CASE("Double split and Measurement - Deny - 25%") {
+    Board board(false, 17);
+    board.move(Position("e2"), Position("e4"));
+    board.move(Position("e7"), Position("e5"));
+
+    board.split(Position("f1"), Position("e2"), Position("d3"));
+    REQUIRE_EQ(33, countPieces_(board));
+
+    board.move(Position("h7"), Position("h6"));
+    board.split(Position("d3"), Position("b5"), Position("a6"));
+    REQUIRE_EQ(34, countPieces_(board));
+
+    board.move(Position("b7"), Position("a6"));
+
+    REQUIRE_EQ(33, countPieces_(board));
+    REQUIRE_EQ(board.getPiece(Position("a6")), nullptr);
+    REQUIRE_NE(board.getPiece(Position("b7")), nullptr);
+
+    CHECK_NE(board.getPiece(Position("e2")), nullptr);
+    CHECK_EQ(board.getPiece(Position("e2"))->getProbability(), 0.5f);
+    CHECK_NE(board.getPiece(Position("b5")), nullptr);
+    CHECK_EQ(board.getPiece(Position("b5"))->getProbability(), 0.5f);
+}
+
+TEST_CASE("Double split and Measurement - Confirm - 50%") {
+    Board board(false, 2);
+    board.move(Position("e2"), Position("e4"));
+    board.move(Position("e7"), Position("e5"));
+
+    board.split(Position("f1"), Position("e2"), Position("a6"));
+    REQUIRE_EQ(33, countPieces_(board));
+
+    board.move(Position("h7"), Position("h6"));
+    board.split(Position("e2"), Position("b5"), Position("c4"));
+    REQUIRE_EQ(34, countPieces_(board));
+
+    Piece* b7Pawn = board.getPiece(Position("b7"));
+    board.move(Position("b7"), Position("a6"));
+
+    REQUIRE_EQ(31, countPieces_(board));
+    CHECK_NE(board.getPiece(Position("a6")), nullptr);
+    CHECK_EQ(board.getPiece(Position("a6"))->getProbability(), 1.0f);
+    CHECK_EQ(board.getPiece(Position("a6")), b7Pawn);
+    CHECK_EQ(board.getPiece(Position("b5")), nullptr);
+    CHECK_EQ(board.getPiece(Position("c4")), nullptr);
+}
+
+TEST_CASE("Double split and Measurement - Deny - 50%") {
+    Board board(false, 3);
+    board.move(Position("e2"), Position("e4"));
+    board.move(Position("e7"), Position("e5"));
+
+    board.split(Position("f1"), Position("e2"), Position("a6"));
+    REQUIRE_EQ(33, countPieces_(board));
+
+    board.move(Position("h7"), Position("h6"));
+    board.split(Position("e2"), Position("b5"), Position("c4"));
+    REQUIRE_EQ(34, countPieces_(board));
+    CHECK_NE(board.getPiece(Position("b5")), nullptr);
+    CHECK_EQ(board.getPiece(Position("b5"))->getProbability(), 0.25f);
+    CHECK_NE(board.getPiece(Position("c4")), nullptr);
+    CHECK_EQ(board.getPiece(Position("c4"))->getProbability(), 0.25f);
+
+    board.move(Position("b7"), Position("a6"));
+    REQUIRE_EQ(33, countPieces_(board));
+    REQUIRE_EQ(board.getPiece(Position("a6")), nullptr);
+    REQUIRE_NE(board.getPiece(Position("b7")), nullptr);
+
+    CHECK_NE(board.getPiece(Position("b5")), nullptr);
+    CHECK_EQ(board.getPiece(Position("b5"))->getProbability(), 0.5f);
+    CHECK_NE(board.getPiece(Position("c4")), nullptr);
+    CHECK_EQ(board.getPiece(Position("c4"))->getProbability(), 0.5f);
+}
+}
+
+TEST_SUITE("Entanglements") {
+TEST_CASE("Simple entanglement") {
     // todo: implement me!
 }
 }

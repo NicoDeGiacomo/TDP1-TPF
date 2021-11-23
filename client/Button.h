@@ -17,6 +17,9 @@ public:
            int flags);
     void redraw();
     void click(SDL_MouseButtonEvent& b);
+
+    void onClick(void (*buttonClicked)());
+
 private:
     SDL2pp::Renderer &renderer;
     std::string text;

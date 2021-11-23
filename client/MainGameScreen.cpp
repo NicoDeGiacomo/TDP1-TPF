@@ -2,8 +2,10 @@
 // Created by ale on 20/11/21.
 //
 
-#include <SDL_image.h>
+//#include <SDL_image.h>
+#include "Button.h"
 #include "MainGameScreen.h"
+#include "EventManager.h"
 
 MainGameScreen::MainGameScreen(SDL2pp::Renderer &renderer, Board* board) : Screen(renderer) {
     this->_board = board;
@@ -23,23 +25,70 @@ MainGameScreen::MainGameScreen(SDL2pp::Renderer &renderer, Board* board) : Scree
     texturesMap.insert({BLACK_KING_KEY, SDL2pp::Texture(renderer, BLACK_KING_FILEPATH)});
     texturesMap.insert({BLACK_QUEEN_KEY, SDL2pp::Texture(renderer, BLACK_QUEEN_FILEPATH)});
     //renderer.Copy(texturesMap.at(PAWN_KEY), SDL2pp::NullOpt, SDL2pp::NullOpt);
+    //std::string asd = "BUTTON";
+    //Button button(renderer, asd, 30, 50, 50, A_CENTER);
+    //button.onClick([](){ EventManager::OnStartGamePressed(); });
+    //this->buttons.push_back(button);
     redraw();
 }
 
 int MainGameScreen::start() {
+    SDL_bool done = SDL_FALSE;
+    bool pieceSelected = false;
+
+    while (!done) {
+
+        // Event processing:
+        // - If window is closed, or Q or Escape buttons are pressed,
+        //   quit the application
+        SDL_Event event;
+        int positionFromX;
+        int positionFromY;
+        while (SDL_PollEvent(&event)) {
+            switch (event.type) {
+                case SDL_QUIT:
+                    return 1;
+                case SDL_KEYDOWN:
+                    switch (event.key.keysym.sym) {
+                        case SDLK_ESCAPE: case SDLK_q:
+                            return 1;
+                    }
+                    break;
+                case SDL_MOUSEBUTTONDOWN:
+                    int mouseX, mouseY;
+                    SDL_GetMouseState(&mouseX, &mouseY);
+                    std::cout << "xmouse " << mouseX << " ymouse " << mouseY << std::endl;
+                    int clampedMouseXToGrid = ceil((float)mouseX / pieceWidth);
+                    int clampedMouseYToGrid = ceil((float)mouseY / pieceHeight);
+                    std::cout << "grid position x " << clampedMouseXToGrid << " grid position y " << clampedMouseYToGrid << std::endl;
+                    if (pieceSelected)
+                        this->_board->move(Position(positionFromX, positionFromY),
+                                           Position(clampedMouseXToGrid, clampedMouseYToGrid));
+                    else {
+                        positionFromX = clampedMouseXToGrid;
+                        positionFromY = clampedMouseYToGrid;
+                    }
+                    pieceSelected = !pieceSelected;
+                    break;
+            }
+        }
+
+        redraw();
+
+        // Frame limiter: sleep for a little bit to not eat 100% of CPU
+        SDL_Delay(1);
+    }
     return 0;
 }
 
 void MainGameScreen::redraw() {
     //todo: this shouldn't be hardcoded, also make 'redraw()' listen for screen resize
-    int screenWidth = 640;
-    int screenHeight = 480;
-    int pieceWidth = screenWidth / 8;
-    int pieceHeight = screenHeight / 8;
     // Clear screen
     renderer.Clear();
 
     renderer.Copy(texturesMap.at(BOARD_KEY), SDL2pp::NullOpt, SDL2pp::NullOpt);
+
+    //this->buttons.front().redraw();
 
     for (const auto &piece : (*_board)) {
         piece->getDrawing();
