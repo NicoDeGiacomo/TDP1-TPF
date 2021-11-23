@@ -6,6 +6,8 @@
 #include <NormalMove.h>
 #include <NormalMoveMessage.h>
 #include <thread>
+#include <SplitMoveMessage.h>
+#include <MergeMoveMessage.h>
 #include "Button.h"
 #include "MainGameScreen.h"
 #include "EventManager.h"
@@ -39,6 +41,8 @@ MainGameScreen::MainGameScreen(SDL2pp::Renderer &renderer, Board* board, Blockin
 void MainGameScreen::run() {
     SDL_bool done = SDL_FALSE;
     bool pieceSelected = false;
+    bool firstEmptySelected = false;
+    char typeOfMove = 'n';
 
     while (!done) {
 
@@ -48,6 +52,8 @@ void MainGameScreen::run() {
         SDL_Event event;
         int positionFromX;
         int positionFromY;
+        int positionFrom2X;
+        int positionFrom2Y;
         while (SDL_PollEvent(&event)) {
             switch (event.type) {
                 case SDL_QUIT:
@@ -56,6 +62,18 @@ void MainGameScreen::run() {
                     switch (event.key.keysym.sym) {
                         case SDLK_ESCAPE: case SDLK_q:
                             return;
+                        case SDLK_n:
+                            std::cout << "NNNNNNNNNNNNNNNNNN" << std::endl;
+                            typeOfMove = 'n';
+                            break;
+                        case SDLK_s:
+                            std::cout << "SSSSSSSSSSSSSSSSSSSSSSSSS" << std::endl;
+                            typeOfMove = 's';
+                            break;
+                        case SDLK_m:
+                            std::cout << "MMMMMMMMMMMMMMMMMMMMM" << std::endl;
+                            typeOfMove = 'm';
+                            break;
                     }
                     break;
                 case SDL_MOUSEBUTTONDOWN:
@@ -65,32 +83,91 @@ void MainGameScreen::run() {
                     int clampedMouseXToGrid = ceil((float)mouseX / pieceWidth);
                     int clampedMouseYToGrid = ceil((float)mouseY / pieceHeight);
                     std::cout << "grid position x " << clampedMouseXToGrid << " grid position y " << clampedMouseYToGrid << std::endl;
-                    if (pieceSelected) {
-                        //n1213
-                        /*this->userInputQueue->produce(std::make_shared<NormalMoveMessage>(
-                                Position(positionFromX, positionFromY),
-                                Position(clampedMouseXToGrid, clampedMouseYToGrid)));*/
-                        //todo: remove this, mega hardcoded
-                        std::string message = "n";
-                        message += std::to_string(positionFromX) +
-                                std::to_string(positionFromY) +
-                                std::to_string(clampedMouseXToGrid) +
-                                std::to_string(clampedMouseYToGrid);
-                        std::cout << "message hardcoded is: " << message << std::endl;
-                        this->userInputQueue->produce(std::make_shared<NormalMoveMessage>(
-                                message, 2
+                    switch (typeOfMove) {
+                        case 'n':
+                            if (pieceSelected) {
+                                /*this->userInputQueue->produce(std::make_shared<NormalMoveMessage>(
+                                        Position(positionFromX, positionFromY),
+                                        Position(clampedMouseXToGrid, clampedMouseYToGrid)));*/
+                                //todo: remove this, mega hardcoded
+                                std::string message = "n";
+                                message += std::to_string(positionFromX) +
+                                           std::to_string(positionFromY) +
+                                           std::to_string(clampedMouseXToGrid) +
+                                           std::to_string(clampedMouseYToGrid);
+                                std::cout << "message hardcoded is: " << message << std::endl;
+                                this->userInputQueue->produce(std::make_shared<NormalMoveMessage>(
+                                        message, 2
                                 ));
-                        //todo: elegir entre esto v o esto ^
-                        /*cliente.movePieza(Position1, position2)
-                            //cliente mueve en su board,
-                            //cliente envia el movimiento al sv*/
+                                //todo: elegir entre esto v o esto ^
+                                /*cliente.movePieza(Position1, position2)
+                                    //cliente mueve en su board,
+                                    //cliente envia el movimiento al sv*/
+                            }
+                            else {
+                                positionFromX = clampedMouseXToGrid;
+                                positionFromY = clampedMouseYToGrid;
+                            }
+                            pieceSelected = !pieceSelected;
+                            break;
+                        case 's':
+                            std::cout << "enter split" << std::endl;
+                            if (!pieceSelected){
+                                positionFromX = clampedMouseXToGrid;
+                                positionFromY = clampedMouseYToGrid;
+                                pieceSelected = true;
+                                firstEmptySelected = false;
+                            } else if (!firstEmptySelected) {
+                                positionFrom2X = clampedMouseXToGrid;
+                                positionFrom2Y = clampedMouseYToGrid;
+                                firstEmptySelected = true;
+                            } else {
+                                std::string message = "s";
+                                message += std::to_string(positionFromX) +
+                                           std::to_string(positionFromY) +
+                                            std::to_string(positionFrom2X) +
+                                            std::to_string(positionFrom2Y) +
+                                           std::to_string(clampedMouseXToGrid) +
+                                           std::to_string(clampedMouseYToGrid);
+                                std::cout << "message hardcoded is: " << message << std::endl;
+                                this->userInputQueue->produce(std::make_shared<SplitMoveMessage>(
+                                        message, 2
+                                ));
+                                pieceSelected = false;
+                                firstEmptySelected = false;
+                                typeOfMove = 'n';
+                            }
+                            break;
+                        case 'm':
+                            std::cout << "enter merge" << std::endl;
+                            if (!pieceSelected){
+                                positionFromX = clampedMouseXToGrid;
+                                positionFromY = clampedMouseYToGrid;
+                                pieceSelected = true;
+                                firstEmptySelected = false;
+                            } else if (!firstEmptySelected) {
+                                positionFrom2X = clampedMouseXToGrid;
+                                positionFrom2Y = clampedMouseYToGrid;
+                                firstEmptySelected = true;
+                            } else {
+                                std::string message = "m";
+                                message += std::to_string(positionFromX) +
+                                           std::to_string(positionFromY) +
+                                           std::to_string(positionFrom2X) +
+                                           std::to_string(positionFrom2Y) +
+                                           std::to_string(clampedMouseXToGrid) +
+                                           std::to_string(clampedMouseYToGrid);
+                                std::cout << "message hardcoded is: " << message << std::endl;
+                                this->userInputQueue->produce(std::make_shared<MergeMoveMessage>(
+                                        message, 2
+                                ));
+                                pieceSelected = false;
+                                firstEmptySelected = false;
+                                typeOfMove = 'n';
+                            }
+                        default:
+                            break;
                     }
-                    else {
-                        positionFromX = clampedMouseXToGrid;
-                        positionFromY = clampedMouseYToGrid;
-                    }
-                    pieceSelected = !pieceSelected;
-                    break;
             }
         }
 
