@@ -11,16 +11,20 @@ void SendThread::run() {
     std::string input;
     std::cout << "Running SendThread\n";
     while (keep_talking) {
-        input = "";
+        /*input = "";
         std::getline(std::cin, input);
         if (input.empty()) {
             break;
-        }
+        }*/
         try {
-            std::cout << "Sending: " << input << "\n";
-            std::shared_ptr<Message> msg = Protocol::StringToMessage(input, this->id);
+            std::cout << "Sending " << "\n";
+            std::shared_ptr<Message> msg = this->_queue.top();
+            this->_queue.pop();
+            //std::cout << "Sending: " << input << "\n";
+            //std::shared_ptr<Message> msg = Protocol::StringToMessage(input, this->id);
             msg->apply(board);
             proxy.send(msg);
+            std::cout << "sent " << "\n";
         } catch (ClosedSocketException& e){
             //TODO: for some reason this catch isnt catching, the socket
             //is throwing the error receiving bytes exception instead
@@ -40,11 +44,12 @@ void SendThread::run() {
     Metodos publicos
 ************************/
 
-SendThread::SendThread(ServerProxy &proxy, Board &board, int id)
+SendThread::SendThread(ServerProxy &proxy, Board &board, int id, BlockingQueue<std::shared_ptr<Message>> &queue)
                 : proxy(proxy),
                   board(board),
                   id(id),
-                  keep_talking(true) {}
+                  keep_talking(true),
+                  _queue(queue) {}
 
 void SendThread::stop() {
     this->keep_talking = false;

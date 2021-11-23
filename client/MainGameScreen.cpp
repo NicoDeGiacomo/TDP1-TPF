@@ -66,9 +66,20 @@ void MainGameScreen::run() {
                     int clampedMouseYToGrid = ceil((float)mouseY / pieceHeight);
                     std::cout << "grid position x " << clampedMouseXToGrid << " grid position y " << clampedMouseYToGrid << std::endl;
                     if (pieceSelected) {
-                        this->userInputQueue->produce(std::make_shared<NormalMoveMessage>(
+                        //n1213
+                        /*this->userInputQueue->produce(std::make_shared<NormalMoveMessage>(
                                 Position(positionFromX, positionFromY),
-                                Position(clampedMouseXToGrid, clampedMouseYToGrid)));
+                                Position(clampedMouseXToGrid, clampedMouseYToGrid)));*/
+                        //todo: remove this, mega hardcoded
+                        std::string message = "n";
+                        message += std::to_string(positionFromX) +
+                                std::to_string(positionFromY) +
+                                std::to_string(clampedMouseXToGrid) +
+                                std::to_string(clampedMouseYToGrid);
+                        std::cout << "message hardcoded is: " << message << std::endl;
+                        this->userInputQueue->produce(std::make_shared<NormalMoveMessage>(
+                                message, 2
+                                ));
                         //todo: elegir entre esto v o esto ^
                         /*cliente.movePieza(Position1, position2)
                             //cliente mueve en su board,

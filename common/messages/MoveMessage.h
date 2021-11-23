@@ -14,7 +14,8 @@ class MoveMessage : public Message {
 protected:
     std::unique_ptr<MovementCommand> movement;
 public:
-    MoveMessage()= default;
+    MoveMessage(std::string& message);
+    MoveMessage() {};
     MoveMessage(const std::string &message, int id);
     const std::string getMessage() const override;
     // const std::string& getId() const override;

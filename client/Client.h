@@ -19,7 +19,7 @@ private:
     int id;
     std::string name;
     BlockingQueue<std::shared_ptr<Message>> recvQueue;
-    // BlockingQueue<std::shared_ptr<Message>> sendQueue;
+    BlockingQueue<std::shared_ptr<Message>> sendQueue;
 public:
     Client(const char *host, const char *service, Board &board);
 

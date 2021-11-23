@@ -18,6 +18,8 @@
 ************************/
 
 std::shared_ptr<Message> ClientProxy::decodeChatMessage() {
+
+    std::cout << "start decoding chat message" << std::endl;
     char _msg_len[2];
     socket.receive(_msg_len, 2);
     unsigned short int name_len_be;
@@ -28,6 +30,8 @@ std::shared_ptr<Message> ClientProxy::decodeChatMessage() {
     char *buf = &msg[0];
     socket.receive(buf, msg_len);
     std::string msg_str(buf, msg_len);
+
+    std::cout << "finish decoding chat message " << msg_str << "." << std::endl;
     return Protocol::StringToMessage(msg_str, id);
 }
 
@@ -95,6 +99,7 @@ std::shared_ptr<Message> ClientProxy::recv() {
 
     switch (type) {
     case CHAT_CHAR:
+        std::cout << "about to decode chat message" << std::endl;
         msg_ptr = decodeChatMessage();
         break;
     case NORMAL_MOVE_CHAR:

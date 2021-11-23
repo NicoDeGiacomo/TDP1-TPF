@@ -20,9 +20,11 @@ namespace Protocol {
     std::shared_ptr<Message> StringToMessage(const std::string& string, int id) {  // receive string id
         if (string.at(0) == CHAT_CHAR) {
             std::cout << "Sending CHAT MESSAGE\n";
+            std::cout << "creating chat message" << string << std::endl;
             return std::make_shared<ChatMessage>(string, id);
         } else if (string.at(0) == NORMAL_MOVE_CHAR) {
             std::cout << "Sending NORMAL_MOVE MESSAGE\n";
+            std::cout << "creating normal message" << string << std::endl;
             return std::make_shared<NormalMoveMessage>(string, id);
         } else if (string.at(0) == MERGE_MOVE_CHAR) {
             std::cout << "Sending MERGE_MOVE MESSAGE\n";

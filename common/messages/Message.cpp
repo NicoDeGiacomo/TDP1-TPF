@@ -7,7 +7,7 @@
 
 const std::string Message::getMessage() const {
     // std::cout << "get message from Message class" << std::endl;
-    return this->_message;
+    return this->_message; //n1213 //c05n1213
 }
 
 int Message::getId() const {

@@ -10,8 +10,11 @@
 
 void RecvThread::run() {
     while (keep_talking) {
+        std::cout << "sv received message1" << std::endl;
         std::shared_ptr<Message> message = proxy.recv();
+        std::cout << "sv received message2" << std::endl;
         queueOfReceived.produce(std::move(message));
+        std::cout << "sv received message3" << std::endl;
     }
 }
 

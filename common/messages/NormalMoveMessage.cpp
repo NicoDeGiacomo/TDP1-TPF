@@ -16,11 +16,12 @@ NormalMoveMessage::NormalMoveMessage(const std::string &message, int id) : MoveM
                     this->charToInt(message.at(2)));
     Position to(this->charToInt(message.at(3)),
                 this->charToInt(message.at(4)));
+    std::cout << "finish constructor" << std::endl;
     this->movement = std::make_unique<NormalMove>(std::move(from),
                                                     std::move(to));
 }
 
-NormalMoveMessage::NormalMoveMessage(Position&& from, Position&& to) : MoveMessage() {
+/*NormalMoveMessage::NormalMoveMessage(const std::string &message) : MoveMessage() {
     this->movement = std::make_unique<NormalMove>(std::move(from),
-                                                  std::move(to));
-}
+                                                  std::move(to));*/
+//}

@@ -14,7 +14,7 @@
 
 void Client::run() {
     RecvThread recvThread(proxy, recvQueue);
-    SendThread sendThread(proxy, _board, id);
+    SendThread sendThread(proxy, _board, id, sendQueue);
     recvThread.start();
     sendThread.start();
 
@@ -40,7 +40,7 @@ void Client::run() {
 }*/
 
 BlockingQueue<std::shared_ptr<Message>>* Client::getQueue(){
-    return &recvQueue;
+    return &sendQueue;
 }
 
 Client::Client(const char *host, const char *service, Board &board) : proxy(), _board(board) {

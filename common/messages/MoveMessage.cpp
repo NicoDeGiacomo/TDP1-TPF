@@ -76,3 +76,7 @@ void MoveMessage::apply(Board &board) const {
     std::cout << "apply move message" << std::endl;
     this->movement->move(board);
 }
+
+MoveMessage::MoveMessage(std::string& message) : Message(message, 5) {
+
+}
