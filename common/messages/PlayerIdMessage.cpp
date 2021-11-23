@@ -11,6 +11,6 @@ void PlayerIdMessage::apply(Board &board) const {
     
 }
 
-const std::string &PlayerIdMessage::getMessage() const {
+const std::string PlayerIdMessage::getMessage() const {
     return Message::getMessage();
 }

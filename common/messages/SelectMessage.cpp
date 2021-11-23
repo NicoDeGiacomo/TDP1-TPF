@@ -6,7 +6,7 @@
 #include <iostream>
 
 //TODO: here i should decode the message
-const std::string &SelectMessage::getMessage() const {
+const std::string SelectMessage::getMessage() const {
     std::cout << "get message from SelectMessage class" << std::endl;
     return this->_message;
 }

@@ -18,12 +18,17 @@ void SendThread::run() {
         }
         try {
             std::cout << "Sending: " << input << "\n";
-            proxy.send(Protocol::StringToMessage(input, id));
+            std::shared_ptr<Message> msg = Protocol::StringToMessage(input, this->id);
+            msg->apply(board);
+            proxy.send(msg);
         } catch (ClosedSocketException& e){
             //TODO: for some reason this catch isnt catching, the socket
             //is throwing the error receiving bytes exception instead
             std::cout << e.what() << std::endl;
             return;
+        } catch(const std::exception &e) {
+            std::cerr << "Exception caught in SendThread: '" 
+                    << e.what() << "'" << std::endl;
         } catch(...) {
             std::cerr << "Unknown error caught in SendThread" << std::endl;
             return;
@@ -35,8 +40,9 @@ void SendThread::run() {
     Metodos publicos
 ************************/
 
-SendThread::SendThread(ServerProxy &proxy, int id)
+SendThread::SendThread(ServerProxy &proxy, Board &board, int id)
                 : proxy(proxy),
+                  board(board),
                   id(id),
                   keep_talking(true) {}
 

@@ -11,12 +11,13 @@
 #define MERGE_MOVE 'm'
 #define SPLIT_MOVE 's'
 class MoveMessage : public Message {
+protected:
     std::unique_ptr<MovementCommand> movement;
 public:
     MoveMessage(const std::string &message, int id);
-    const std::string& getMessage() const override;
+    const std::string getMessage() const override;
     // const std::string& getId() const override;
-    void apply(Board& board) const override;
+    virtual void apply(Board& board) const override;
 
     int charToInt(const char &i);
 };

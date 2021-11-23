@@ -11,6 +11,7 @@ void SendThread::run() {
         std::shared_ptr<Message> message = queueOfReceived.top();
         queueOfReceived.pop();
         try {
+            message->apply(board);
             for (auto &spectator : spectators) {
                 spectator.send(message);
             }
@@ -25,10 +26,12 @@ void SendThread::run() {
             //is throwing the error receiving bytes exception instead
             std::cout << e.what() << std::endl;
             return;
+        } catch(const std::exception &e) {
+            std::cerr << "Exception caught in SendThread: '" 
+                    << e.what() << "'" << std::endl;
         }
         // std::cout << "-server just sent: " << std::endl <<
         // message->getMessage() << std::endl;
-        message->apply(board);
     }
 }
 

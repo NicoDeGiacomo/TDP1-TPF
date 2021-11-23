@@ -14,14 +14,20 @@
 
 void Client::run() {
     RecvThread recvThread(proxy, recvQueue);
-    SendThread sendThread(proxy, id);
+    SendThread sendThread(proxy, _board, id);
     recvThread.start();
     sendThread.start();
 
     while (1) {
         std::shared_ptr<Message> msg_ptr = recvQueue.top();
-        msg_ptr->apply((*_board));
-        // sendQueue.produce(std::move(msg_ptr));
+        try {
+            msg_ptr->apply(_board);
+        } catch(const std::exception &e) {
+            std::cerr << "Exception caught in client: '" 
+                    << e.what() << "'" << std::endl;
+        } catch(...) {
+            std::cerr << "Unknown error caught in client.\n"; 
+        }
         recvQueue.pop();
     }
     
@@ -30,9 +36,9 @@ void Client::run() {
 }
 
 
-Client::Client(const char *host, const char *service, Board* board) : proxy() {
+Client::Client(const char *host, const char *service, Board &board) : proxy(), _board(board) {
     proxy.connect(host, service);
-    this->_board = board;
+    id = -1;
     // std::cout << "Choose your name: ";
     // std::getline(std::cin, name);
     // int room_id;

@@ -6,7 +6,7 @@
 class PlayerInfoMessage : public Message {
 public:
     PlayerInfoMessage(const std::string &message, int id);
-    const std::string& getMessage() const override;
+    const std::string getMessage() const override;
     // const std::string& getId() const override;
     virtual void apply(Board&) const override;
 };

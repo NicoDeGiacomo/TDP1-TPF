@@ -9,19 +9,20 @@
 #include <messages/Message.h>
 #include <memory>
 
-#define SELECT_REQUEST 's'
-#define MOVE_REQUEST 'o'
-#define MESSAGE_REQUEST 'm'
+// #define SELECT_REQUEST 's'
+// #define MOVE_REQUEST 'o'
+// #define MESSAGE_REQUEST 'm'
 
-// #define CHAT_CHAR 'c'
-// #define NORMAL_MOVE_CHAR 'n'
-// #define SPLIT_MOVE_CHAR 's'
-// #define MERGE_MOVE_CHAR 'm'
-// #define SELECT_CHAR 's'
+#define CHAT_CHAR 'c'
+#define NORMAL_MOVE_CHAR 'n'
+#define SPLIT_MOVE_CHAR 's'
+#define MERGE_MOVE_CHAR 'm'
+#define SELECT_CHAR 's'
 
 
 namespace Protocol {
     std::string MessageToString(const std::shared_ptr<Message>& message);
     std::shared_ptr<Message> StringToMessage(const std::string& string, int id);
+    size_t CharToMessageLenght(char c);
 }
 #endif //QUANTUM_CHESS_PROTOCOL_H

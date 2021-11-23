@@ -18,7 +18,7 @@ protected:
 public:
     Message();
     Message(const std::string& message, int id);
-    virtual const std::string& getMessage() const;
+    virtual const std::string getMessage() const;
     int getId() const;
     virtual void apply(Board&) const {}
     // virtual apply(Board, Chat)

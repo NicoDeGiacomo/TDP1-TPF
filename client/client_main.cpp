@@ -22,39 +22,39 @@ void close_client() {
 
 int main(int argc, const char *argv[]) {
     printf("STARTING CLIENT\n");
-    SDL2pp::SDL sdl(SDL_INIT_VIDEO | SDL_INIT_AUDIO);
-    IMG_Init(IMG_INIT_PNG);
-    SDL2pp::Window window("libSDL2pp demo: fill",
-                          SDL_WINDOWPOS_UNDEFINED,
-                          SDL_WINDOWPOS_UNDEFINED,
-                          640,
-                          480,
-                          SDL_WINDOW_RESIZABLE);
+    // SDL2pp::SDL sdl(SDL_INIT_VIDEO | SDL_INIT_AUDIO);
+    // IMG_Init(IMG_INIT_PNG);
+    // SDL2pp::Window window("libSDL2pp demo: fill",
+    //                       SDL_WINDOWPOS_UNDEFINED,
+    //                       SDL_WINDOWPOS_UNDEFINED,
+    //                       640,
+    //                       480,
+    //                       SDL_WINDOW_RESIZABLE);
 
     
-    // Create accelerated video renderer with default driver
-	SDL2pp::Renderer renderer(window, -1, SDL_RENDERER_ACCELERATED);
+    // // Create accelerated video renderer with default driver
+	// SDL2pp::Renderer renderer(window, -1, SDL_RENDERER_ACCELERATED);
 
-    /////////////////////////////////
-    /// Testing board window, you can comment this block if you want (640x480 hardcoded)
+    // /////////////////////////////////
+    // /// Testing board window, you can comment this block if you want (640x480 hardcoded)
     Board board;
-    MainGameScreen mainGameScreen(renderer, &board);
-    std::cin.get(); //any key to continue
-    /////////////////////////////////
+    // MainGameScreen mainGameScreen(renderer, &board);
+    // std::cin.get(); //any key to continue
+    // /////////////////////////////////
 
 
-    Login login(renderer);
-    login.start();
-    std::string user_name = login.get_user_name();
+    // Login login(renderer);
+    // login.start();
+    // std::string user_name = login.get_user_name();
 
-    std::cout << "USERNAME: " << user_name << "\n";
-    GameLobby gameLobby(renderer, user_name);
+    // std::cout << "USERNAME: " << user_name << "\n";
+    // GameLobby gameLobby(renderer, user_name);
 
 
-    if (gameLobby.start() == 1) {
-        close_client();
-        return 0;
-    }
+    // if (gameLobby.start() == 1) {
+    //     close_client();
+    //     return 0;
+    // }
     
     //TODO: need to encapsulate the chat
     //create the room class
@@ -76,7 +76,7 @@ int main(int argc, const char *argv[]) {
     }
     
     try {
-        Client client(argv[1], argv[2], &board);
+        Client client(argv[1], argv[2], board);
         client.run();
         close_client();
     } catch(const std::exception &e) {

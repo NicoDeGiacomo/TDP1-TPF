@@ -10,7 +10,7 @@
 class SelectMessage : public Message {
 public:
     SelectMessage(const std::string &message, int id);
-    const std::string& getMessage() const override;
+    const std::string getMessage() const override;
     // const std::string& getId() const override;
 };
 

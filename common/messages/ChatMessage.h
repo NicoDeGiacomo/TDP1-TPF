@@ -10,7 +10,7 @@
 class ChatMessage : public Message {
 public:
     ChatMessage(const std::string &message, int id);
-    const std::string& getMessage() const override;
+    const std::string getMessage() const override;
     // const std::string& getId() const override;
     virtual void apply(Board&) const override;
 };

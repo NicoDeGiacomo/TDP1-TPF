@@ -13,6 +13,7 @@ private:
     // ServerProxy proxy;
     // BlockingQueue<std::shared_ptr<Message>> &queue;
     ServerProxy &proxy;
+    Board &board;
     int id;
     std::atomic<bool> keep_talking;
 
@@ -27,7 +28,7 @@ public:
     /*
      *  Constructor
      */
-    SendThread(ServerProxy &proxy, int id);
+    SendThread(ServerProxy &proxy, Board &board, int id);
     /*
      *  Constructor por copia
      */

@@ -10,36 +10,6 @@ bool Room::isRoom(int number) const{
     return number == roomNumber;
 }
 
-// void Room::runSenderThread(std::list<Player>* spectators,
-//                            Player* white,
-//                            Player* black,
-//                            BlockingQueue<std::shared_ptr<Message>>* queue){
-//     std::cout << "running sender sv thread" << std::endl;
-//     while (true) {
-//         std::shared_ptr<Message> message = queue->top();
-//         queue->pop();
-//         message->apply(this->board);
-//         try {
-//             for (auto &spectator: *spectators) {
-//                 spectator.send(message);
-//             }
-//             //this if itsVacant is just not to break things
-//             //better send logic needs to be added
-//             if (!white->isVacant())
-//                 white->send(message);
-//             if (!black->isVacant())
-//                 black->send(message);
-//         } catch (ClosedSocketException& e){
-//             //TODO: for some reason this catch isnt catching, the socket
-//             //is throwing the error receiving bytes exception instead
-//             std::cout << e.what() << std::endl;
-//             return;
-//         }
-//         std::cout << "-server just sent: " << std::endl <<
-//         message->getMessage() << std::endl;
-//     }
-// }
-
 void Room::addClient(Socket &socket) {
     //TODO: this list of peers should be protected, can add client while sending messages
     //this->listOfPeers.push_front(std::move(socket));

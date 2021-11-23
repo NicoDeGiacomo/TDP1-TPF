@@ -5,7 +5,7 @@
 #include <iostream>
 #include "Message.h"
 
-const std::string& Message::getMessage() const {
+const std::string Message::getMessage() const {
     // std::cout << "get message from Message class" << std::endl;
     return this->_message;
 }
