@@ -44,8 +44,46 @@ char Piece::getDrawing() const {
 
 void Piece::move(Position position) {
     validateMove_(position);
+
+    auto pieceTo = board_->getPiece(position);
+    if (pieceTo == nullptr) {
+        move_(position);
+        return;
+    }
+
+    pieceTo->measure_();
+
+    pieceTo = board_->getPiece(position);
+    try {
+        move_(position);
+    } catch (std::invalid_argument &e) {
+        // After the measurement, the move might invalid and should not be done.
+    }
+
+    if (pieceTo != nullptr) {
+        pieceTo->eat();
+    }
+}
+
+void Piece::move_(Position position) {
+    validateMove_(position);
     position_ = position;
     has_moved_ = true;
+}
+
+void Piece::measure_() {
+    if (getProbability() >= 1.0f) {
+        return;
+    }
+
+    std::uniform_int_distribution<int> distribution(1, 100);
+    std::mt19937 engine(board_->seed_);
+    int value = distribution(engine);
+    if (((float) value)  / 100 <= getProbability()) {
+        splits_->confirmSplit(this);
+    } else {
+        splits_->removeSplit(this);
+    }
 }
 
 std::list<Position> Piece::getPossibleMoves() const {
@@ -121,19 +159,8 @@ void Piece::validateMove_(const Position &position) const {
 }
 
 void Piece::eat() {
-    if (getProbability() < 1.0f) {
-        std::uniform_int_distribution<int> distribution(1, 100);
-        std::mt19937 engine(board_->seed_);
-        int value = distribution(engine);
-        if (((float) value)  / 100 <= getProbability()) {
-            splits_->removeAllSplits();
-        } else {
-            splits_->removeSplit(this);
-        }
-    } else {
-        removeFromBoard_();
-        delete this;
-    }
+    removeFromBoard_();
+    delete this;
 }
 
 void Piece::split(Position position1, Position position2) {
@@ -154,7 +181,7 @@ void Piece::merge(Position to, Piece* other) {
     }
 
     if (position_ != to) {
-        move(to);
+        move_(to);
     }
     splits_->mergeSplits(this, other);
 }
@@ -177,6 +204,6 @@ void Piece::removeFromBoard_() {
     board_->pieces_.remove(this);
 }
 
-void Piece::finishMeasure_() {
+void Piece::resetSplits() {
     splits_ = std::make_shared<PieceSplits>(this);
 }

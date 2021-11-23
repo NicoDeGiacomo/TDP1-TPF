@@ -32,8 +32,6 @@ std::list<Piece*>::const_iterator Board::end() const {
 
 void Board::move(Position from, Position to) {
     auto pieceFrom = getPiece(from);
-    auto pieceTo = getPiece(to);
-
     if (pieceFrom == nullptr) {
         throw std::invalid_argument("Invalid move: empty square.");
     }
@@ -42,11 +40,6 @@ void Board::move(Position from, Position to) {
     }
 
     pieceFrom->move(to);
-
-    if (pieceTo != nullptr) {
-        pieceTo->eat();
-    }
-
     changeTurn_();
     //for debugging
     printBoard();

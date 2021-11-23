@@ -53,12 +53,14 @@ class Piece : public Drawable {
   Piece* getPieceFromBoard_(Position &position) const;
 
  private:
+  void move_(Position position);
+  void measure_();
   std::list<Position> getPossibleStepPositions_() const;
   std::list<Position> getPossibleBeamPositions_() const;
   void validateMove_(const Position &position) const;
   void appendToBoard_();
   bool isSplit_(Piece *other) const;
-  void finishMeasure_();
+  void resetSplits();
   void removeFromBoard_();
 
   friend PieceSplits;

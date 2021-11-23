@@ -22,12 +22,13 @@ class PieceSplits {
 
   float getProbability(const Piece* piece) const;
 
-  void removeAllSplits();
+  void confirmSplit(Piece *piece);
 
  private:
   std::shared_ptr<SplitNode_> root_;
 
-  void removeAllSplits_(const std::shared_ptr<SplitNode_>& node);
+  void removeAllSplits_(const std::shared_ptr<SplitNode_> &node,
+                        Piece *piece);
   std::shared_ptr<SplitNode_> findNode_(const Piece *piece) const;
   std::shared_ptr<SplitNode_> findNode_(const std::shared_ptr<SplitNode_>& node, const Piece *piece) const;
   bool propagateProbability_(const std::shared_ptr<SplitNode_>& node, float probability);
