@@ -24,6 +24,8 @@ public:
     Client(const char *host, const char *service, Board &board);
 
     void run();
+
+    BlockingQueue<std::shared_ptr<Message>> *getQueue();
 };
 
 

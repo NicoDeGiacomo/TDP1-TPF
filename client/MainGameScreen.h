@@ -9,6 +9,7 @@
 #include <Board.h>
 #include <unordered_map>
 #include "Screen.h"
+#include "Client.h"
 
 #define BOARD_KEY 'Z'
 
@@ -45,18 +46,24 @@
 
 class MainGameScreen : public Screen {
 private:
+    std::thread myThread;
     std::unordered_map<char,SDL2pp::Texture> texturesMap;
     Board *_board;
+    //Client *_client;
     std::vector<Button> buttons;
+    BlockingQueue<std::shared_ptr<Message>>* userInputQueue;
     int screenWidth = 640;
     int screenHeight = 480;
     int pieceWidth = screenWidth / 8;
     int pieceHeight = screenHeight / 8;
 public:
-    MainGameScreen(SDL2pp::Renderer &renderer, Board* board);
+    MainGameScreen(SDL2pp::Renderer &renderer, Board* board, BlockingQueue<std::shared_ptr<Message>>* userInputQueue);
     int start() override;
     void redraw() override;
 
+    void run();
+
+    void join();
 };
 
 

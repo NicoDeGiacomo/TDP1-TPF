@@ -3,11 +3,15 @@
 //
 
 //#include <SDL_image.h>
+#include <NormalMove.h>
+#include <NormalMoveMessage.h>
+#include <thread>
 #include "Button.h"
 #include "MainGameScreen.h"
 #include "EventManager.h"
 
-MainGameScreen::MainGameScreen(SDL2pp::Renderer &renderer, Board* board) : Screen(renderer) {
+MainGameScreen::MainGameScreen(SDL2pp::Renderer &renderer, Board* board, BlockingQueue<std::shared_ptr<Message>>* queue) : Screen(renderer) {
+    this->userInputQueue = queue;
     this->_board = board;
     texturesMap.insert({BOARD_KEY, SDL2pp::Texture(renderer, BOARD_FILEPATH)});
 
@@ -32,7 +36,7 @@ MainGameScreen::MainGameScreen(SDL2pp::Renderer &renderer, Board* board) : Scree
     redraw();
 }
 
-int MainGameScreen::start() {
+void MainGameScreen::run() {
     SDL_bool done = SDL_FALSE;
     bool pieceSelected = false;
 
@@ -47,11 +51,11 @@ int MainGameScreen::start() {
         while (SDL_PollEvent(&event)) {
             switch (event.type) {
                 case SDL_QUIT:
-                    return 1;
+                    return;
                 case SDL_KEYDOWN:
                     switch (event.key.keysym.sym) {
                         case SDLK_ESCAPE: case SDLK_q:
-                            return 1;
+                            return;
                     }
                     break;
                 case SDL_MOUSEBUTTONDOWN:
@@ -61,9 +65,15 @@ int MainGameScreen::start() {
                     int clampedMouseXToGrid = ceil((float)mouseX / pieceWidth);
                     int clampedMouseYToGrid = ceil((float)mouseY / pieceHeight);
                     std::cout << "grid position x " << clampedMouseXToGrid << " grid position y " << clampedMouseYToGrid << std::endl;
-                    if (pieceSelected)
-                        this->_board->move(Position(positionFromX, positionFromY),
-                                           Position(clampedMouseXToGrid, clampedMouseYToGrid));
+                    if (pieceSelected) {
+                        this->userInputQueue->produce(std::make_shared<NormalMoveMessage>(
+                                Position(positionFromX, positionFromY),
+                                Position(clampedMouseXToGrid, clampedMouseYToGrid)));
+                        //todo: elegir entre esto v o esto ^
+                        /*cliente.movePieza(Position1, position2)
+                            //cliente mueve en su board,
+                            //cliente envia el movimiento al sv*/
+                    }
                     else {
                         positionFromX = clampedMouseXToGrid;
                         positionFromY = clampedMouseYToGrid;
@@ -78,7 +88,14 @@ int MainGameScreen::start() {
         // Frame limiter: sleep for a little bit to not eat 100% of CPU
         SDL_Delay(1);
     }
+}
+int MainGameScreen::start() {
+    this->myThread = std::thread(&MainGameScreen::run, this);
     return 0;
+}
+
+void MainGameScreen::join() {
+    this->myThread.join();
 }
 
 void MainGameScreen::redraw() {

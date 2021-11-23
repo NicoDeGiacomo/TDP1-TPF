@@ -11,6 +11,7 @@
 class NormalMoveMessage : public MoveMessage {
 public:
     NormalMoveMessage(const std::string &message, int id);
+    NormalMoveMessage(Position&& from, Position&& to);
 };
 
 

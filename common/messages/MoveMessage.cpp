@@ -9,6 +9,10 @@
 #include <SplitMove.h>
 #include <MergeMove.h>
 
+/*MoveMessage::MoveMessage(Position&& from, Poisiton&& to){
+
+}*/
+
 //TODO: here i should decode the message
 const std::string MoveMessage::getMessage() const {
     std::cout << "get message from MoveMessage class" << std::endl;

@@ -35,6 +35,13 @@ void Client::run() {
     sendThread.join();
 }
 
+/*Client::Client movePieze(Position&& from, Position&& to){
+
+}*/
+
+BlockingQueue<std::shared_ptr<Message>>* Client::getQueue(){
+    return &recvQueue;
+}
 
 Client::Client(const char *host, const char *service, Board &board) : proxy(), _board(board) {
     proxy.connect(host, service);

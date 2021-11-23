@@ -10,6 +10,7 @@
 #include "Socket.h"
 #include <iostream>
 #include <vector>
+#include <thread>
 #include "Client.h"
 #include "Login.h"
 #include "GameLobby.h"
@@ -38,13 +39,16 @@ int main(int argc, const char *argv[]) {
     /////////////////////////////////
     /// Testing board window, you can comment this block if you want (640x480 hardcoded)
     Board board;
-    MainGameScreen mainGameScreen(renderer, &board);
+    Client client(argv[1], argv[2], board);
+    MainGameScreen mainGameScreen(renderer, &board, client.getQueue());
+    // run thread
     mainGameScreen.start();
-    std::cin.get(); //any key to continue
+    //std::cin.get(); //any key to continue
+    //mainGameScreen.join();
     /////////////////////////////////
 
 
-    Login login(renderer);
+    /*Login login(renderer);
     login.start();
     std::string user_name = login.get_user_name();
 
@@ -55,7 +59,7 @@ int main(int argc, const char *argv[]) {
     if (gameLobby.start() == 1) {
         close_client();
         return 0;
-    }
+    }*/
     
     //TODO: need to encapsulate the chat
     //create the room class
@@ -77,7 +81,7 @@ int main(int argc, const char *argv[]) {
     }
 
     try {
-        Client client(argv[1], argv[2], &board);
+        //Client client(argv[1], argv[2], board);
         client.run();
         close_client();
     } catch(const std::exception &e) {
@@ -88,5 +92,7 @@ int main(int argc, const char *argv[]) {
         std::cerr << "Error desconocido en el cliente" << std::endl;
         return 2;
     }
+
+    mainGameScreen.join();
     return 0;
 }

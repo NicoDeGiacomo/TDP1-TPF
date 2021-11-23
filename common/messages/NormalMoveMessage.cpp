@@ -19,3 +19,8 @@ NormalMoveMessage::NormalMoveMessage(const std::string &message, int id) : MoveM
     this->movement = std::make_unique<NormalMove>(std::move(from),
                                                     std::move(to));
 }
+
+NormalMoveMessage::NormalMoveMessage(Position&& from, Position&& to) : MoveMessage() {
+    this->movement = std::make_unique<NormalMove>(std::move(from),
+                                                  std::move(to));
+}

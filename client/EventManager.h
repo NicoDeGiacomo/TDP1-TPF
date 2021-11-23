@@ -9,7 +9,7 @@
 namespace EventManager {
     //////////////////
     /// * tengo una "Accion". objetos o clases se subscriben a esa accion sobrecargando el "+="
-    ///     EventManager::miAccion += metodoQueHandleaLaAccion;
+    ///     EventManager::onClickStartButton += metodoQueHandleaLaAccion;
     ///
     /// * creo un boton y on click le seteo una lambda
     ///     boton.onClick([](){ EventManager::clickearonElBotonA(); });
