@@ -5,6 +5,7 @@ Taller de Programación I - TP Final
 * [1. Build](#1-build)
   * [1.1. Install SDL2pp](#11-install-sdl2pp)
   * [1.2. Build Project](#12-build-project)
+* [How to Play](#)
 * [2. Tasks](#2-tasks)
 * [3. Diagrams](#3-diagrams)
     * [3.1. Chess](#31-chess)
