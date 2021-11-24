@@ -44,7 +44,7 @@ void MainGameScreen::run() {
     bool firstEmptySelected = false;
     char typeOfMove = 'n';
 
-    while (!done) {
+    while (!done) {  // este while
 
         // Event processing:
         // - If window is closed, or Q or Escape buttons are pressed,
@@ -107,6 +107,8 @@ void MainGameScreen::run() {
                             else {
                                 positionFromX = clampedMouseXToGrid;
                                 positionFromY = clampedMouseYToGrid;
+                                // pintar pieza seleccionada
+                                // NTH: pintar movimientos posibles
                             }
                             pieceSelected = !pieceSelected;
                             break;
