@@ -10,18 +10,18 @@
 //TODO: here i should decode the message
 const std::string ChatMessage::getMessage() const {
     // std::cout << "get message from ChatMessage class" << std::endl;
-    char type = CHAT_CHAR;
-    unsigned short int msg_len = _message.length();
-    unsigned short int msg_len_be = htons(msg_len);
-    char msg_owner_id = id;
+    // char type = CHAT_CHAR;
+    // unsigned short int msg_len = _message.length();
+    // unsigned short int msg_len_be = htons(msg_len);
+    // char msg_owner_id = id;
     
-    std::string msg;
-    msg += type;
-    msg += msg_owner_id;
-    msg += msg_len_be;
-    msg += _message;
+    // std::string msg;
+    // msg += type;
+    // msg += msg_owner_id;
+    // msg += msg_len_be;
+    // msg += _message;
 
-    return msg;
+    return _message;
 }
 
 // const std::string &ChatMessage::getId() const {
@@ -31,7 +31,8 @@ const std::string ChatMessage::getMessage() const {
 
 //TODO: here i should encode the message
 ChatMessage::ChatMessage(const std::string &message, int id) : Message(message, id){
-    this->_message = message.substr(1);
+    // this->_message = message;
+    this->type = CHAT_CHAR;
     // std::cout << "constructor of ChatMessage class" << std::endl;
 }
 

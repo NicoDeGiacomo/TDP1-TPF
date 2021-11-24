@@ -33,8 +33,16 @@ void RecvThread::run() {
     // }
 
     while (keep_talking) {
-        std::shared_ptr<Message> message = proxy.recv();
-        queue.produce(std::move(message));
+        try {
+            std::shared_ptr<Message> message = proxy.recv();
+            queue.produce(std::move(message));
+        } catch(const std::exception &e) {
+            std::cerr << "Exception caught in RecvThread: '" 
+                    << e.what() << "'" << std::endl;
+        } catch(...) {
+            std::cerr << "Unknown error caught in RecvThread" << std::endl;
+            return;
+        }
     }
 }
 

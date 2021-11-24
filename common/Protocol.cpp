@@ -21,22 +21,22 @@ namespace Protocol {
         if (string.at(0) == CHAT_CHAR) {
             std::cout << "Sending CHAT MESSAGE\n";
             std::cout << "creating chat message" << string << std::endl;
-            return std::make_shared<ChatMessage>(string, id);
+            return std::make_shared<ChatMessage>(string.substr(1), id);
         } else if (string.at(0) == NORMAL_MOVE_CHAR) {
             std::cout << "Sending NORMAL_MOVE MESSAGE\n";
             std::cout << "creating normal message" << string << std::endl;
-            return std::make_shared<NormalMoveMessage>(string, id);
+            return std::make_shared<NormalMoveMessage>(string.substr(1), id);
         } else if (string.at(0) == MERGE_MOVE_CHAR) {
             std::cout << "Sending MERGE_MOVE MESSAGE\n";
-            return std::make_shared<MergeMoveMessage>(string, id);
+            return std::make_shared<MergeMoveMessage>(string.substr(1), id);
         } else if (string.at(0) == SPLIT_MOVE_CHAR) {
             std::cout << "Sending SPLIT_MOVE MESSAGE\n";
-            return std::make_shared<SplitMoveMessage>(string, id);
+            return std::make_shared<SplitMoveMessage>(string.substr(1), id);
         } else if (string.at(0) == SELECT_CHAR) {
             std::cout << "Sending SELECT MESSAGE\n";
-            return std::make_shared<SelectMessage>(string, id);
+            return std::make_shared<SelectMessage>(string.substr(1), id);
         }
-        throw std::runtime_error("Unknown command");
+        throw std::runtime_error("Unknown command in Protocol");
     }
     size_t CharToMessageLenght(char c) {
         if (c == CHAT_CHAR) {

@@ -13,7 +13,8 @@ private:
     Socket socket;
     int id;
     std::shared_ptr<Message> decodeChatMessage();
-    void encodeChatMessage(std::shared_ptr<Message>);
+    std::string recvMessage(unsigned short int msg_len);
+    unsigned short int decodeChatMessageLen();
 public:
     ServerProxy();
 

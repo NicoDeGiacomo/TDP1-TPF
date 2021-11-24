@@ -90,7 +90,7 @@ void MainGameScreen::run() {
                                         Position(positionFromX, positionFromY),
                                         Position(clampedMouseXToGrid, clampedMouseYToGrid)));*/
                                 //todo: remove this, mega hardcoded
-                                std::string message = "n";
+                                std::string message;
                                 message += std::to_string(positionFromX) +
                                            std::to_string(positionFromY) +
                                            std::to_string(clampedMouseXToGrid) +
@@ -122,7 +122,7 @@ void MainGameScreen::run() {
                                 positionFrom2Y = clampedMouseYToGrid;
                                 firstEmptySelected = true;
                             } else {
-                                std::string message = "s";
+                                std::string message;
                                 message += std::to_string(positionFromX) +
                                            std::to_string(positionFromY) +
                                             std::to_string(positionFrom2X) +
@@ -150,7 +150,7 @@ void MainGameScreen::run() {
                                 positionFrom2Y = clampedMouseYToGrid;
                                 firstEmptySelected = true;
                             } else {
-                                std::string message = "m";
+                                std::string message;
                                 message += std::to_string(positionFromX) +
                                            std::to_string(positionFromY) +
                                            std::to_string(positionFrom2X) +

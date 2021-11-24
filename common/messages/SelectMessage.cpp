@@ -3,6 +3,7 @@
 //
 
 #include "SelectMessage.h"
+#include "Protocol.h"
 #include <iostream>
 
 //TODO: here i should decode the message
@@ -21,4 +22,5 @@ const std::string SelectMessage::getMessage() const {
 SelectMessage::SelectMessage(const std::string &message, int id) : Message(message, id){
     this->_message = message;
     std::cout << "constructor of SelectMessage class" << std::endl;
+    this->type = SELECT_CHAR;
 }

@@ -14,12 +14,14 @@ protected:
     bool server;
     // std::string idOfCreator;
     std::string _message;
+    char type;
     int id;
 public:
     Message();
     Message(const std::string& message, int id);
     virtual const std::string getMessage() const;
     int getId() const;
+    char getType() const;
     virtual void apply(Board&) const {}
     // virtual apply(Board, Chat)
         // board.move(pos1, pos2)

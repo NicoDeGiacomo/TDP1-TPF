@@ -15,7 +15,8 @@ private:
     int room_id;
     std::string name;
     int id;
-    std::shared_ptr<Message> decodeChatMessage();
+    std::string recvMessage(unsigned short int msg_len);
+    unsigned short int decodeChatMessageLen();
 public:
     ClientProxy();
 

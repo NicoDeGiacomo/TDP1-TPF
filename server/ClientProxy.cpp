@@ -1,6 +1,10 @@
 #include "ClientProxy.h"
 #include "Socket.h"
 #include "Message.h"
+#include "ChatMessage.h"
+#include "NormalMoveMessage.h"
+#include "SplitMoveMessage.h"
+#include "MergeMoveMessage.h"
 #include "Protocol.h"
 #include <iostream>
 #include <vector>
@@ -17,22 +21,23 @@
     Metodos privados
 ************************/
 
-std::shared_ptr<Message> ClientProxy::decodeChatMessage() {
-
+unsigned short int ClientProxy::decodeChatMessageLen() {
     std::cout << "start decoding chat message" << std::endl;
     char _msg_len[2];
     socket.receive(_msg_len, 2);
     unsigned short int name_len_be;
     memcpy(&name_len_be, _msg_len, 2);
     unsigned short int msg_len = ntohs(name_len_be);
+    return msg_len;
+}
+
+std::string ClientProxy::recvMessage(unsigned short int msg_len) {
     std::vector<char> msg;
     msg.reserve(msg_len);
     char *buf = &msg[0];
     socket.receive(buf, msg_len);
     std::string msg_str(buf, msg_len);
-
-    std::cout << "finish decoding chat message " << msg_str << "." << std::endl;
-    return Protocol::StringToMessage(msg_str, id);
+    return msg_str;
 }
 
 
@@ -71,22 +76,23 @@ void ClientProxy::send(const std::shared_ptr<Message> message) const {
 
     if (message->getId() == this->id) return;
 
-    // TODO: Agregar funcionalidad para que no envie solo mensajes de chat
-    std::string msg_str = Protocol::MessageToString(message);
-    char type = CHAT_CHAR;
-    unsigned short int msg_len = msg_str.length();
-    unsigned short int msg_len_be = htons(msg_len);
-    char msg_owner_id = message->getId();
-    
+    char type = message->getType();
     socket.send(&type, 1);
+    
+    char msg_owner_id = message->getId();
     socket.send(&msg_owner_id, 1);
-    socket.send((char *) &msg_len_be, 2);
+    
+    std::string msg_str = Protocol::MessageToString(message);
+    unsigned short int msg_len = msg_str.length();
+    if (type == CHAT_CHAR) {
+        unsigned short int msg_len_be = htons(msg_len);
+        socket.send((char *) &msg_len_be, 2);
+    }
+    
     socket.send(msg_str.c_str(), msg_len);
 }
 
 std::shared_ptr<Message> ClientProxy::recv() {
-    std::shared_ptr<Message> msg_ptr;
-
     char type;
     try {
         socket.receive(&type, 1);
@@ -97,25 +103,32 @@ std::shared_ptr<Message> ClientProxy::recv() {
         std::cerr << "Error recv command type" << std::endl;
     }
 
+    std::shared_ptr<Message> msg_ptr;
+    std::string msg_str;
+    unsigned short int msg_len;
     switch (type) {
     case CHAT_CHAR:
         std::cout << "about to decode chat message" << std::endl;
-        msg_ptr = decodeChatMessage();
+        msg_len = decodeChatMessageLen();
+        msg_str = recvMessage(msg_len);
+        msg_ptr = std::make_shared<ChatMessage>(msg_str, id);
         break;
     case NORMAL_MOVE_CHAR:
-        throw std::runtime_error("Move message not supported yet");
+        msg_str = recvMessage(4);
+        msg_ptr = std::make_shared<NormalMoveMessage>(msg_str, id);
         break;
     case SPLIT_MOVE_CHAR:
-        throw std::runtime_error("Move message not supported yet");
+        msg_str = recvMessage(6);
+        msg_ptr = std::make_shared<SplitMoveMessage>(msg_str, id);
         break;
     case MERGE_MOVE_CHAR:
-        throw std::runtime_error("Move message not supported yet");
+        msg_str = recvMessage(6);
+        msg_ptr = std::make_shared<MergeMoveMessage>(msg_str, id);
         break;
     default:
         throw std::runtime_error("Unknown command");
         break;
     }
-    
     return msg_ptr;
 }
 

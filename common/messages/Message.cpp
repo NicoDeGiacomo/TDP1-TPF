@@ -15,6 +15,10 @@ int Message::getId() const {
     return this->id;
 }
 
+char Message::getType() const {
+    return this->type;
+}
+
 Message::Message(const std::string& message, int id) : _message(message), id(id) {
     // std::cout << "constructor of Message class" << std::endl;
 }
