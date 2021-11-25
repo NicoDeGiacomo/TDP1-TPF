@@ -18,29 +18,32 @@ void Client::run() {
     recvThread.start();
     sendThread.start();
     // mainGameScreen()
+    bool gameFinished = false;
 
-    //while (1) {  // este while
-        while (1) {
-            std::shared_ptr<Message> msg_ptr = recvQueue.top(); // no bloqueante (tryTop?)
+    while (!gameFinished) {
+        mainGameScreen.processUserInput(gameFinished);
+        mainGameScreen.refresh();
+        bool moreMessagesToProcess = true;
+        while(moreMessagesToProcess) {
+            std::shared_ptr<Message> msg_ptr = recvQueue.popIfNotEmpty();
+
+            if (!msg_ptr) {
+                moreMessagesToProcess = false;
+                continue;
+            }
             try {
-                msg_ptr->apply(_board);  // might be null
+                msg_ptr->apply(_board);
             } catch (const std::exception &e) {
                 std::cerr << "Exception caught in client: '"
                           << e.what() << "'" << std::endl;
             } catch (...) {
                 std::cerr << "Unknown error caught in client.\n";
             }
-            recvQueue.pop();
         }
 
-        // mainGameScreen.run()
-            // refresh (MainGameScreen)
-            // draw (MainGameScreen)
-            // read from SDL (MainGameScreen)
-            // TRY: board_.move() (MainGameScreen)
-        // send (con una queue) // no bloqueante (push)
-        // sleep para fps
-    //}
+        // sleep para fps, maybe hay una mejor forma de hacerlo
+        SDL_Delay(1);
+    }
     recvThread.join();
     sendThread.join();
 }
@@ -52,7 +55,9 @@ BlockingQueue<std::shared_ptr<Message>>* Client::getQueue(){
     return &sendQueue;
 }
 
-Client::Client(const char *host, const char *service, Board &board) : proxy(), _board(board) {
+Client::Client(const char *host, const char *service, Board& board) : mainGameScreen(board, &sendQueue), proxy(), _board(board) {
+
+    //std::cin.ignore();
     proxy.connect(host, service);
     id = -1;
     // std::cout << "Choose your name: ";

@@ -8,12 +8,12 @@
 
 #include <Board.h>
 #include "Socket.h"
-#include "BlockingQueue.h"
-#include "Message.h"
 #include "ServerProxy.h"
+#include "MainGameScreen.h"
 
 class Client {
 private:
+    MainGameScreen mainGameScreen;
     ServerProxy proxy;
     Board &_board;
     int id;

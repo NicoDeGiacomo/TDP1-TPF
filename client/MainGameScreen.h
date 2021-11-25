@@ -6,8 +6,9 @@
 #define QUANTUM_CHESS_MAINGAMESCREEN_H
 
 #include <unordered_map>
-#include "Screen.h"
-#include "Client.h"
+#include <SDL_image.h>
+#include <SDL2pp/SDL2pp.hh>
+#include "BlockingQueue.h"
 
 #define BOARD_KEY 'Z'
 
@@ -49,14 +50,17 @@
 #define SELECTED_KING_FILEPATH "../assets/sprites/selectedKing.png"
 #define SELECTED_QUEEN_FILEPATH "../assets/sprites/selectedQueen.png"
 
-class MainGameScreen : public Screen {
+class MainGameScreen {
 private:
-    std::thread myThread;
+    std::unique_ptr<SDL2pp::Renderer> renderer;
+    std::unique_ptr<SDL2pp::Window> window;
+    std::unique_ptr<SDL2pp::SDL> sdl;
+    //std::thread myThread;
     std::unordered_map<char,SDL2pp::Texture> texturesMap;
     std::unordered_map<char,SDL2pp::Texture> selectedTexturesMap;
     std::unique_ptr<SDL2pp::Texture> moveNotifText;
     std::list<Piece*> selectedPieces;
-    Board *_board;
+    Board &_board;
     //Client *_client;
     //std::vector<Button> buttons;
     BlockingQueue<std::shared_ptr<Message>>* userInputQueue;
@@ -66,12 +70,21 @@ private:
     int pieceHeight = screenHeight / 8;
     int selectedPieceWidth = screenWidth / 7;
     int selectedPieceHeight = screenHeight / 7;
-public:
-    MainGameScreen(SDL2pp::Renderer &renderer, Board* board, BlockingQueue<std::shared_ptr<Message>>* userInputQueue);
-    int start() override;
-    void redraw() override;
 
-    void run();
+    //this shouldnt be here i think
+    char typeOfMove;
+    bool pieceSelected;
+    bool firstEmptySelected;
+    int positionFromX;
+    int positionFromY;
+    int secondPositionX;
+    int secondPositionY;
+public:
+    MainGameScreen(Board& board, BlockingQueue<std::shared_ptr<Message>>* userInputQueue);
+    int start();
+    void refresh();
+
+    void processUserInput(bool& gameFinished);
 
     void join();
 
@@ -79,15 +92,11 @@ public:
 
     void deselectAllPieces();
 
-    void handleMouseClick(char& typeOfMove,
-                          bool& pieceSelected,
-                          bool& firstEmptySelected,
-                          int& positionFromX,
-                          int& positionFromY,
-                          int& positionFrom2X,
-                          int& positionFrom2Y);
+    void handleMouseClick();
 
     void showMoveSelectedNotif(const Uint8& r, const Uint8& g, const Uint8& b);
+
+    //SDL2pp::Renderer createRenderer();
 };
 
 

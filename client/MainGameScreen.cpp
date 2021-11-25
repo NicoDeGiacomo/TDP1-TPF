@@ -11,31 +11,46 @@
 #include "MainGameScreen.h"
 #include "EventManager.h"
 
-MainGameScreen::MainGameScreen(SDL2pp::Renderer &renderer, Board* board, BlockingQueue<std::shared_ptr<Message>>* queue) : Screen(renderer) {
+MainGameScreen::MainGameScreen(Board& board, BlockingQueue<std::shared_ptr<Message>>* queue) : _board(board) {
+    sdl = std::make_unique<SDL2pp::SDL>((SDL_INIT_VIDEO | SDL_INIT_AUDIO));
+    window = std::make_unique<SDL2pp::Window>("Quantum Chess",
+                                     SDL_WINDOWPOS_UNDEFINED,
+                                     SDL_WINDOWPOS_UNDEFINED,
+                                     640,
+                                     480,
+                                     SDL_WINDOW_RESIZABLE);
+    renderer = std::make_unique<SDL2pp::Renderer>((*window), -1, SDL_RENDERER_ACCELERATED);
+
+    pieceSelected = false;
+    firstEmptySelected = false;
+    typeOfMove = 'n';
+    positionFromX = 0;
+    positionFromY = 0;
+    secondPositionX = 0;
+    secondPositionY = 0;
     this->userInputQueue = queue;
-    this->_board = board;
-    texturesMap.insert({BOARD_KEY, SDL2pp::Texture(renderer, BOARD_FILEPATH)});
+    texturesMap.insert({BOARD_KEY, SDL2pp::Texture((*renderer), BOARD_FILEPATH)});
 
-    texturesMap.insert({WHITE_PAWN_KEY, SDL2pp::Texture(renderer, WHITE_PAWN_FILEPATH)});
-    texturesMap.insert({WHITE_ROOK_KEY, SDL2pp::Texture(renderer, WHITE_ROOK_FILEPATH)});
-    texturesMap.insert({WHITE_KNIGHT_KEY, SDL2pp::Texture(renderer, WHITE_KNIGHT_FILEPATH)});
-    texturesMap.insert({WHITE_BISHOP_KEY, SDL2pp::Texture(renderer, WHITE_BISHOP_FILEPATH)});
-    texturesMap.insert({WHITE_KING_KEY, SDL2pp::Texture(renderer, WHITE_KING_FILEPATH)});
-    texturesMap.insert({WHITE_QUEEN_KEY, SDL2pp::Texture(renderer, WHITE_QUEEN_FILEPATH)});
+    texturesMap.insert({WHITE_PAWN_KEY, SDL2pp::Texture((*renderer), WHITE_PAWN_FILEPATH)});
+    texturesMap.insert({WHITE_ROOK_KEY, SDL2pp::Texture((*renderer), WHITE_ROOK_FILEPATH)});
+    texturesMap.insert({WHITE_KNIGHT_KEY, SDL2pp::Texture((*renderer), WHITE_KNIGHT_FILEPATH)});
+    texturesMap.insert({WHITE_BISHOP_KEY, SDL2pp::Texture((*renderer), WHITE_BISHOP_FILEPATH)});
+    texturesMap.insert({WHITE_KING_KEY, SDL2pp::Texture((*renderer), WHITE_KING_FILEPATH)});
+    texturesMap.insert({WHITE_QUEEN_KEY, SDL2pp::Texture((*renderer), WHITE_QUEEN_FILEPATH)});
 
-    texturesMap.insert({BLACK_PAWN_KEY, SDL2pp::Texture(renderer, BLACK_PAWN_FILEPATH)});
-    texturesMap.insert({BLACK_ROOK_KEY, SDL2pp::Texture(renderer, BLACK_ROOK_FILEPATH)});
-    texturesMap.insert({BLACK_KNIGHT_KEY, SDL2pp::Texture(renderer, BLACK_KNIGHT_FILEPATH)});
-    texturesMap.insert({BLACK_BISHOP_KEY, SDL2pp::Texture(renderer, BLACK_BISHOP_FILEPATH)});
-    texturesMap.insert({BLACK_KING_KEY, SDL2pp::Texture(renderer, BLACK_KING_FILEPATH)});
-    texturesMap.insert({BLACK_QUEEN_KEY, SDL2pp::Texture(renderer, BLACK_QUEEN_FILEPATH)});
+    texturesMap.insert({BLACK_PAWN_KEY, SDL2pp::Texture((*renderer), BLACK_PAWN_FILEPATH)});
+    texturesMap.insert({BLACK_ROOK_KEY, SDL2pp::Texture((*renderer), BLACK_ROOK_FILEPATH)});
+    texturesMap.insert({BLACK_KNIGHT_KEY, SDL2pp::Texture((*renderer), BLACK_KNIGHT_FILEPATH)});
+    texturesMap.insert({BLACK_BISHOP_KEY, SDL2pp::Texture((*renderer), BLACK_BISHOP_FILEPATH)});
+    texturesMap.insert({BLACK_KING_KEY, SDL2pp::Texture((*renderer), BLACK_KING_FILEPATH)});
+    texturesMap.insert({BLACK_QUEEN_KEY, SDL2pp::Texture((*renderer), BLACK_QUEEN_FILEPATH)});
 
-    selectedTexturesMap.insert({WHITE_PAWN_KEY, SDL2pp::Texture(renderer, SELECTED_PAWN_FILEPATH)});
-    selectedTexturesMap.insert({WHITE_ROOK_KEY, SDL2pp::Texture(renderer, SELECTED_ROOK_FILEPATH)});
-    selectedTexturesMap.insert({WHITE_KNIGHT_KEY, SDL2pp::Texture(renderer, SELECTED_KNIGHT_FILEPATH)});
-    selectedTexturesMap.insert({WHITE_BISHOP_KEY, SDL2pp::Texture(renderer, SELECTED_BISHOP_FILEPATH)});
-    selectedTexturesMap.insert({WHITE_KING_KEY, SDL2pp::Texture(renderer, SELECTED_KING_FILEPATH)});
-    selectedTexturesMap.insert({WHITE_QUEEN_KEY, SDL2pp::Texture(renderer, SELECTED_QUEEN_FILEPATH)});
+    selectedTexturesMap.insert({WHITE_PAWN_KEY, SDL2pp::Texture((*renderer), SELECTED_PAWN_FILEPATH)});
+    selectedTexturesMap.insert({WHITE_ROOK_KEY, SDL2pp::Texture((*renderer), SELECTED_ROOK_FILEPATH)});
+    selectedTexturesMap.insert({WHITE_KNIGHT_KEY, SDL2pp::Texture((*renderer), SELECTED_KNIGHT_FILEPATH)});
+    selectedTexturesMap.insert({WHITE_BISHOP_KEY, SDL2pp::Texture((*renderer), SELECTED_BISHOP_FILEPATH)});
+    selectedTexturesMap.insert({WHITE_KING_KEY, SDL2pp::Texture((*renderer), SELECTED_KING_FILEPATH)});
+    selectedTexturesMap.insert({WHITE_QUEEN_KEY, SDL2pp::Texture((*renderer), SELECTED_QUEEN_FILEPATH)});
     // Initialize SDL_ttf library
     SDL2pp::SDLTTF ttf;
     // Load font, 12pt size
@@ -44,88 +59,66 @@ MainGameScreen::MainGameScreen(SDL2pp::Renderer &renderer, Board* board, Blockin
     // Render the text into new texture. Note that SDL_ttf render
     // text into Surface, which is converted into texture on the fly
     moveNotifText = std::make_unique<SDL2pp::Texture>(
-            renderer,
+            (*renderer),
             font.RenderText_Blended("*", SDL_Color{255, 255, 255, 255}));//default normal move color
     showMoveSelectedNotif(Uint8(250), Uint8(15), Uint8(180));
-    redraw();
+    refresh();
 }
 
-void MainGameScreen::run() {
-    SDL_bool done = SDL_FALSE;
-    bool pieceSelected = false;
-    bool firstEmptySelected = false;
-    char typeOfMove = 'n';
-    int positionFromX = 0;
-    int positionFromY = 0;
-    int secondPositionX = 0;
-    int secondPositionY = 0;
-
-    while (!done) {  // este while
-
-        // Event processing:
-        // - If window is closed, or Q or Escape buttons are pressed,
-        //   quit the application
-        SDL_Event event;
-        while (SDL_PollEvent(&event)) {
-            switch (event.type) {
-                case SDL_QUIT:
-                    return;
-                case SDL_KEYDOWN:
-                    switch (event.key.keysym.sym) {
-                        case SDLK_ESCAPE: case SDLK_q:
-                            return;
-                        case SDLK_n:
-                            std::cout << "NNNNNNNNNNNNNNNNNN" << std::endl;
-                            typeOfMove = 'n';
-                            //normal move selection color
-                            showMoveSelectedNotif(Uint8(250), Uint8(15), Uint8(188));
-                            break;
-                        case SDLK_s:
-                            std::cout << "SSSSSSSSSSSSSSSSSSSSSSSSS" << std::endl;
-                            typeOfMove = 's';
-                            //split move selection color
-                            showMoveSelectedNotif(Uint8(0), Uint8(255), Uint8(255));
-                            break;
-                        case SDLK_m:
-                            std::cout << "MMMMMMMMMMMMMMMMMMMMM" << std::endl;
-                            typeOfMove = 'm';
-                            //merge move selection color
-                            showMoveSelectedNotif(Uint8(0), Uint8(128), Uint8(0));
-                            break;
-                    }
-                    break;
-                case SDL_MOUSEBUTTONDOWN:
-                    handleMouseClick(typeOfMove,
-                                     pieceSelected,
-                                     firstEmptySelected,
-                                     positionFromX,
-                                     positionFromY,
-                                     secondPositionX,
-                                     secondPositionY);
-            }
+void MainGameScreen::processUserInput(bool& gameFinished) {
+    // Event processing:
+    // - If window is closed, or Q or Escape buttons are pressed,
+    //   quit the application
+    SDL_Event event;
+    while (SDL_PollEvent(&event)) {
+        switch (event.type) {
+            case SDL_QUIT:
+                return;
+            case SDL_KEYDOWN:
+                switch (event.key.keysym.sym) {
+                    case SDLK_ESCAPE: case SDLK_q:
+                        gameFinished = true;
+                        return;
+                    case SDLK_n:
+                        std::cout << "NNNNNNNNNNNNNNNNNN" << std::endl;
+                        typeOfMove = 'n';
+                        //normal move selection color
+                        showMoveSelectedNotif(Uint8(250), Uint8(15), Uint8(188));
+                        break;
+                    case SDLK_s:
+                        std::cout << "SSSSSSSSSSSSSSSSSSSSSSSSS" << std::endl;
+                        typeOfMove = 's';
+                        //split move selection color
+                        showMoveSelectedNotif(Uint8(0), Uint8(255), Uint8(255));
+                        break;
+                    case SDLK_m:
+                        std::cout << "MMMMMMMMMMMMMMMMMMMMM" << std::endl;
+                        typeOfMove = 'm';
+                        //merge move selection color
+                        showMoveSelectedNotif(Uint8(0), Uint8(128), Uint8(0));
+                        break;
+                }
+                break;
+            case SDL_MOUSEBUTTONDOWN:
+                handleMouseClick();
         }
-
-        redraw();
-
-        // Frame limiter: sleep for a little bit to not eat 100% of CPU
-        SDL_Delay(1);
     }
 }
-int MainGameScreen::start() {
+/*int MainGameScreen::start() {
     this->myThread = std::thread(&MainGameScreen::run, this);
     return 0;
 }
 
 void MainGameScreen::join() {
     this->myThread.join();
-}
+}*/
 
-void MainGameScreen::redraw() {
+void MainGameScreen::refresh() {
     //todo: this shouldn't be hardcoded, also make 'redraw()' listen for screen resize
     // Clear screen
-    renderer.Clear();
+    renderer->Clear();
 
-    renderer.Copy(texturesMap.at(BOARD_KEY), SDL2pp::NullOpt, SDL2pp::NullOpt);
+    renderer->Copy(texturesMap.at(BOARD_KEY), SDL2pp::NullOpt, SDL2pp::NullOpt);
 
     //this->buttons.front().redraw();
     for (auto &piece : selectedPieces) {
@@ -134,16 +127,16 @@ void MainGameScreen::redraw() {
                 (piece->getPosition().getY() - 1) * pieceHeight + (pieceHeight - selectedPieceHeight)/2,
                 selectedPieceWidth,
                 selectedPieceHeight);
-        renderer.Copy(selectedTexturesMap.at(toupper(piece->getDrawing())), SDL2pp::NullOpt, pieceRect);
+        renderer->Copy(selectedTexturesMap.at(toupper(piece->getDrawing())), SDL2pp::NullOpt, pieceRect);
     }
 
-    for (const auto &piece : (*_board)) {
+    for (const auto &piece : _board) {
         SDL2pp::Rect pieceRect(
                 (piece->getPosition().getX() - 1) * pieceWidth,
                 (piece->getPosition().getY() - 1) * pieceHeight,
                 pieceWidth,
                 pieceHeight);
-        renderer.Copy(texturesMap.at(piece->getDrawing()), SDL2pp::NullOpt, pieceRect);
+        renderer->Copy(texturesMap.at(piece->getDrawing()), SDL2pp::NullOpt, pieceRect);
     }
 
     //show move notif
@@ -153,15 +146,15 @@ void MainGameScreen::redraw() {
             moveNotifText->GetWidth(),
             moveNotifText->GetHeight()
             );
-    renderer.Copy((*moveNotifText), SDL2pp::NullOpt, textNotifRect);
+    renderer->Copy((*moveNotifText), SDL2pp::NullOpt, textNotifRect);
 
 
     // Show rendered frame
-    renderer.Present();
+    renderer->Present();
 }
 
 void MainGameScreen::selectPiece(int x, int y, const Uint8& r, const Uint8& g, const Uint8& b) {
-    Piece* piece = _board->getPiece(Position(x,y));
+    Piece* piece = _board.getPiece(Position(x,y));
     if (!piece)
         return;
     selectedPieces.push_front(piece);
@@ -174,13 +167,7 @@ void MainGameScreen::deselectAllPieces() {
     selectedPieces.clear();
 }
 
-void MainGameScreen::handleMouseClick(char& typeOfMove,
-                                      bool& pieceSelected,
-                                      bool& firstEmptySelected,
-                                      int& positionFromX,
-                                      int& positionFromY,
-                                      int& secondPositionX,
-                                      int& secondPositionY) {
+void MainGameScreen::handleMouseClick() {
     int mouseX, mouseY;
     SDL_GetMouseState(&mouseX, &mouseY);
     std::cout << "xmouse " << mouseX << " ymouse " << mouseY << std::endl;

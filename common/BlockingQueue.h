@@ -38,6 +38,8 @@ class BlockingQueue {
 
   /// Closes the Queue.
   void close();
+
+    T popIfNotEmpty();
 };
 
 /// Exception thrown when the Queue is already closed.
@@ -62,6 +64,17 @@ void BlockingQueue<T>::produce(T &&e) {
 
     queue_.push(std::move(e));
     condition_.notify_all();
+}
+
+template<typename T>
+T BlockingQueue<T>::popIfNotEmpty() {
+    std::unique_lock<std::mutex> lock(mutex_);
+    if (queue_.empty() || closed) {
+        return NULL;
+    }
+    T top = queue_.front();
+    queue_.pop();
+    return top;
 }
 
 template<typename T>
