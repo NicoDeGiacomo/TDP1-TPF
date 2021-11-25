@@ -5,6 +5,16 @@
 #ifndef QUANTUM_CHESS_MAINGAMESCREEN_H
 #define QUANTUM_CHESS_MAINGAMESCREEN_H
 
+struct PersistentInputData {
+    char typeOfMove;
+    bool pieceSelected;
+    bool firstEmptySelected;
+    int positionFromX;
+    int positionFromY;
+    int secondPositionX;
+    int secondPositionY;
+};
+
 #include <unordered_map>
 #include <SDL_image.h>
 #include <SDL2pp/SDL2pp.hh>
@@ -70,15 +80,7 @@ private:
     int pieceHeight = screenHeight / 8;
     int selectedPieceWidth = screenWidth / 7;
     int selectedPieceHeight = screenHeight / 7;
-
-    //this shouldnt be here i think
-    char typeOfMove;
-    bool pieceSelected;
-    bool firstEmptySelected;
-    int positionFromX;
-    int positionFromY;
-    int secondPositionX;
-    int secondPositionY;
+    PersistentInputData inputData;
 public:
     MainGameScreen(Board& board, BlockingQueue<std::shared_ptr<Message>>* userInputQueue);
     int start();

@@ -21,13 +21,13 @@ MainGameScreen::MainGameScreen(Board& board, BlockingQueue<std::shared_ptr<Messa
                                      SDL_WINDOW_RESIZABLE);
     renderer = std::make_unique<SDL2pp::Renderer>((*window), -1, SDL_RENDERER_ACCELERATED);
 
-    pieceSelected = false;
-    firstEmptySelected = false;
-    typeOfMove = 'n';
-    positionFromX = 0;
-    positionFromY = 0;
-    secondPositionX = 0;
-    secondPositionY = 0;
+    inputData.pieceSelected = false;
+    inputData.firstEmptySelected = false;
+    inputData.typeOfMove = 'n';
+    inputData.positionFromX = 0;
+    inputData.positionFromY = 0;
+    inputData.secondPositionX = 0;
+    inputData.secondPositionY = 0;
     this->userInputQueue = queue;
     texturesMap.insert({BOARD_KEY, SDL2pp::Texture((*renderer), BOARD_FILEPATH)});
 
@@ -81,19 +81,19 @@ void MainGameScreen::processUserInput(bool& gameFinished) {
                         return;
                     case SDLK_n:
                         std::cout << "NNNNNNNNNNNNNNNNNN" << std::endl;
-                        typeOfMove = 'n';
+                        inputData.typeOfMove = 'n';
                         //normal move selection color
                         showMoveSelectedNotif(Uint8(250), Uint8(15), Uint8(188));
                         break;
                     case SDLK_s:
                         std::cout << "SSSSSSSSSSSSSSSSSSSSSSSSS" << std::endl;
-                        typeOfMove = 's';
+                        inputData.typeOfMove = 's';
                         //split move selection color
                         showMoveSelectedNotif(Uint8(0), Uint8(255), Uint8(255));
                         break;
                     case SDLK_m:
                         std::cout << "MMMMMMMMMMMMMMMMMMMMM" << std::endl;
-                        typeOfMove = 'm';
+                        inputData.typeOfMove = 'm';
                         //merge move selection color
                         showMoveSelectedNotif(Uint8(0), Uint8(128), Uint8(0));
                         break;
@@ -174,16 +174,16 @@ void MainGameScreen::handleMouseClick() {
     int clampedMouseXToGrid = ceil((float)mouseX / pieceWidth);
     int clampedMouseYToGrid = ceil((float)mouseY / pieceHeight);
     std::cout << "grid position x " << clampedMouseXToGrid << " grid position y " << clampedMouseYToGrid << std::endl;
-    switch (typeOfMove) {
+    switch (inputData.typeOfMove) {
         case 'n':
-            if (pieceSelected) {
+            if (inputData.pieceSelected) {
                 /*this->userInputQueue->produce(std::make_shared<NormalMoveMessage>(
-                        Position(positionFromX, positionFromY),
+                        Position(inputData.positionFromX, inputData.positionFromY),
                         Position(clampedMouseXToGrid, clampedMouseYToGrid)));*/
                 //todo: remove this, mega hardcoded
                 std::string message;
-                message += std::to_string(positionFromX) +
-                           std::to_string(positionFromY) +
+                message += std::to_string(inputData.positionFromX) +
+                           std::to_string(inputData.positionFromY) +
                            std::to_string(clampedMouseXToGrid) +
                            std::to_string(clampedMouseYToGrid);
                 std::cout << "message hardcoded is: " << message << std::endl;
@@ -193,52 +193,52 @@ void MainGameScreen::handleMouseClick() {
                 deselectAllPieces();
             }
             else {
-                positionFromX = clampedMouseXToGrid;
-                positionFromY = clampedMouseYToGrid;
+                inputData.positionFromX = clampedMouseXToGrid;
+                inputData.positionFromY = clampedMouseYToGrid;
                 selectPiece(clampedMouseXToGrid, clampedMouseYToGrid, Uint8(250), Uint8(15), Uint8(188));
                 // pintar pieza seleccionada
                 // NTH: pintar movimientos posibles
             }
-            pieceSelected = !pieceSelected;
+            inputData.pieceSelected = !inputData.pieceSelected;
             break;
         case 's':
         case 'm':
-            if (!pieceSelected){
-                positionFromX = clampedMouseXToGrid;
-                positionFromY = clampedMouseYToGrid;
-                pieceSelected = true;
-                firstEmptySelected = false;
+            if (!inputData.pieceSelected){
+                inputData.positionFromX = clampedMouseXToGrid;
+                inputData.positionFromY = clampedMouseYToGrid;
+                inputData.pieceSelected = true;
+                inputData.firstEmptySelected = false;
                 Uint8 r = 0, g = 128, b = 0;
-                if (typeOfMove == 's') {
+                if (inputData.typeOfMove == 's') {
                     r = 0;
                     g = 255;
                     b = 255;
                 }
 
                 selectPiece(clampedMouseXToGrid, clampedMouseYToGrid, r, g, b);
-            } else if (!firstEmptySelected) {
-                secondPositionX = clampedMouseXToGrid;
-                secondPositionY = clampedMouseYToGrid;
-                firstEmptySelected = true;
-                if (typeOfMove == 'm')
+            } else if (!inputData.firstEmptySelected) {
+                inputData.secondPositionX = clampedMouseXToGrid;
+                inputData.secondPositionY = clampedMouseYToGrid;
+                inputData.firstEmptySelected = true;
+                if (inputData.typeOfMove == 'm')
                     selectPiece(clampedMouseXToGrid, clampedMouseYToGrid, Uint8(0), Uint8(128), Uint8(0));
             } else {
                 std::string message;
-                message += std::to_string(positionFromX) +
-                           std::to_string(positionFromY) +
-                           std::to_string(secondPositionX) +
-                           std::to_string(secondPositionY) +
+                message += std::to_string(inputData.positionFromX) +
+                           std::to_string(inputData.positionFromY) +
+                           std::to_string(inputData.secondPositionX) +
+                           std::to_string(inputData.secondPositionY) +
                            std::to_string(clampedMouseXToGrid) +
                            std::to_string(clampedMouseYToGrid);
                 std::cout << "message hardcoded is: " << message << std::endl;
 
-                if (typeOfMove == 's')
+                if (inputData.typeOfMove == 's')
                     this->userInputQueue->produce(std::make_shared<SplitMoveMessage>(message, 2));
                 else
                     this->userInputQueue->produce(std::make_shared<MergeMoveMessage>(message, 2));
-                pieceSelected = false;
-                firstEmptySelected = false;
-                typeOfMove = 'n';
+                inputData.pieceSelected = false;
+                inputData.firstEmptySelected = false;
+                inputData.typeOfMove = 'n';
                 deselectAllPieces();
             }
         default:
