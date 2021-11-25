@@ -103,6 +103,7 @@ void BlockingQueue<T>::pop() {
 template<typename T>
 void BlockingQueue<T>::close() {
     closed = true;
+    condition_.notify_all();
 }
 
 #endif  // SERVER_SRC_BLOCKINGQUEUE_H_

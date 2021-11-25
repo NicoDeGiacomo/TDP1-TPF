@@ -77,6 +77,7 @@ void MainGameScreen::processUserInput(bool& gameFinished) {
             case SDL_KEYDOWN:
                 switch (event.key.keysym.sym) {
                     case SDLK_ESCAPE: case SDLK_q:
+                        std::cout << "GAME FINISHED" << std::endl;
                         gameFinished = true;
                         return;
                     case SDLK_n:

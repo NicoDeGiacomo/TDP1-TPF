@@ -44,7 +44,9 @@ void Client::run() {
         // sleep para fps, maybe hay una mejor forma de hacerlo
         SDL_Delay(1);
     }
+    recvThread.stop();
     recvThread.join();
+    sendThread.stop();
     sendThread.join();
 }
 /*Client::Client movePieze(Position&& from, Position&& to){

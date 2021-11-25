@@ -53,5 +53,6 @@ SendThread::SendThread(ServerProxy &proxy, Board &board, int id, BlockingQueue<s
 
 void SendThread::stop() {
     this->keep_talking = false;
-    // this->proxy.close_connection();
+    this->_queue.close();
+    this->proxy.close_connection();
 }

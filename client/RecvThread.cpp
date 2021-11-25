@@ -55,5 +55,5 @@ RecvThread::RecvThread(ServerProxy &proxy, BlockingQueue<std::shared_ptr<Message
 
 void RecvThread::stop() {
     this->keep_talking = false;
-    // this->proxy.close_connection();
+    this->proxy.close_connection();
 }

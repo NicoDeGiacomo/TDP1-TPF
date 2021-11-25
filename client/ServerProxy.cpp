@@ -117,5 +117,5 @@ std::shared_ptr<Message> ServerProxy::recv() {
 }
 
 void ServerProxy::close_connection() {
-
+    this->socket.shutdown();
 }
