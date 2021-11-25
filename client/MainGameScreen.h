@@ -5,8 +5,6 @@
 #ifndef QUANTUM_CHESS_MAINGAMESCREEN_H
 #define QUANTUM_CHESS_MAINGAMESCREEN_H
 
-
-#include <Board.h>
 #include <unordered_map>
 #include "Screen.h"
 #include "Client.h"
@@ -44,18 +42,30 @@
 #define BLACK_KING_FILEPATH "../assets/sprites/blackKing.png"
 #define BLACK_QUEEN_FILEPATH "../assets/sprites/blackQueen.png"
 
+#define SELECTED_PAWN_FILEPATH "../assets/sprites/selectedPawn.png"
+#define SELECTED_ROOK_FILEPATH "../assets/sprites/selectedRook.png"
+#define SELECTED_KNIGHT_FILEPATH "../assets/sprites/selectedKnight.png"
+#define SELECTED_BISHOP_FILEPATH "../assets/sprites/selectedBishop.png"
+#define SELECTED_KING_FILEPATH "../assets/sprites/selectedKing.png"
+#define SELECTED_QUEEN_FILEPATH "../assets/sprites/selectedQueen.png"
+
 class MainGameScreen : public Screen {
 private:
     std::thread myThread;
     std::unordered_map<char,SDL2pp::Texture> texturesMap;
+    std::unordered_map<char,SDL2pp::Texture> selectedTexturesMap;
+    std::unique_ptr<SDL2pp::Texture> moveNotifText;
+    std::list<Piece*> selectedPieces;
     Board *_board;
     //Client *_client;
-    std::vector<Button> buttons;
+    //std::vector<Button> buttons;
     BlockingQueue<std::shared_ptr<Message>>* userInputQueue;
     int screenWidth = 640;
     int screenHeight = 480;
     int pieceWidth = screenWidth / 8;
     int pieceHeight = screenHeight / 8;
+    int selectedPieceWidth = screenWidth / 7;
+    int selectedPieceHeight = screenHeight / 7;
 public:
     MainGameScreen(SDL2pp::Renderer &renderer, Board* board, BlockingQueue<std::shared_ptr<Message>>* userInputQueue);
     int start() override;
@@ -64,6 +74,20 @@ public:
     void run();
 
     void join();
+
+    void selectPiece(int x, int y, const Uint8& r, const Uint8& g, const Uint8& b);
+
+    void deselectAllPieces();
+
+    void handleMouseClick(char& typeOfMove,
+                          bool& pieceSelected,
+                          bool& firstEmptySelected,
+                          int& positionFromX,
+                          int& positionFromY,
+                          int& positionFrom2X,
+                          int& positionFrom2Y);
+
+    void showMoveSelectedNotif(const Uint8& r, const Uint8& g, const Uint8& b);
 };
 
 
