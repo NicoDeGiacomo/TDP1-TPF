@@ -57,9 +57,9 @@ int main(int argc, const char *argv[]) {
     // board()
     // close_client();
 
-    // refresh
+    // refreshScreen
     // click -> move -> .......
-    // refresh
+    // refreshScreen
 
     if (argc != 3) {
         std::cerr << "Error en la cantidad de argumentos\n"

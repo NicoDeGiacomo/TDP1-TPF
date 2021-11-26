@@ -20,6 +20,11 @@ struct PersistentInputData {
 #include <SDL2pp/SDL2pp.hh>
 #include "BlockingQueue.h"
 
+struct MoveColors {
+    SDL_Color normal;
+    SDL_Color split;
+    SDL_Color merge;
+};
 #define BOARD_KEY 'Z'
 
 #define WHITE_PAWN_KEY 'P'
@@ -64,11 +69,11 @@ class MainGameScreen {
 private:
     std::unique_ptr<SDL2pp::Renderer> renderer;
     std::unique_ptr<SDL2pp::Window> window;
-    std::unique_ptr<SDL2pp::SDL> sdl;
+    //std::unique_ptr<SDL2pp::SDL> sdl;
     //std::thread myThread;
     std::unordered_map<char,SDL2pp::Texture> texturesMap;
     std::unordered_map<char,SDL2pp::Texture> selectedTexturesMap;
-    std::unique_ptr<SDL2pp::Texture> moveNotifText;
+    std::unique_ptr<SDL2pp::Texture> moveNotifTexture;
     std::list<Piece*> selectedPieces;
     Board &_board;
     //Client *_client;
@@ -81,24 +86,33 @@ private:
     int selectedPieceWidth = screenWidth / 7;
     int selectedPieceHeight = screenHeight / 7;
     PersistentInputData inputData;
+    MoveColors moveColors;
 public:
     MainGameScreen(Board& board, BlockingQueue<std::shared_ptr<Message>>* userInputQueue);
-    int start();
-    void refresh();
+    void refreshScreen();
 
     void processUserInput(bool& gameFinished);
 
-    void join();
-
-    void selectPiece(int x, int y, const Uint8& r, const Uint8& g, const Uint8& b);
+    void selectPiece(int x, int y, const SDL_Color& color);
 
     void deselectAllPieces();
 
     void handleMouseClick();
 
-    void showMoveSelectedNotif(const Uint8& r, const Uint8& g, const Uint8& b);
+    void showMoveSelectedNotif(const SDL_Color& color);
 
     //SDL2pp::Renderer createRenderer();
+    void initColors();
+
+    void goToDefaultMovement();
+
+    void loadMoveSelectedNotif(const int alpha);
+
+    void loadBoardTextures();
+
+    void setUserInputDefaultValues();
+
+    void startSDLWindow();
 };
 
 

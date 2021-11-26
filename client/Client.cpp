@@ -22,7 +22,7 @@ void Client::run() {
 
     while (!gameFinished) {
         mainGameScreen.processUserInput(gameFinished);
-        mainGameScreen.refresh();
+        mainGameScreen.refreshScreen();
         bool moreMessagesToProcess = true;
         while(moreMessagesToProcess) {
             std::shared_ptr<Message> msg_ptr = recvQueue.popIfNotEmpty();
