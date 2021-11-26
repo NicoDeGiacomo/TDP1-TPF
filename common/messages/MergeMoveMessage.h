@@ -11,6 +11,7 @@
 class MergeMoveMessage : public MoveMessage {
 public:
     MergeMoveMessage(const std::string &message, int id);
+    MergeMoveMessage(Position& from_1, Position& from_2, Position& to);
 };
 
 

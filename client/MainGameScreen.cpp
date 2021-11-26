@@ -182,14 +182,16 @@ void MainGameScreen::handleMouseClick() {
                         Position(inputData.positionFromX, inputData.positionFromY),
                         Position(clampedMouseXToGrid, clampedMouseYToGrid)));*/
                 //todo: remove this, mega hardcoded
-                std::string message;
-                message += std::to_string(inputData.positionFromX) +
-                           std::to_string(inputData.positionFromY) +
-                           std::to_string(clampedMouseXToGrid) +
-                           std::to_string(clampedMouseYToGrid);
-                std::cout << "message hardcoded is: " << message << std::endl;
+                // std::string message;
+                // message += std::to_string(inputData.positionFromX) +
+                //            std::to_string(inputData.positionFromY) +
+                //            std::to_string(clampedMouseXToGrid) +
+                //            std::to_string(clampedMouseYToGrid);
+                // std::cout << "message hardcoded is: " << message << std::endl;
+                Position from(inputData.positionFromX, inputData.positionFromY);
+                Position to(clampedMouseXToGrid, clampedMouseYToGrid);
                 this->userInputQueue->produce(std::make_shared<NormalMoveMessage>(
-                        message, 2
+                        from, to
                 ));
                 deselectAllPieces();
             }
@@ -224,19 +226,23 @@ void MainGameScreen::handleMouseClick() {
                 if (inputData.typeOfMove == 'm')
                     selectPiece(clampedMouseXToGrid, clampedMouseYToGrid, Uint8(0), Uint8(128), Uint8(0));
             } else {
-                std::string message;
-                message += std::to_string(inputData.positionFromX) +
-                           std::to_string(inputData.positionFromY) +
-                           std::to_string(inputData.secondPositionX) +
-                           std::to_string(inputData.secondPositionY) +
-                           std::to_string(clampedMouseXToGrid) +
-                           std::to_string(clampedMouseYToGrid);
-                std::cout << "message hardcoded is: " << message << std::endl;
+                // std::string message;
+                // message += std::to_string(inputData.positionFromX) +
+                //            std::to_string(inputData.positionFromY) +
+                //            std::to_string(inputData.secondPositionX) +
+                //            std::to_string(inputData.secondPositionY) +
+                //            std::to_string(clampedMouseXToGrid) +
+                //            std::to_string(clampedMouseYToGrid);
+                // std::cout << "message hardcoded is: " << message << std::endl;
+
+                Position pos_1(inputData.positionFromX, inputData.positionFromY);
+                Position pos_2(inputData.secondPositionX, inputData.secondPositionY);
+                Position pos_3(clampedMouseXToGrid, clampedMouseYToGrid);
 
                 if (inputData.typeOfMove == 's')
-                    this->userInputQueue->produce(std::make_shared<SplitMoveMessage>(message, 2));
+                    this->userInputQueue->produce(std::make_shared<SplitMoveMessage>(pos_1, pos_2, pos_3));
                 else
-                    this->userInputQueue->produce(std::make_shared<MergeMoveMessage>(message, 2));
+                    this->userInputQueue->produce(std::make_shared<MergeMoveMessage>(pos_1, pos_2, pos_3));
                 inputData.pieceSelected = false;
                 inputData.firstEmptySelected = false;
                 inputData.typeOfMove = 'n';

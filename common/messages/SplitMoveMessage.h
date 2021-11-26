@@ -11,6 +11,7 @@
 class SplitMoveMessage : public MoveMessage {
 public:
     SplitMoveMessage(const std::string &message, int id);
+    SplitMoveMessage(Position& from, Position& to_1, Position& to_2);
 };
 
 

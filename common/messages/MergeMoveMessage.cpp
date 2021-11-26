@@ -24,3 +24,16 @@ MergeMoveMessage::MergeMoveMessage(const std::string &message, int id) : MoveMes
                                                     std::move(to));
     this->type = MERGE_MOVE_CHAR;
 }
+
+MergeMoveMessage::MergeMoveMessage(Position& from_1, Position& from_2, Position& to) {
+    this->_message.clear();
+    this->_message += from_1.getString();
+    this->_message += from_2.getString();
+    this->_message += to.getString();
+    
+    this->movement = std::make_unique<MergeMove>(std::move(from_1),
+                                                 std::move(from_2),
+                                                 std::move(to));
+    this->type = MERGE_MOVE_CHAR;
+}
+

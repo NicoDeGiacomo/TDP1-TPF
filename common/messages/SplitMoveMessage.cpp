@@ -24,3 +24,16 @@ SplitMoveMessage::SplitMoveMessage(const std::string &message, int id) : MoveMes
                                                 std::move(to2));
     this->type = SPLIT_MOVE_CHAR;
 }
+
+
+SplitMoveMessage::SplitMoveMessage(Position& from, Position& to_1, Position& to_2) {
+    this->_message.clear();
+    this->_message += from.getString();
+    this->_message += to_1.getString();
+    this->_message += to_2.getString();
+
+    this->movement = std::make_unique<SplitMove>(std::move(from),
+                                                 std::move(to_1),
+                                                 std::move(to_2));
+    this->type = SPLIT_MOVE_CHAR;
+}

@@ -23,6 +23,16 @@ NormalMoveMessage::NormalMoveMessage(const std::string &message, int id) : MoveM
     this->type = NORMAL_MOVE_CHAR;
 }
 
+NormalMoveMessage::NormalMoveMessage(Position& from, Position& to) {
+    this->_message.clear();
+    this->_message += from.getString();
+    this->_message += to.getString();
+    
+    this->movement = std::make_unique<NormalMove>(std::move(from),
+                                                    std::move(to));
+    this->type = NORMAL_MOVE_CHAR;
+}
+
 /*NormalMoveMessage::NormalMoveMessage(const std::string &message) : MoveMessage() {
     this->movement = std::make_unique<NormalMove>(std::move(from),
                                                   std::move(to));*/
