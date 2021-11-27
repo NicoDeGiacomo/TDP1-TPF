@@ -65,8 +65,8 @@ void Piece::move(Position position) {
     }
 }
 
-void Piece::move_(Position position) {
-    validateMove_(position);
+void Piece::move_(Position position, bool merge) {
+    validateMove_(position, merge);
     position_ = position;
     has_moved_ = true;
 }
@@ -86,9 +86,9 @@ void Piece::measure_() {
     }
 }
 
-std::list<Position> Piece::getPossibleMoves() const {
-    std::list<Position> possibleStepPositions = getPossibleStepPositions_();
-    std::list<Position> possibleBeamPositions = getPossibleBeamPositions_();
+std::list<Position> Piece::getPossibleMoves(bool merge) const {
+    std::list<Position> possibleStepPositions = getPossibleStepPositions_(merge);
+    std::list<Position> possibleBeamPositions = getPossibleBeamPositions_(merge);
     if (possibleStepPositions.empty()) {
         return possibleBeamPositions;
     }
@@ -96,7 +96,7 @@ std::list<Position> Piece::getPossibleMoves() const {
     return possibleStepPositions;  // todo join lists
 }
 
-std::list<Position> Piece::getPossibleStepPositions_() const {
+std::list<Position> Piece::getPossibleStepPositions_(__attribute__((unused)) bool merge) const {
     std::list<Position> possiblePositions;
     for (auto move: getVectorStepMoves_()) {
         try {
@@ -114,7 +114,7 @@ std::list<Position> Piece::getPossibleStepPositions_() const {
     return possiblePositions;
 }
 
-std::list<Position> Piece::getPossibleBeamPositions_() const {
+std::list<Position> Piece::getPossibleBeamPositions_(bool merge) const {
     std::list<Position> possiblePositions;
     for (auto move: getVectorBeamMoves_()) {
         int x = position_.getX();
@@ -127,7 +127,9 @@ std::list<Position> Piece::getPossibleBeamPositions_() const {
                 Piece* otherPiece = getPieceFromBoard_(newPosition);
                 if (otherPiece != nullptr) {
                     if (isSplit_(otherPiece)) {
-                        possiblePositions.push_back(newPosition);
+                        if (merge) {
+                            possiblePositions.push_back(newPosition);
+                        }
                         continue;
                     }
                     if (color_ != otherPiece->color_) {
@@ -150,8 +152,8 @@ Piece *Piece::getPieceFromBoard_(Position &position) const {
     return board_ != nullptr ? board_->getPiece(position) : nullptr;
 }
 
-void Piece::validateMove_(const Position &position) const {
-    std::list<Position> positions = getPossibleMoves();
+void Piece::validateMove_(const Position &position, bool merge) const {
+    std::list<Position> positions = getPossibleMoves(merge);
     bool found = std::find(positions.begin(), positions.end(), position) != positions.end();
     if (!found) {
         throw std::invalid_argument("Invalid move: not possible.");
@@ -180,8 +182,11 @@ void Piece::merge(Position to, Piece* other) {
         throw std::invalid_argument("Invalid move: non split.");
     }
 
+    if (other->position_ != to) {
+        other->validateMove_(to, true);
+    }
     if (position_ != to) {
-        move_(to);
+        move_(to, true);
     }
     splits_->mergeSplits(this, other);
 }

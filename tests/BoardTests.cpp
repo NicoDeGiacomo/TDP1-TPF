@@ -66,6 +66,18 @@ TEST_CASE("Invalid move") {
                          std::invalid_argument);
 }
 
+TEST_CASE("Invalid move - Step on own split") {
+    Board board;
+    board.move(Position("e2"), Position("e4"));
+    board.move(Position("e7"), Position("e5"));
+    board.split(Position("f1"), Position("d3"), Position("b5"));
+    board.move(Position("h7"), Position("h5"));
+
+    CHECK_THROWS_WITH_AS(board.move(Position("d3"), Position("b5"));,
+                         "Invalid move: not possible.",
+                         std::invalid_argument);
+}
+
 TEST_CASE("Capture") {
     Board board;
     CHECK_EQ(32, countPieces_(board));

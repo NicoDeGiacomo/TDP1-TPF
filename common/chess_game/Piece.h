@@ -23,7 +23,7 @@ class Piece : public Drawable {
 
   virtual void eat();
 
-  std::list<Position> getPossibleMoves() const;
+  std::list<Position> getPossibleMoves(bool merge = false) const;
 
   float getProbability() const;
 
@@ -53,11 +53,11 @@ class Piece : public Drawable {
   Piece* getPieceFromBoard_(Position &position) const;
 
  private:
-  void move_(Position position);
+  void move_(Position position, bool merge = false);
   void measure_();
-  std::list<Position> getPossibleStepPositions_() const;
-  std::list<Position> getPossibleBeamPositions_() const;
-  void validateMove_(const Position &position) const;
+  std::list<Position> getPossibleStepPositions_(__attribute__((unused)) bool merge = false) const;
+  std::list<Position> getPossibleBeamPositions_(bool merge = false) const;
+  void validateMove_(const Position &position, bool merge = false) const;
   void appendToBoard_();
   bool isSplit_(Piece *other) const;
   void resetSplits();
