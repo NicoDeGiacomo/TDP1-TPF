@@ -154,8 +154,53 @@ TEST_CASE("Finish game") {
     CHECK(board.isFinished());
 }
 
-TEST_CASE("Finish quantum game") {
-    // todo: implement me!
+TEST_CASE("Finish quantum game - confirm") {
+    Board board(false, 1);
+    REQUIRE(!board.isFinished());
+    REQUIRE_EQ(32, countPieces_(board));
+
+    board.move(Position("f2"), Position("f4"));
+    board.move(Position("e7"), Position("e5"));
+    board.move(Position("e1"), Position("f2"));
+    board.move(Position("d8"), Position("h4"));
+
+    board.split(Position("f2"), Position("g3"), Position("f3"));
+    REQUIRE(!board.isFinished());
+    REQUIRE_EQ(33, countPieces_(board));
+
+    Piece* queen = board.getPiece(Position("h4"));
+    board.move(Position("h4"), Position("g3"));
+    REQUIRE(board.isFinished());
+    REQUIRE_EQ(31, countPieces_(board));
+
+    CHECK_EQ(board.getPiece(Position("f3")), nullptr);
+    CHECK_NE(board.getPiece(Position("g3")), nullptr);
+    CHECK_EQ(board.getPiece(Position("g3")), queen);
+}
+
+TEST_CASE("Finish quantum game - deny") {
+    Board board(false, 3);
+    REQUIRE(!board.isFinished());
+
+    board.move(Position("f2"), Position("f4"));
+    board.move(Position("e7"), Position("e5"));
+    board.move(Position("e1"), Position("f2"));
+    board.move(Position("d8"), Position("h4"));
+
+    board.split(Position("f2"), Position("g3"), Position("f3"));
+    REQUIRE(!board.isFinished());
+    REQUIRE_EQ(33, countPieces_(board));
+
+    Piece* queen = board.getPiece(Position("h4"));
+    board.move(Position("h4"), Position("g3"));
+    REQUIRE(!board.isFinished());
+    REQUIRE_EQ(32, countPieces_(board));
+
+    CHECK_NE(board.getPiece(Position("f3")), nullptr);
+    CHECK_EQ(board.getPiece(Position("f3"))->getProbability(), 1.0f);
+
+    CHECK_NE(board.getPiece(Position("g3")), nullptr);
+    CHECK_EQ(board.getPiece(Position("g3")), queen);
 }
 }
 }
