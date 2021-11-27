@@ -137,6 +137,7 @@ TEST_CASE("Promotion") {
 TEST_CASE("Finish game") {
     Board board;
     CHECK(!board.isFinished());
+    CHECK_EQ(32, countPieces_(board));
 
     board.move(Position(3, 2), Position(3, 3));
     CHECK(!board.isFinished());
@@ -152,6 +153,7 @@ TEST_CASE("Finish game") {
 
     board.move(Position(1, 4), Position(5, 8));
     CHECK(board.isFinished());
+    CHECK_EQ(31, countPieces_(board));
 }
 
 TEST_CASE("Finish quantum game - confirm") {
