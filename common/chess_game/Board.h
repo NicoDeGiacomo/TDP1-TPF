@@ -15,6 +15,8 @@ class Board {
 
   std::list<Piece*>::const_iterator end() const;
 
+  PieceColor getCurrentTurn();
+
   void move(Position from, Position to);
 
   void split(Position from, Position to1, Position to2);
@@ -39,6 +41,9 @@ private:
   bool finished_;
   unsigned int seed_;
 
+  Piece* getPieceWithValidations_(Position position);
+  static void validatePieceNotNull_(Piece* piece);
+  void validateTurn_(Piece* piece);
   void changeTurn_();
   void generatePiecesForColor_(PieceColor color);
 

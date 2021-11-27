@@ -39,6 +39,8 @@ TEST_CASE("Create Chess Board") {
     CHECK_EQ(4, bishops);
     CHECK_EQ(2, queens);
     CHECK_EQ(2, kings);
+
+    CHECK_EQ(board.getCurrentTurn(), PieceColor::WHITE);
 }
 
 TEST_SUITE("Move pieces") {
@@ -84,9 +86,11 @@ TEST_CASE("Capture") {
 
     board.move(Position(5, 2), Position(5, 4));
     CHECK_EQ(32, countPieces_(board));
+    CHECK_EQ(board.getCurrentTurn(), PieceColor::BLACK);
 
     board.move(Position(4, 7), Position(4, 5));
     CHECK_EQ(32, countPieces_(board));
+    CHECK_EQ(board.getCurrentTurn(), PieceColor::WHITE);
 
     board.move(Position(5, 4), Position(4, 5));
     CHECK_EQ(31, countPieces_(board));

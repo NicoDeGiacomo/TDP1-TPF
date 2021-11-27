@@ -30,16 +30,14 @@ std::list<Piece*>::const_iterator Board::end() const {
     return pieces_.end();
 }
 
-void Board::move(Position from, Position to) {
-    auto pieceFrom = getPiece(from);
-    if (pieceFrom == nullptr) {
-        throw std::invalid_argument("Invalid move: empty square.");
-    }
-    if (pieceFrom->getColor() != turn_) {
-        throw std::invalid_argument("Invalid move: out of turn.");
-    }
+PieceColor Board::getCurrentTurn() {
+    return turn_;
+}
 
-    pieceFrom->move(to);
+
+void Board::move(Position from, Position to) {
+    auto piece = getPieceWithValidations_(from);
+    piece->move(to);
     changeTurn_();
     //for debugging
     printBoard();
@@ -50,17 +48,11 @@ void Board::split(Position from, Position to1, Position to2) {
         throw std::invalid_argument("Invalid move: equal split positions.");
     }
 
-    auto pieceFrom = getPiece(from);
+    auto pieceFrom = getPieceWithValidations_(from);
     auto pieceTo1 = getPiece(to1);
     auto pieceTo2 = getPiece(to2);
     if (pieceTo1 != nullptr || pieceTo2 != nullptr) {
         throw std::invalid_argument("Invalid move: non-empty square.");
-    }
-    if (pieceFrom == nullptr) {
-        throw std::invalid_argument("Invalid move: empty square.");
-    }
-    if (pieceFrom->getColor() != turn_) {
-        throw std::invalid_argument("Invalid move: out of turn.");
     }
 
     pieceFrom->split(to1, to2);
@@ -74,14 +66,8 @@ void Board::merge(Position from1, Position from2, Position to) {
         throw std::invalid_argument("Invalid move: merging same position.");
     }
 
-    auto* pieceFrom1 = getPiece(from1);
-    auto* pieceFrom2 = getPiece(from2);
-    if (pieceFrom1 == nullptr || pieceFrom2 == nullptr) {
-        throw std::invalid_argument("Invalid move: empty square.");
-    }
-    if (pieceFrom1->getColor() != turn_ || pieceFrom2->getColor() != turn_) {
-        throw std::invalid_argument("Invalid move: out of turn.");  // todo function
-    }
+    auto* pieceFrom1 = getPieceWithValidations_(from1);
+    auto* pieceFrom2 = getPieceWithValidations_(from2);
 
     pieceFrom1->merge(to, pieceFrom2);
     changeTurn_();
@@ -166,4 +152,23 @@ void Board::printBoard() {
         printf("\n");
     }
     printf("-----------------\n");
+}
+
+Piece* Board::getPieceWithValidations_(Position position) {
+    auto piece = getPiece(position);
+    validatePieceNotNull_(piece);
+    validateTurn_(piece);
+    return piece;
+}
+
+void Board::validatePieceNotNull_(Piece* piece) {
+    if (piece == nullptr) {
+        throw std::invalid_argument("Invalid move: empty square.");
+    }
+}
+
+void Board::validateTurn_(Piece* piece) {
+    if (piece->getColor() != getCurrentTurn()) {
+        throw std::invalid_argument("Invalid move: out of turn.");
+    }
 }
