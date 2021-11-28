@@ -16,8 +16,8 @@ MainGameScreen::MainGameScreen(Board& board, BlockingQueue<std::shared_ptr<Messa
     this->setUserInputDefaultValues();
     this->loadBoardTextures();
     this->initColors();
-    this->loadMoveSelectedNotif(222);
-    this->showMoveSelectedNotif(moveColors.normal);
+    this->loadMoveSelectedNotification(222);
+    this->paintMoveSelectedNotification(colors.normalMove);
     this->refreshScreen();
 }
 
@@ -39,20 +39,20 @@ void MainGameScreen::processUserInput(bool& gameFinished) {
                     case SDLK_n:
                         std::cout << "NNNNNNNNNNNNNNNNNN" << std::endl;
                         inputData.typeOfMove = 'n';
-                        //normal move selection color
-                        showMoveSelectedNotif(moveColors.normal);
+                        //normalMove move selection color
+                        paintMoveSelectedNotification(colors.normalMove);
                         break;
                     case SDLK_s:
                         std::cout << "SSSSSSSSSSSSSSSSSSSSSSSSS" << std::endl;
                         inputData.typeOfMove = 's';
                         //split move selection color
-                        showMoveSelectedNotif(moveColors.split);
+                        paintMoveSelectedNotification(colors.splitMove);
                         break;
                     case SDLK_m:
                         std::cout << "MMMMMMMMMMMMMMMMMMMMM" << std::endl;
                         inputData.typeOfMove = 'm';
                         //merge move selection color
-                        showMoveSelectedNotif(moveColors.merge);
+                        paintMoveSelectedNotification(colors.mergeMove);
                         break;
                 }
                 break;
@@ -91,15 +91,48 @@ void MainGameScreen::refreshScreen() {
     //render move notification text
     SDL2pp::Rect textNotifRect(
             0,
-            -moveNotifTexture->GetHeight() / 8, //place the '*' on the top left
-            moveNotifTexture->GetWidth(),
-            moveNotifTexture->GetHeight()
+            -moveNotificationTexture->GetHeight() / 8, //place the '*' on the top left
+            moveNotificationTexture->GetWidth(),
+            moveNotificationTexture->GetHeight()
             );
-    renderer->Copy((*moveNotifTexture), SDL2pp::NullOpt, textNotifRect);
+    renderer->Copy((*moveNotificationTexture), SDL2pp::NullOpt, textNotifRect);
 
-
+    renderProbabilityBar(200, 200, 100, 50, .75, colors.green, colors.red, colors.grey);
     //show rendered frame
     renderer->Present();
+}
+void MainGameScreen::renderProbabilityBar(const int x,
+                                          const int y,
+                                          const int width,
+                                          const int height,
+                                          float percent,
+                                          const SDL_Color frontColor,
+                                          const SDL_Color backgroundColor,
+                                          const SDL_Color edgeColor) {
+    //check if percent is valid, between 0 and 1
+    percent = percent > 1.f ? 1.f : percent < 0.f ? 0.f : percent;
+    int edgeSize = height / 8;
+    int frontWidth = (int)((float)(width - edgeSize * 2) * percent);
+    SDL2pp::Rect backgroundRect(x, y, width, height);
+    SDL2pp::Rect frontRect(x + edgeSize, y, frontWidth, height);
+    SDL2pp::Rect topEdge(x, y, width, edgeSize);
+    SDL2pp::Rect bottomEdge(x, y + height, width, edgeSize);
+    SDL2pp::Rect rightEdge(x + width - edgeSize, y, edgeSize, height);
+    SDL2pp::Rect leftEdge(x, y, edgeSize, height);
+    //blend mode so can overlap pixel colors based on alpha value
+    renderer->SetDrawBlendMode(SDL_BLENDMODE_BLEND);
+    renderer->SetDrawColor(backgroundColor);
+    renderer->FillRect(backgroundRect);
+    renderer->SetDrawColor(frontColor);
+    renderer->FillRect(frontRect);
+    //edges
+    renderer->SetDrawColor(edgeColor);
+    renderer->FillRect(topEdge);
+    renderer->FillRect(bottomEdge);
+    renderer->FillRect(rightEdge);
+    renderer->FillRect(leftEdge);
+    //back to none blend mode
+    renderer->SetDrawBlendMode(SDL_BLENDMODE_NONE);
 }
 
 void MainGameScreen::selectPiece(int x, int y, const SDL_Color& color) {
@@ -109,7 +142,7 @@ void MainGameScreen::selectPiece(int x, int y, const SDL_Color& color) {
     selectedPieces.push_front(piece);
     SDL2pp::Texture &texture = selectedTexturesMap.at(toupper(piece->getDrawing()));
     // change opacity of selected piece highlight, leaving at 100% if line is commented
-    //SDL_SetTextureAlphaMod(texture.Get(), Uint8(127));
+    SDL_SetTextureAlphaMod(texture.Get(), color.a);
     SDL_SetTextureColorMod(texture.Get(), color.r, color.g, color.b);
 }
 
@@ -127,16 +160,6 @@ void MainGameScreen::handleMouseClick() {
     switch (inputData.typeOfMove) {
         case 'n':
             if (inputData.pieceSelected) {
-                /*this->userInputQueue->produce(std::make_shared<NormalMoveMessage>(
-                        Position(inputData.positionFromX, inputData.positionFromY),
-                        Position(clampedMouseXToGrid, clampedMouseYToGrid)));*/
-                //todo: remove this, mega hardcoded
-                // std::string message;
-                // message += std::to_string(inputData.positionFromX) +
-                //            std::to_string(inputData.positionFromY) +
-                //            std::to_string(clampedMouseXToGrid) +
-                //            std::to_string(clampedMouseYToGrid);
-                // std::cout << "message hardcoded is: " << message << std::endl;
                 Position from(inputData.positionFromX, inputData.positionFromY);
                 Position to(clampedMouseXToGrid, clampedMouseYToGrid);
                 this->userInputQueue->produce(std::make_shared<NormalMoveMessage>(
@@ -147,7 +170,7 @@ void MainGameScreen::handleMouseClick() {
             else {
                 inputData.positionFromX = clampedMouseXToGrid;
                 inputData.positionFromY = clampedMouseYToGrid;
-                selectPiece(clampedMouseXToGrid, clampedMouseYToGrid, moveColors.normal);
+                selectPiece(clampedMouseXToGrid, clampedMouseYToGrid, colors.normalMove);
                 // NTH: pintar movimientos posibles
             }
             inputData.pieceSelected = !inputData.pieceSelected;
@@ -159,34 +182,31 @@ void MainGameScreen::handleMouseClick() {
                 inputData.positionFromY = clampedMouseYToGrid;
                 inputData.pieceSelected = true;
                 inputData.firstEmptySelected = false;
-                inputData.typeOfMove == 's' ? selectPiece(clampedMouseXToGrid,
-                                                          clampedMouseYToGrid,
-                                                          moveColors.split) :
-                selectPiece(clampedMouseXToGrid, clampedMouseYToGrid, moveColors.merge);
+                selectPiece(clampedMouseXToGrid,
+                            clampedMouseYToGrid,
+                            inputData.typeOfMove == 's' ? colors.splitMove : colors.mergeMove);
             } else if (!inputData.firstEmptySelected) {
                 inputData.secondPositionX = clampedMouseXToGrid;
                 inputData.secondPositionY = clampedMouseYToGrid;
                 inputData.firstEmptySelected = true;
                 if (inputData.typeOfMove == 'm')
-                    selectPiece(clampedMouseXToGrid, clampedMouseYToGrid, moveColors.merge);
+                    selectPiece(clampedMouseXToGrid, clampedMouseYToGrid, colors.mergeMove);
             } else {
-                // std::string message;
-                // message += std::to_string(inputData.positionFromX) +
-                //            std::to_string(inputData.positionFromY) +
-                //            std::to_string(inputData.secondPositionX) +
-                //            std::to_string(inputData.secondPositionY) +
-                //            std::to_string(clampedMouseXToGrid) +
-                //            std::to_string(clampedMouseYToGrid);
-                // std::cout << "message hardcoded is: " << message << std::endl;
-
                 Position pos_1(inputData.positionFromX, inputData.positionFromY);
                 Position pos_2(inputData.secondPositionX, inputData.secondPositionY);
                 Position pos_3(clampedMouseXToGrid, clampedMouseYToGrid);
 
-                if (inputData.typeOfMove == 's')
-                    this->userInputQueue->produce(std::make_shared<SplitMoveMessage>(pos_1, pos_2, pos_3));
-                else
-                    this->userInputQueue->produce(std::make_shared<MergeMoveMessage>(pos_1, pos_2, pos_3));
+                (inputData.typeOfMove == 's') ?
+                this->userInputQueue->produce(
+                        std::make_shared<SplitMoveMessage>(
+                                pos_1,
+                                pos_2,
+                                pos_3)) :
+                this->userInputQueue->produce(
+                        std::make_shared<MergeMoveMessage>(
+                                pos_1,
+                                pos_2,
+                                pos_3));
                 goToDefaultMovement();
             }
         default:
@@ -194,25 +214,41 @@ void MainGameScreen::handleMouseClick() {
     }
 }
 
-void MainGameScreen::showMoveSelectedNotif(const SDL_Color& color) {
-    SDL_SetTextureColorMod(moveNotifTexture->Get(), color.r, color.g, color.b);
+void MainGameScreen::paintMoveSelectedNotification(const SDL_Color& color) {
+    SDL_SetTextureAlphaMod(moveNotificationTexture->Get(), color.a);
+    SDL_SetTextureColorMod(moveNotificationTexture->Get(), color.r, color.g, color.b);
 }
 
 void MainGameScreen::initColors() {
-    this->moveColors.normal.r = 0;
-    this->moveColors.normal.g = 255;
-    this->moveColors.normal.b = 255;
-    this->moveColors.normal.a = 255;
+    this->colors.normalMove.r = 0;
+    this->colors.normalMove.g = 255;
+    this->colors.normalMove.b = 255;
+    this->colors.normalMove.a = 75;
 
-    this->moveColors.split.r = 250;
-    this->moveColors.split.g = 15;
-    this->moveColors.split.b = 180;
-    this->moveColors.split.a = 255;
+    this->colors.splitMove.r = 250;
+    this->colors.splitMove.g = 15;
+    this->colors.splitMove.b = 180;
+    this->colors.splitMove.a = 255;
 
-    this->moveColors.merge.r = 0;
-    this->moveColors.merge.g = 128;
-    this->moveColors.merge.b = 0;
-    this->moveColors.merge.a = 255;
+    this->colors.mergeMove.r = 0;
+    this->colors.mergeMove.g = 128;
+    this->colors.mergeMove.b = 0;
+    this->colors.mergeMove.a = 150;
+
+    this->colors.grey.r = 211;
+    this->colors.grey.g = 211;
+    this->colors.grey.b = 211;
+    this->colors.grey.a = 255;
+
+    this->colors.red.r = 255;
+    this->colors.red.g = 0;
+    this->colors.red.b = 0;
+    this->colors.red.a = 255;
+
+    this->colors.green.r = 0;
+    this->colors.green.g = 255;
+    this->colors.green.b = 0;
+    this->colors.green.a = 255;
 }
 
 void MainGameScreen::goToDefaultMovement() {
@@ -220,10 +256,10 @@ void MainGameScreen::goToDefaultMovement() {
     inputData.firstEmptySelected = false;
     inputData.typeOfMove = 'n';
     deselectAllPieces();
-    showMoveSelectedNotif(moveColors.normal);
+    paintMoveSelectedNotification(colors.normalMove);
 }
 
-void MainGameScreen::loadMoveSelectedNotif(const int alpha) {
+void MainGameScreen::loadMoveSelectedNotification(const int alpha) {
     // Initialize SDL_ttf library
     SDL2pp::SDLTTF ttf;
     // Load font, 12pt size
@@ -231,7 +267,7 @@ void MainGameScreen::loadMoveSelectedNotif(const int alpha) {
 
     // Render the text into new texture. Note that SDL_ttf render
     // text into Surface, which is converted into texture on the fly
-    moveNotifTexture = std::make_unique<SDL2pp::Texture>(
+    moveNotificationTexture = std::make_unique<SDL2pp::Texture>(
             (*renderer),
             font.RenderText_Blended("*", SDL_Color{255, 255, 255, Uint8(alpha)}));
 
