@@ -48,7 +48,7 @@ TEST_CASE("Valid position") {
     Position position("a8");
     CHECK_EQ(position.getX(), 1);
     CHECK_EQ(position.getY(), 8);
-    CHECK_EQ(position.getString(), "a8");
+    CHECK_EQ(position.getString(), "18");
 }
 
 TEST_CASE("Invalid position") {

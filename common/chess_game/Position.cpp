@@ -33,7 +33,7 @@ int Position::getY() const {
 
 std::string Position::getString() const {
     char position[2];
-    position[0] = (char) (x_ + 96);
+    position[0] = (char) (x_ + 48);
     position[1] = (char) (y_ + 48);
 
     return position;
