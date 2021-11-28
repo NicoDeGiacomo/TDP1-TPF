@@ -8,6 +8,7 @@ struct SplitNode_ {
   std::shared_ptr<SplitNode_> left;
   std::shared_ptr<SplitNode_> right;
   std::weak_ptr<SplitNode_> father;
+  // todo std::weak_ptr<SplitNode_> entanglement;
   bool leaf;
 
   explicit SplitNode_(Piece *piece)

@@ -1,7 +1,7 @@
 #ifndef PAWN_H_
 #define PAWN_H_
 
-#include <chess_game/Piece.h>
+#include <Piece.h>
 
 class Pawn : public Piece {
  public:
@@ -13,6 +13,7 @@ class Pawn : public Piece {
   std::list<std::pair<int, int>> getVectorStepMoves_() const override;
   Piece * createSplit_(Position to) override;
   void merge_() override;
+  bool checkEntanglement_(Position to) override;
 };
 
 #endif  // PAWN_H_

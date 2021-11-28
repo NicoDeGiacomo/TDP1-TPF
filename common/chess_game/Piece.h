@@ -60,6 +60,8 @@ class Piece : public Drawable {
   void validateMove_(const Position &position, bool merge = false) const;
   void appendToBoard_();
   bool isSplit_(Piece *other) const;
+  virtual bool checkEntanglement_(Position to);
+  void entagle_(__attribute__((unused)) Piece *with, Position to);
   void resetSplits();
   void removeFromBoard_();
 
