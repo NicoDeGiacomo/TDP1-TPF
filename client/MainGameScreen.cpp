@@ -80,12 +80,29 @@ void MainGameScreen::refreshScreen() {
     }
     //render pieces
     for (const auto &piece : _board) {
+        int x = (piece->getPosition().getX() - 1) * pieceWidth;
+        int y = (piece->getPosition().getY() - 1) * pieceHeight;
         SDL2pp::Rect pieceRect(
-                (piece->getPosition().getX() - 1) * pieceWidth,
-                (piece->getPosition().getY() - 1) * pieceHeight,
+                x,
+                y,
                 pieceWidth,
                 pieceHeight);
         renderer->Copy(texturesMap.at(piece->getDrawing()), SDL2pp::NullOpt, pieceRect);
+        float pieceProbability = piece->getProbability();
+        //dont show probability bar of normal pieces
+        if (pieceProbability == 0 || pieceProbability == 1)
+            continue;
+        int probabilityBarWidth = pieceWidth * probabilityBarWidthMultiplier;
+        int probabilityBarOffsetX = (pieceWidth - probabilityBarWidth) / 2;
+        renderProbabilityBar(
+                x + probabilityBarOffsetX,
+                y,
+                probabilityBarWidth,
+                pieceHeight * probabilityBarHeightMultiplier,
+                pieceProbability,
+                colors.darkGreen,
+                colors.darkRed,
+                colors.grey);
     }
 
     //render move notification text
@@ -96,8 +113,6 @@ void MainGameScreen::refreshScreen() {
             moveNotificationTexture->GetHeight()
             );
     renderer->Copy((*moveNotificationTexture), SDL2pp::NullOpt, textNotifRect);
-
-    renderProbabilityBar(200, 200, 100, 50, .75, colors.green, colors.red, colors.grey);
     //show rendered frame
     renderer->Present();
 }
@@ -111,7 +126,8 @@ void MainGameScreen::renderProbabilityBar(const int x,
                                           const SDL_Color edgeColor) {
     //check if percent is valid, between 0 and 1
     percent = percent > 1.f ? 1.f : percent < 0.f ? 0.f : percent;
-    int edgeSize = height / 8;
+    //edge size is 1/3 of the bar height
+    int edgeSize = height / 3;
     int frontWidth = (int)((float)(width - edgeSize * 2) * percent);
     SDL2pp::Rect backgroundRect(x, y, width, height);
     SDL2pp::Rect frontRect(x + edgeSize, y, frontWidth, height);
@@ -141,9 +157,7 @@ void MainGameScreen::selectPiece(int x, int y, const SDL_Color& color) {
         return;
     selectedPieces.push_front(piece);
     SDL2pp::Texture &texture = selectedTexturesMap.at(toupper(piece->getDrawing()));
-    // change opacity of selected piece highlight, leaving at 100% if line is commented
-    SDL_SetTextureAlphaMod(texture.Get(), color.a);
-    SDL_SetTextureColorMod(texture.Get(), color.r, color.g, color.b);
+    texture.SetColorAndAlphaMod(color);
 }
 
 void MainGameScreen::deselectAllPieces() {
@@ -215,15 +229,14 @@ void MainGameScreen::handleMouseClick() {
 }
 
 void MainGameScreen::paintMoveSelectedNotification(const SDL_Color& color) {
-    SDL_SetTextureAlphaMod(moveNotificationTexture->Get(), color.a);
-    SDL_SetTextureColorMod(moveNotificationTexture->Get(), color.r, color.g, color.b);
+    moveNotificationTexture->SetColorAndAlphaMod(color);
 }
 
 void MainGameScreen::initColors() {
     this->colors.normalMove.r = 0;
     this->colors.normalMove.g = 255;
     this->colors.normalMove.b = 255;
-    this->colors.normalMove.a = 75;
+    this->colors.normalMove.a = 255;
 
     this->colors.splitMove.r = 250;
     this->colors.splitMove.g = 15;
@@ -233,22 +246,22 @@ void MainGameScreen::initColors() {
     this->colors.mergeMove.r = 0;
     this->colors.mergeMove.g = 128;
     this->colors.mergeMove.b = 0;
-    this->colors.mergeMove.a = 150;
+    this->colors.mergeMove.a = 255;
 
-    this->colors.grey.r = 211;
-    this->colors.grey.g = 211;
-    this->colors.grey.b = 211;
+    this->colors.grey.r = 177;
+    this->colors.grey.g = 177;
+    this->colors.grey.b = 177;
     this->colors.grey.a = 255;
 
-    this->colors.red.r = 255;
-    this->colors.red.g = 0;
-    this->colors.red.b = 0;
-    this->colors.red.a = 255;
+    this->colors.darkRed.r = 200;
+    this->colors.darkRed.g = 0;
+    this->colors.darkRed.b = 0;
+    this->colors.darkRed.a = 255;
 
-    this->colors.green.r = 0;
-    this->colors.green.g = 255;
-    this->colors.green.b = 0;
-    this->colors.green.a = 255;
+    this->colors.darkGreen.r = 0;
+    this->colors.darkGreen.g = 200;
+    this->colors.darkGreen.b = 0;
+    this->colors.darkGreen.a = 255;
 }
 
 void MainGameScreen::goToDefaultMovement() {

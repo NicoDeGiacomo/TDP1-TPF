@@ -25,8 +25,8 @@ struct MoveColors {
     SDL_Color splitMove;
     SDL_Color mergeMove;
     SDL_Color grey;
-    SDL_Color red;
-    SDL_Color green;
+    SDL_Color darkRed;
+    SDL_Color darkGreen;
 };
 #define BOARD_KEY 'Z'
 
@@ -88,6 +88,8 @@ private:
     int pieceHeight = screenHeight / 8;
     int selectedPieceWidth = screenWidth / 7;
     int selectedPieceHeight = screenHeight / 7;
+    const float probabilityBarWidthMultiplier = .9;
+    const float probabilityBarHeightMultiplier = .1;
     PersistentInputData inputData;
     MoveColors colors;
 public:
