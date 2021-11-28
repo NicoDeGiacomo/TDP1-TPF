@@ -67,6 +67,12 @@ void Piece::move(Position position) {
 
 void Piece::move_(Position position, bool merge) {
     validateMove_(position, merge);
+    if (!merge) {
+        bool entangled = checkEntanglement_(position);
+        if (entangled) {
+            return;
+        }
+    }
     position_ = position;
     has_moved_ = true;
 }
@@ -119,6 +125,7 @@ std::list<Position> Piece::getPossibleBeamPositions_(bool merge) const {
     for (auto move: getVectorBeamMoves_()) {
         int x = position_.getX();
         int y = position_.getY();
+        bool entangled = false;
         while (true) {
             try {
                 x += move.first;
@@ -126,19 +133,29 @@ std::list<Position> Piece::getPossibleBeamPositions_(bool merge) const {
                 Position newPosition(x, y);
                 Piece* otherPiece = getPieceFromBoard_(newPosition);
                 if (otherPiece != nullptr) {
+                    if (otherPiece->getProbability() >= 1.0f) {
+                        if (color_ != otherPiece->color_) {
+                            possiblePositions.push_back(newPosition);
+                        }
+                        break;
+                    }
+
                     if (isSplit_(otherPiece)) {
                         if (merge) {
                             possiblePositions.push_back(newPosition);
                         }
-                        continue;
-                    }
-                    if (color_ != otherPiece->color_) {
+                    } else if (color_ != otherPiece->color_) {
                         possiblePositions.push_back(newPosition);
                     }
-                    break;
-                }
 
-                possiblePositions.push_back(newPosition);
+                    if (entangled) {
+                        break;
+                    } else if (getProbability() >= 1.0f && !merge) {
+                        entangled = true;
+                    }
+                } else {
+                    possiblePositions.push_back(newPosition);
+                }
             } catch (std::invalid_argument &) {
                 break;
             }
@@ -201,6 +218,59 @@ float Piece::getProbability() const {
 
 bool Piece::isSplit_(Piece *other) const {
     return splits_->contains(this) && splits_->contains(other);
+}
+
+bool Piece::checkEntanglement_(Position to) {
+    if (getProbability() < 1.0f) {
+        return false;
+    }
+    Piece* entanglement;
+    bool found = false;
+    for (auto move: getVectorBeamMoves_()) {
+        entanglement = nullptr;
+        int x = position_.getX();
+        int y = position_.getY();
+        while (true) {
+            try {
+                x += move.first;
+                y += move.second;
+                Position newPosition(x, y);
+
+                Piece* otherPiece = getPieceFromBoard_(newPosition);
+                if (otherPiece != nullptr && !isSplit_(otherPiece) && otherPiece->getProbability() <= 1.0f) {
+                    entanglement = otherPiece;
+                    continue;
+                }
+
+                if (newPosition == to) {
+                    found = true;
+                    break;
+                }
+            } catch (std::invalid_argument &) {
+                break;
+            }
+        }
+
+        if (found) {
+            break;
+        }
+    }
+
+    if (found && entanglement != nullptr) {
+        entagle_(entanglement, to);
+        return true;
+    }
+
+    return false;
+}
+
+void Piece::entagle_(__attribute__((unused)) Piece *with, Position to) {
+    auto* split1 = createSplit_(position_);
+    auto* split2 = createSplit_(to);
+
+    splits_->addSplit(this, split1, split2);
+    // todo splits_->addEntanglement(with)
+    // todo add methods: confirmEntanglement and denyEntanglement
 }
 
 void Piece::merge_() {}

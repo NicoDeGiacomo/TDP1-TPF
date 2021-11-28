@@ -65,3 +65,7 @@ Piece * Pawn::createSplit_(__attribute__((unused)) Position to) {
 void Pawn::merge_() {
     throw std::invalid_argument("Invalid move: cannot merge a pawn.");
 }
+
+bool Pawn::checkEntanglement_(__attribute__((unused)) Position to) {
+    return false;
+}

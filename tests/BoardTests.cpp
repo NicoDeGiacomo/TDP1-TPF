@@ -566,7 +566,43 @@ TEST_CASE("Double split and Measurement - Deny - 50%") {
 }
 
 TEST_SUITE("Entanglements") {
-TEST_CASE("Simple entanglement") {
-    // todo: implement me!
+TEST_CASE("Possible moves allows entanglement with opponent piece") {
+    Board board;
+    board.move(Position("e2"), Position("e4"));
+    board.move(Position("d7"), Position("d6"));
+
+    board.split(Position("d1"), Position("f3"), Position("g4"));
+
+    auto bishopPositions = board.getPossibleMoves(Position("c8"));
+    CHECK_EQ(5, bishopPositions.size());
+    CHECK(findPosition_(bishopPositions, Position("h3")));
+}
+
+TEST_CASE("Possible moves allows entanglement with own piece") {
+    Board board;
+    board.move(Position("e2"), Position("e4"));
+    board.move(Position("e7"), Position("e5"));
+
+    board.split(Position("f1"), Position("e2"), Position("d3"));
+
+    auto queenPositions = board.getPossibleMoves(Position("d1"));
+    CHECK_EQ(3, queenPositions.size());
+    CHECK(findPosition_(queenPositions, Position("h5")));
+}
+
+TEST_CASE("Entanglement with opponent piece") {
+    Board board;
+    board.move(Position("e2"), Position("e4"));
+    board.move(Position("d7"), Position("d6"));
+
+    board.split(Position("d1"), Position("f3"), Position("g4"));
+    REQUIRE_EQ(33, countPieces_(board));
+    board.move(Position("c8"), Position("h3"));
+    REQUIRE_EQ(34, countPieces_(board));
+
+    CHECK_NE(board.getPiece(Position("c8")), nullptr);
+    CHECK_EQ(board.getPiece(Position("c8"))->getProbability(), 0.5f);
+    CHECK_NE(board.getPiece(Position("h3")), nullptr);
+    CHECK_EQ(board.getPiece(Position("h3"))->getProbability(), 0.5f);
 }
 }
