@@ -21,9 +21,12 @@ struct PersistentInputData {
 #include "BlockingQueue.h"
 
 struct MoveColors {
-    SDL_Color normal;
-    SDL_Color split;
-    SDL_Color merge;
+    SDL_Color normalMove;
+    SDL_Color splitMove;
+    SDL_Color mergeMove;
+    SDL_Color grey;
+    SDL_Color red;
+    SDL_Color green;
 };
 #define BOARD_KEY 'Z'
 
@@ -73,7 +76,7 @@ private:
     //std::thread myThread;
     std::unordered_map<char,SDL2pp::Texture> texturesMap;
     std::unordered_map<char,SDL2pp::Texture> selectedTexturesMap;
-    std::unique_ptr<SDL2pp::Texture> moveNotifTexture;
+    std::unique_ptr<SDL2pp::Texture> moveNotificationTexture;
     std::list<Piece*> selectedPieces;
     Board &_board;
     //Client *_client;
@@ -86,7 +89,7 @@ private:
     int selectedPieceWidth = screenWidth / 7;
     int selectedPieceHeight = screenHeight / 7;
     PersistentInputData inputData;
-    MoveColors moveColors;
+    MoveColors colors;
 public:
     MainGameScreen(Board& board, BlockingQueue<std::shared_ptr<Message>>* userInputQueue);
     void refreshScreen();
@@ -99,20 +102,29 @@ public:
 
     void handleMouseClick();
 
-    void showMoveSelectedNotif(const SDL_Color& color);
+    void paintMoveSelectedNotification(const SDL_Color& color);
 
     //SDL2pp::Renderer createRenderer();
     void initColors();
 
     void goToDefaultMovement();
 
-    void loadMoveSelectedNotif(const int alpha);
+    void loadMoveSelectedNotification(const int alpha);
 
     void loadBoardTextures();
 
     void setUserInputDefaultValues();
 
     void startSDLWindow();
+
+    void renderProbabilityBar(const int x,
+                              const int y,
+                              const int width,
+                              const int height,
+                              float percent,
+                              const SDL_Color frontColor,
+                              const SDL_Color backgroundColor,
+                              const SDL_Color edgeColor);
 };
 
 
