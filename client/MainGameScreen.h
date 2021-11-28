@@ -89,7 +89,7 @@ private:
     int selectedPieceWidth = screenWidth / 7;
     int selectedPieceHeight = screenHeight / 7;
     const float probabilityBarWidthMultiplier = .9;
-    const float probabilityBarHeightMultiplier = .1;
+    const float probabilityBarHeightMultiplier = .14;
     PersistentInputData inputData;
     MoveColors colors;
 public:
