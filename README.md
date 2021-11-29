@@ -83,7 +83,7 @@ An entanglement is made with a [normal move](#normal-move).
 Select a classic piece and a destination square, so that the move 'passes through' a piece in a quantum state.
 
 ### 2.3. Chat
-Click on the side of the board, write a message, and press enter.
+Click on the right side of the board, write a message, and press enter.
 
 ### 2.4. Exit
 Close the window, press ESC, or with the board selected (click anywhere on the board, to avoid writing in the chat) press `q`.
