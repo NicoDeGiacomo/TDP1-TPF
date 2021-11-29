@@ -28,6 +28,7 @@ struct Colors {
     SDL_Color grey;
     SDL_Color darkRed;
     SDL_Color darkGreen;
+    SDL_Color entangled;
 };
 #define BOARD_KEY 'Z'
 
@@ -82,10 +83,12 @@ private:
     //std::thread myThread;
     std::unordered_map<char,SDL2pp::Texture> texturesMap;
     std::unordered_map<char,SDL2pp::Texture> selectedTexturesMap;
+    std::unordered_map<char,SDL2pp::Texture> entangledTexturesMap;
     std::unique_ptr<SDL2pp::Texture> moveNotificationTexture;
     std::unique_ptr<SDL2pp::Texture> dotTexture;
     std::list<Piece*> selectedPieces;
     std::list<Position> possibleMoves;
+    std::list<Position> entangledPiecesPosition;
     Board &_board;
     //Client *_client;
     //std::vector<Button> buttons;
@@ -147,6 +150,8 @@ public:
     void loadPossibleMoves(const Piece* piece, const SDL_Color& color, bool merge = false);
 
     void endMessage(int endstate);
+
+    void showEntangledPieces(Piece *piece);
 };
 
 
