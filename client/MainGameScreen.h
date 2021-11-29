@@ -23,14 +23,12 @@ struct PersistentInputData {
 
 struct Colors {
     SDL_Color normalMove;
-    SDL_Color normalPossible;
     SDL_Color splitMove;
-    SDL_Color splitPossible;
     SDL_Color mergeMove;
-    SDL_Color mergePossible;
     SDL_Color grey;
     SDL_Color darkRed;
     SDL_Color darkGreen;
+    SDL_Color entangled;
 };
 #define BOARD_KEY 'Z'
 
@@ -73,6 +71,10 @@ struct Colors {
 #define SELECTED_KING_FILEPATH "../assets/sprites/selectedKing.png"
 #define SELECTED_QUEEN_FILEPATH "../assets/sprites/selectedQueen.png"
 
+#define LOSS 0
+#define WIN 1
+#define ESPECTATOR 2
+
 class MainGameScreen {
 private:
     std::unique_ptr<SDL2pp::Renderer> renderer;
@@ -81,10 +83,12 @@ private:
     //std::thread myThread;
     std::unordered_map<char,SDL2pp::Texture> texturesMap;
     std::unordered_map<char,SDL2pp::Texture> selectedTexturesMap;
+    std::unordered_map<char,SDL2pp::Texture> entangledTexturesMap;
     std::unique_ptr<SDL2pp::Texture> moveNotificationTexture;
     std::unique_ptr<SDL2pp::Texture> dotTexture;
     std::list<Piece*> selectedPieces;
     std::list<Position> possibleMoves;
+    std::list<Position> entangledPiecesPosition;
     Board &_board;
     //Client *_client;
     //std::vector<Button> buttons;
@@ -111,15 +115,12 @@ public:
 
     void processUserInput(bool& gameFinished);
 
-    void selectPiece(const int x, const int y, const SDL_Color& color);
+    void selectPiece(const int x, const int y, const SDL_Color& color, bool merge = false);
 
     void deselectAllPieces();
 
-    void handleMouseClick();
-
     void paintMoveSelectedNotification(const SDL_Color& color);
 
-    //SDL2pp::Renderer createRenderer();
     void initColors();
 
     void goToDefaultMovement();
@@ -143,17 +144,17 @@ public:
 
     void handleBoardClick();
 
-    void handleChatClick(int mouseX, int mouseY);
-
     void manageBoardEvent(SDL_Event &event, bool& gameFinished);
 
     void manageChatEvent(SDL_Event &event, bool& gameFinished);
 
     void whereDidMouseClicked();
 
-    void loadPossibleMoves(const int x, const int y, const SDL_Color& color);
+    void loadPossibleMoves(const Piece* piece, const SDL_Color& color, bool merge = false);
 
-    void endMessage(bool win);
+    void endMessage(int endstate);
+
+    void showEntangledPieces(Piece *piece);
 };
 
 

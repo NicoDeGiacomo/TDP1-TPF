@@ -36,6 +36,8 @@ std::list<std::pair<int, int>> Pawn::getVectorStepMoves_() const {
                 || (front2Piece != nullptr && front2Piece->getProbability() < 1.0f
                     && front1Piece == nullptr)) {
                 moves.emplace_back(0, 2 * direction);
+            } else if (front1Piece != nullptr && front1Piece->getProbability() < 1.0f && front2Piece == nullptr) {
+                moves.emplace_back(0, 2 * direction);
             }
         } catch (std::invalid_argument &e) {}
     }
@@ -63,6 +65,28 @@ std::list<std::pair<int, int>> Pawn::getVectorStepMoves_() const {
 
     return moves;
 }
+
+void Pawn::move_(Position position, bool merge) {
+    validateMove_(position, merge);
+
+    int direction = color_ == PieceColor::WHITE ? 1 : -1;
+
+    int y = position_.getY() - position.getY();
+    if (y == 2 || y == -2) {
+        Position front1
+            (position_.getX(), position_.getY() + (1 * direction));
+        Piece* front1Piece = getPieceFromBoard_(front1);
+        if (front1Piece) {
+            bool confirm = front1Piece->measure_();
+            if (confirm) {
+                return;
+            }
+        }
+    }
+
+    Piece::move_(position, merge);
+}
+
 Piece * Pawn::createSplit_(__attribute__((unused)) Position to) {
     throw std::invalid_argument("Invalid move: cannot split a pawn.");
 }
