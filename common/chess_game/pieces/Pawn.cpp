@@ -18,7 +18,7 @@ std::list<std::pair<int, int>> Pawn::getVectorStepMoves_() const {
         Position front
             (position_.getX(), position_.getY() + (1 * direction));
         Piece* frontPiece = getPieceFromBoard_(front);
-        if (frontPiece == nullptr) {
+        if (frontPiece == nullptr || (color_ == frontPiece->getColor() && frontPiece->getProbability() < 1.0f)) {
             moves.emplace_back(0, 1 * direction);
         }
     } catch (std::invalid_argument &e) {}
