@@ -65,14 +65,18 @@ The first client will be assigned to the white pieces, and the second client to 
 ### 2.2. Play
 While the game is running, the following interactions are available with the screen.
 
+#### 2.2.0 Move modes
+There are three types of move modes normal, split and merge.  
+To swap between move modes you can press 'n' (for normal mode), 's' (for split mode) and 'm' (for merge mode), normal mode will always be the default one.  
+You can see which mode you are currently in by looking at the color of the '*' placed at the top of the screen.
 #### 2.2.1 Normal Move
 Click on a piece, the piece will be selected, and then click on the destination.
 
 #### 2.2.2 Split
-Click on a piece, the piece will be selected, and press 's'. Then click on two empty squares.
+Press 's', click on a piece, the piece will be selected. Then click on two empty squares.
 
 #### 2.2.3 Merge
-Click on a piece, the piece will be selected, and press 'm'. Now click on a second piece, and finally on the destination of the merge.\
+Press 'm', click on a piece, the piece will be selected. Now click on a second piece, and finally on the destination of the merge.\
 Merges can be made on a new square, or on a square of one of the selected pieces.
 
 #### 2.2.4 Entanglement
@@ -82,7 +86,7 @@ An entanglement is made with a [normal move](#221-normal-move), that passes thro
 Click on the side of the board, write a message, and press enter.
 
 ### 2.4. Exit
-With the board selected (click anywhere on the board) to avoid writing in the chat, press 'q'.
+Close the window, press ESC or with the board selected (click anywhere on the board) to avoid writing in the chat, press 'q'.
 
 ## 3. Technical Documentation
 ### 3.1. Chess Logic

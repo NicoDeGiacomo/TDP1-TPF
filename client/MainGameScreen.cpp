@@ -20,6 +20,7 @@ MainGameScreen::MainGameScreen(Board& board, BlockingQueue<std::shared_ptr<Messa
     this->initColors();
     this->loadMoveSelectedNotification(222);
     this->paintMoveSelectedNotification(colors.normalMove);
+    this->dotTexture = std::make_unique<SDL2pp::Texture>((*renderer), DOT_FILEPATH);
     this->refreshScreen();
 }
 
@@ -78,6 +79,16 @@ void MainGameScreen::refreshScreen() {
                 colors.darkRed,
                 colors.grey);
     }
+    for(auto& position : possibleMoves){
+        std::cout << "positionx:" << position.getX() << " positiony: " << position.getY() << std::endl;
+        //agarrar la textura y dibujarla en estas posiciones
+        SDL2pp::Rect possibleMoveRect(
+                (position.getX() - 1) * pieceWidth, //map board position to world position
+                (position.getY() - 1) * pieceHeight, //map board position to world position
+                pieceWidth,
+                pieceHeight);
+        renderer->Copy((*dotTexture), SDL2pp::NullOpt, possibleMoveRect);
+    }
 
     //render move notification text
     SDL2pp::Rect textNotificationRect(
@@ -128,17 +139,20 @@ void MainGameScreen::renderProbabilityBar(const int x,
     renderer->SetDrawBlendMode(SDL_BLENDMODE_NONE);
 }
 
-void MainGameScreen::selectPiece(int x, int y, const SDL_Color& color) {
+void MainGameScreen::selectPiece(const int x, const int y, const SDL_Color& color) {
     Piece* piece = _board.getPiece(Position(x,y));
     if (!piece)
         return;
     selectedPieces.push_front(piece);
     SDL2pp::Texture &texture = selectedTexturesMap.at(toupper(piece->getDrawing()));
     texture.SetColorAndAlphaMod(color);
+    //loadPossibleMoves(piece);
+    //showEntangledPieces(piece);
 }
 
 void MainGameScreen::deselectAllPieces() {
     selectedPieces.clear();
+    possibleMoves.clear();
 }
 
 /*void MainGameScreen::handleMouseClick() {
@@ -157,15 +171,30 @@ void MainGameScreen::initColors() {
     this->colors.normalMove.b = 255;
     this->colors.normalMove.a = 255;
 
+    this->colors.normalPossible.r = 0;
+    this->colors.normalPossible.g = 255;
+    this->colors.normalPossible.b = 255;
+    this->colors.normalPossible.a = 100;
+
     this->colors.splitMove.r = 250;
     this->colors.splitMove.g = 15;
     this->colors.splitMove.b = 180;
     this->colors.splitMove.a = 255;
 
+    this->colors.splitPossible.r = 250;
+    this->colors.splitPossible.g = 15;
+    this->colors.splitPossible.b = 180;
+    this->colors.splitPossible.a = 100;
+
     this->colors.mergeMove.r = 0;
     this->colors.mergeMove.g = 128;
     this->colors.mergeMove.b = 0;
     this->colors.mergeMove.a = 255;
+
+    this->colors.mergePossible.r = 0;
+    this->colors.mergePossible.g = 128;
+    this->colors.mergePossible.b = 0;
+    this->colors.mergePossible.a = 100;
 
     this->colors.grey.r = 177;
     this->colors.grey.g = 177;
@@ -275,6 +304,7 @@ void MainGameScreen::handleBoardClick() {
                 inputData.positionFromX = clampedMouseXToGrid;
                 inputData.positionFromY = clampedMouseYToGrid;
                 selectPiece(clampedMouseXToGrid, clampedMouseYToGrid, colors.normalMove);
+                loadPossibleMoves(clampedMouseXToGrid, clampedMouseYToGrid, colors.normalPossible);
                 // NTH: pintar movimientos posibles
             }
             inputData.pieceSelected = !inputData.pieceSelected;
@@ -289,12 +319,18 @@ void MainGameScreen::handleBoardClick() {
                 selectPiece(clampedMouseXToGrid,
                             clampedMouseYToGrid,
                             inputData.typeOfMove == 's' ? colors.splitMove : colors.mergeMove);
+                loadPossibleMoves(
+                        clampedMouseXToGrid,
+                        clampedMouseYToGrid,
+                        inputData.typeOfMove == 's' ? colors.splitPossible : colors.mergePossible);
             } else if (!inputData.firstEmptySelected) {
                 inputData.secondPositionX = clampedMouseXToGrid;
                 inputData.secondPositionY = clampedMouseYToGrid;
                 inputData.firstEmptySelected = true;
-                if (inputData.typeOfMove == 'm')
+                if (inputData.typeOfMove == 'm') {
                     selectPiece(clampedMouseXToGrid, clampedMouseYToGrid, colors.mergeMove);
+                    loadPossibleMoves(clampedMouseXToGrid, clampedMouseYToGrid, colors.mergePossible);
+                }
             } else {
                 Position pos_1(inputData.positionFromX, inputData.positionFromY);
                 Position pos_2(inputData.secondPositionX, inputData.secondPositionY);
@@ -325,6 +361,8 @@ void MainGameScreen::handleBoardClick() {
 void MainGameScreen::manageBoardEvent(SDL_Event &event, bool& gameFinished) {
     switch (event.type) {
         case SDL_QUIT:
+            std::cout << "GAME FINISHED" << std::endl;
+            gameFinished = true;
             return;
         case SDL_KEYDOWN:
             switch (event.key.keysym.sym) {
@@ -400,4 +438,30 @@ void MainGameScreen::whereDidMouseClicked() {
     int mouseX, mouseY;
     SDL_GetMouseState(&mouseX, &mouseY);
     inputData.chatClicked = chatUI->clickInChat(mouseX, mouseY);
+}
+
+void MainGameScreen::loadPossibleMoves(const int x, const int y, const SDL_Color& color) {
+    Piece* piece = _board.getPiece(Position(x,y));
+    if (!piece)
+        return;
+    if (!possibleMoves.empty()){
+        //inner join of possible moves
+        auto newPossibleMoves = piece->getPossibleMoves();
+        auto possibleMove = possibleMoves.begin();
+        while (possibleMove != possibleMoves.end()){
+            bool found = (std::find(
+                    newPossibleMoves.begin(),
+                    newPossibleMoves.end(),
+                    (*possibleMove)) != newPossibleMoves.end());
+            if (found){
+                ++possibleMove;
+                continue;
+            }
+            possibleMove = possibleMoves.erase(possibleMove);
+        }
+
+    } else {
+        possibleMoves = piece->getPossibleMoves();
+        dotTexture->SetColorAndAlphaMod(color);
+    }
 }
