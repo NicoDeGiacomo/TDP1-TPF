@@ -18,7 +18,7 @@ std::list<std::pair<int, int>> Pawn::getVectorStepMoves_() const {
         Position front
             (position_.getX(), position_.getY() + (1 * direction));
         Piece* frontPiece = getPieceFromBoard_(front);
-        if (frontPiece == nullptr || (color_ == frontPiece->getColor() && frontPiece->getProbability() < 1.0f)) {
+        if (frontPiece == nullptr || (frontPiece->getProbability() < 1.0f)) {
             moves.emplace_back(0, 1 * direction);
         }
     } catch (std::invalid_argument &e) {}
@@ -32,7 +32,9 @@ std::list<std::pair<int, int>> Pawn::getVectorStepMoves_() const {
             Position front2
                 (position_.getX(), position_.getY() + (2 * direction));
             Piece* front2Piece = getPieceFromBoard_(front2);
-            if (front2Piece == nullptr && front1Piece == nullptr) {
+            if ((front2Piece == nullptr && front1Piece == nullptr)
+                || (front2Piece != nullptr && front2Piece->getProbability() < 1.0f
+                    && front1Piece == nullptr)) {
                 moves.emplace_back(0, 2 * direction);
             }
         } catch (std::invalid_argument &e) {}
@@ -43,7 +45,7 @@ std::list<std::pair<int, int>> Pawn::getVectorStepMoves_() const {
         Position rightDiagonal
             (position_.getX() + 1, position_.getY() + (1 * direction));
         Piece *otherPiece = getPieceFromBoard_(rightDiagonal);
-        if (otherPiece != nullptr) {
+        if (otherPiece != nullptr && otherPiece->getColor() != color_) {
             moves.emplace_back(1, 1 * direction);
         }
     } catch (std::invalid_argument &e) {}
@@ -51,8 +53,8 @@ std::list<std::pair<int, int>> Pawn::getVectorStepMoves_() const {
     try {
         Position leftDiagonal
             (position_.getX() - 1, position_.getY() + (1 * direction));
-        Piece *otherPiece2 = getPieceFromBoard_(leftDiagonal);
-        if (otherPiece2 != nullptr) {
+        Piece *otherPiece = getPieceFromBoard_(leftDiagonal);
+        if (otherPiece != nullptr && otherPiece->getColor() != color_) {
             moves.emplace_back(-1, 1 * direction);
         }
     } catch (std::invalid_argument &e) {}
