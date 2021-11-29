@@ -1,0 +1,36 @@
+//
+// Created by ale on 28/11/21.
+//
+
+#ifndef QUANTUM_CHESS_CHATUI_H
+#define QUANTUM_CHESS_CHATUI_H
+#include <SDL_image.h>
+#include <SDL2pp/SDL2pp.hh>
+#include <deque>
+
+#define CHAT_FONT_SIZE 15
+#define CHAT_FONT_PADDING 15
+
+class ChatUI {
+private:
+    std::unique_ptr<SDL2pp::Texture> inputMessageTexture;
+    std::deque<std::unique_ptr<SDL2pp::Texture>> textures;
+    SDL2pp::Renderer& _renderer;
+    const int _x, _width, _height, initialOffset = (CHAT_FONT_SIZE + CHAT_FONT_PADDING) * 2;
+
+    std::deque<std::string> splitMessageIntoRenderableChunks(const std::string &basicString,
+                                                             const SDL2pp::Font& font,
+                                                             const char divider) const;
+    void drawInputMessage(std::string& inputMessage);
+public:
+    ChatUI(SDL2pp::Renderer& renderer, const int x, const int width, const int height);
+
+    void renderMessages(std::string& inputMessage);
+
+    void add(const std::string &message);
+
+    bool clickInChat(int mouseX, int mouseY);
+};
+
+
+#endif //QUANTUM_CHESS_CHATUI_H

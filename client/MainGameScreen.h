@@ -6,6 +6,8 @@
 #define QUANTUM_CHESS_MAINGAMESCREEN_H
 
 struct PersistentInputData {
+    bool chatClicked;
+    std::string message;
     char typeOfMove;
     bool pieceSelected;
     bool firstEmptySelected;
@@ -16,11 +18,10 @@ struct PersistentInputData {
 };
 
 #include <unordered_map>
-#include <SDL_image.h>
-#include <SDL2pp/SDL2pp.hh>
 #include "BlockingQueue.h"
+#include "ChatUI.h"
 
-struct MoveColors {
+struct Colors {
     SDL_Color normalMove;
     SDL_Color splitMove;
     SDL_Color mergeMove;
@@ -82,16 +83,19 @@ private:
     //Client *_client;
     //std::vector<Button> buttons;
     BlockingQueue<std::shared_ptr<Message>>* userInputQueue;
-    int screenWidth = 640;
-    int screenHeight = 480;
-    int pieceWidth = screenWidth / 8;
-    int pieceHeight = screenHeight / 8;
-    int selectedPieceWidth = screenWidth / 7;
-    int selectedPieceHeight = screenHeight / 7;
+    const int boardWidth = 640;
+    const int chatWidth = 300;
+    const int screenWidth = boardWidth + chatWidth;
+    const int screenHeight = 480;
+    const int pieceWidth = boardWidth / 8;
+    const int pieceHeight = screenHeight / 8;
+    const int selectedPieceWidth = boardWidth / 7;
+    const int selectedPieceHeight = screenHeight / 7;
     const float probabilityBarWidthMultiplier = .9;
     const float probabilityBarHeightMultiplier = .14;
     PersistentInputData inputData;
-    MoveColors colors;
+    Colors colors;
+    std::unique_ptr<ChatUI> chatUI;
 public:
     MainGameScreen(Board& board, BlockingQueue<std::shared_ptr<Message>>* userInputQueue);
     void refreshScreen();
@@ -127,6 +131,16 @@ public:
                               const SDL_Color frontColor,
                               const SDL_Color backgroundColor,
                               const SDL_Color edgeColor);
+
+    void handleBoardClick();
+
+    void handleChatClick(int mouseX, int mouseY);
+
+    void manageBoardEvent(SDL_Event &event, bool& gameFinished);
+
+    void manageChatEvent(SDL_Event &event, bool& gameFinished);
+
+    void whereDidMouseClicked();
 };
 
 

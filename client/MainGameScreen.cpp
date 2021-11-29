@@ -8,10 +8,12 @@
 #include <thread>
 #include <SplitMoveMessage.h>
 #include <MergeMoveMessage.h>
+#include <ChatMessage.h>
 #include "MainGameScreen.h"
 
 MainGameScreen::MainGameScreen(Board& board, BlockingQueue<std::shared_ptr<Message>>* queue) : _board(board) {
     this->startSDLWindow();
+    this->chatUI = std::make_unique<ChatUI>((*renderer), boardWidth, chatWidth, screenHeight);
     this->userInputQueue = queue;
     this->setUserInputDefaultValues();
     this->loadBoardTextures();
@@ -27,38 +29,10 @@ void MainGameScreen::processUserInput(bool& gameFinished) {
     //   quit the application
     SDL_Event event;
     while (SDL_PollEvent(&event)) {
-        switch (event.type) {
-            case SDL_QUIT:
-                return;
-            case SDL_KEYDOWN:
-                switch (event.key.keysym.sym) {
-                    case SDLK_ESCAPE: case SDLK_q:
-                        std::cout << "GAME FINISHED" << std::endl;
-                        gameFinished = true;
-                        return;
-                    case SDLK_n:
-                        std::cout << "NNNNNNNNNNNNNNNNNN" << std::endl;
-                        inputData.typeOfMove = 'n';
-                        //normalMove move selection color
-                        paintMoveSelectedNotification(colors.normalMove);
-                        break;
-                    case SDLK_s:
-                        std::cout << "SSSSSSSSSSSSSSSSSSSSSSSSS" << std::endl;
-                        inputData.typeOfMove = 's';
-                        //split move selection color
-                        paintMoveSelectedNotification(colors.splitMove);
-                        break;
-                    case SDLK_m:
-                        std::cout << "MMMMMMMMMMMMMMMMMMMMM" << std::endl;
-                        inputData.typeOfMove = 'm';
-                        //merge move selection color
-                        paintMoveSelectedNotification(colors.mergeMove);
-                        break;
-                }
-                break;
-            case SDL_MOUSEBUTTONDOWN:
-                handleMouseClick();
-        }
+        //escucho clicks
+        if (event.type == SDL_MOUSEBUTTONDOWN)
+            whereDidMouseClicked();
+        inputData.chatClicked ? manageChatEvent(event, gameFinished) : manageBoardEvent(event, gameFinished);
     }
 }
 
@@ -68,7 +42,7 @@ void MainGameScreen::refreshScreen() {
     //clear screen
     renderer->Clear();
     //render board
-    renderer->Copy(texturesMap.at(BOARD_KEY), SDL2pp::NullOpt, SDL2pp::NullOpt);
+    renderer->Copy(texturesMap.at(BOARD_KEY), SDL2pp::NullOpt, SDL2pp::Rect(0,0,boardWidth,screenHeight));
     //render the highlight of selected pieces
     for (auto &piece : selectedPieces) {
         SDL2pp::Rect pieceRect(
@@ -106,13 +80,16 @@ void MainGameScreen::refreshScreen() {
     }
 
     //render move notification text
-    SDL2pp::Rect textNotifRect(
+    SDL2pp::Rect textNotificationRect(
             0,
             -moveNotificationTexture->GetHeight() / 8, //place the '*' on the top left
             moveNotificationTexture->GetWidth(),
             moveNotificationTexture->GetHeight()
             );
-    renderer->Copy((*moveNotificationTexture), SDL2pp::NullOpt, textNotifRect);
+    renderer->Copy((*moveNotificationTexture), SDL2pp::NullOpt, textNotificationRect);
+
+    chatUI->renderMessages(inputData.message);
+
     //show rendered frame
     renderer->Present();
 }
@@ -164,69 +141,11 @@ void MainGameScreen::deselectAllPieces() {
     selectedPieces.clear();
 }
 
-void MainGameScreen::handleMouseClick() {
+/*void MainGameScreen::handleMouseClick() {
     int mouseX, mouseY;
     SDL_GetMouseState(&mouseX, &mouseY);
-    std::cout << "xmouse " << mouseX << " ymouse " << mouseY << std::endl;
-    int clampedMouseXToGrid = ceil((float)mouseX / pieceWidth);
-    int clampedMouseYToGrid = ceil((float)mouseY / pieceHeight);
-    std::cout << "grid position x " << clampedMouseXToGrid << " grid position y " << clampedMouseYToGrid << std::endl;
-    switch (inputData.typeOfMove) {
-        case 'n':
-            if (inputData.pieceSelected) {
-                Position from(inputData.positionFromX, inputData.positionFromY);
-                Position to(clampedMouseXToGrid, clampedMouseYToGrid);
-                this->userInputQueue->produce(std::make_shared<NormalMoveMessage>(
-                        from, to
-                ));
-                deselectAllPieces();
-            }
-            else {
-                inputData.positionFromX = clampedMouseXToGrid;
-                inputData.positionFromY = clampedMouseYToGrid;
-                selectPiece(clampedMouseXToGrid, clampedMouseYToGrid, colors.normalMove);
-                // NTH: pintar movimientos posibles
-            }
-            inputData.pieceSelected = !inputData.pieceSelected;
-            break;
-        case 's':
-        case 'm':
-            if (!inputData.pieceSelected){
-                inputData.positionFromX = clampedMouseXToGrid;
-                inputData.positionFromY = clampedMouseYToGrid;
-                inputData.pieceSelected = true;
-                inputData.firstEmptySelected = false;
-                selectPiece(clampedMouseXToGrid,
-                            clampedMouseYToGrid,
-                            inputData.typeOfMove == 's' ? colors.splitMove : colors.mergeMove);
-            } else if (!inputData.firstEmptySelected) {
-                inputData.secondPositionX = clampedMouseXToGrid;
-                inputData.secondPositionY = clampedMouseYToGrid;
-                inputData.firstEmptySelected = true;
-                if (inputData.typeOfMove == 'm')
-                    selectPiece(clampedMouseXToGrid, clampedMouseYToGrid, colors.mergeMove);
-            } else {
-                Position pos_1(inputData.positionFromX, inputData.positionFromY);
-                Position pos_2(inputData.secondPositionX, inputData.secondPositionY);
-                Position pos_3(clampedMouseXToGrid, clampedMouseYToGrid);
-
-                (inputData.typeOfMove == 's') ?
-                this->userInputQueue->produce(
-                        std::make_shared<SplitMoveMessage>(
-                                pos_1,
-                                pos_2,
-                                pos_3)) :
-                this->userInputQueue->produce(
-                        std::make_shared<MergeMoveMessage>(
-                                pos_1,
-                                pos_2,
-                                pos_3));
-                goToDefaultMovement();
-            }
-        default:
-            break;
-    }
-}
+    (chatUI->clickInChat(mouseX, mouseY)) ? handleChatClick(mouseX,mouseY) : handleBoardClick(mouseX,mouseY);
+}*/
 
 void MainGameScreen::paintMoveSelectedNotification(const SDL_Color& color) {
     moveNotificationTexture->SetColorAndAlphaMod(color);
@@ -312,6 +231,8 @@ void MainGameScreen::loadBoardTextures() {
 }
 
 void MainGameScreen::setUserInputDefaultValues() {
+    inputData.chatClicked = false;
+    inputData.message = "";
     inputData.pieceSelected = false;
     inputData.firstEmptySelected = false;
     inputData.typeOfMove = 'n';
@@ -327,8 +248,152 @@ void MainGameScreen::startSDLWindow() {
     this->window = std::make_unique<SDL2pp::Window>("Quantum Chess",
                                                     SDL_WINDOWPOS_UNDEFINED,
                                                     SDL_WINDOWPOS_UNDEFINED,
-                                                    640,
-                                                    480,
+                                                    screenWidth,
+                                                    screenHeight,
                                                     SDL_WINDOW_RESIZABLE);
     this->renderer = std::make_unique<SDL2pp::Renderer>((*window), -1, SDL_RENDERER_ACCELERATED);
+}
+
+void MainGameScreen::handleBoardClick() {
+    int mouseX, mouseY;
+    SDL_GetMouseState(&mouseX, &mouseY);
+    std::cout << "xmouse " << mouseX << " ymouse " << mouseY << std::endl;
+    int clampedMouseXToGrid = ceil((float)mouseX / pieceWidth);
+    int clampedMouseYToGrid = ceil((float)mouseY / pieceHeight);
+    std::cout << "grid position x " << clampedMouseXToGrid << " grid position y " << clampedMouseYToGrid << std::endl;
+    switch (inputData.typeOfMove) {
+        case 'n':
+            if (inputData.pieceSelected) {
+                Position from(inputData.positionFromX, inputData.positionFromY);
+                Position to(clampedMouseXToGrid, clampedMouseYToGrid);
+                this->userInputQueue->produce(std::make_shared<NormalMoveMessage>(
+                        from, to
+                ));
+                deselectAllPieces();
+            }
+            else {
+                inputData.positionFromX = clampedMouseXToGrid;
+                inputData.positionFromY = clampedMouseYToGrid;
+                selectPiece(clampedMouseXToGrid, clampedMouseYToGrid, colors.normalMove);
+                // NTH: pintar movimientos posibles
+            }
+            inputData.pieceSelected = !inputData.pieceSelected;
+            break;
+        case 's':
+        case 'm':
+            if (!inputData.pieceSelected){
+                inputData.positionFromX = clampedMouseXToGrid;
+                inputData.positionFromY = clampedMouseYToGrid;
+                inputData.pieceSelected = true;
+                inputData.firstEmptySelected = false;
+                selectPiece(clampedMouseXToGrid,
+                            clampedMouseYToGrid,
+                            inputData.typeOfMove == 's' ? colors.splitMove : colors.mergeMove);
+            } else if (!inputData.firstEmptySelected) {
+                inputData.secondPositionX = clampedMouseXToGrid;
+                inputData.secondPositionY = clampedMouseYToGrid;
+                inputData.firstEmptySelected = true;
+                if (inputData.typeOfMove == 'm')
+                    selectPiece(clampedMouseXToGrid, clampedMouseYToGrid, colors.mergeMove);
+            } else {
+                Position pos_1(inputData.positionFromX, inputData.positionFromY);
+                Position pos_2(inputData.secondPositionX, inputData.secondPositionY);
+                Position pos_3(clampedMouseXToGrid, clampedMouseYToGrid);
+
+                (inputData.typeOfMove == 's') ?
+                this->userInputQueue->produce(
+                        std::make_shared<SplitMoveMessage>(
+                                pos_1,
+                                pos_2,
+                                pos_3)) :
+                this->userInputQueue->produce(
+                        std::make_shared<MergeMoveMessage>(
+                                pos_1,
+                                pos_2,
+                                pos_3));
+                goToDefaultMovement();
+            }
+        default:
+            break;
+    }
+}
+
+/*void MainGameScreen::handleChatClick(int mouseX, int mouseY) {
+    //cambiar a "modo chat"
+}*/
+
+void MainGameScreen::manageBoardEvent(SDL_Event &event, bool& gameFinished) {
+    switch (event.type) {
+        case SDL_QUIT:
+            return;
+        case SDL_KEYDOWN:
+            switch (event.key.keysym.sym) {
+                case SDLK_ESCAPE: case SDLK_q:
+                    std::cout << "GAME FINISHED" << std::endl;
+                    gameFinished = true;
+                    return;
+                case SDLK_n:
+                    std::cout << "NNNNNNNNNNNNNNNNNN" << std::endl;
+                    inputData.typeOfMove = 'n';
+                    //normalMove move selection color
+                    paintMoveSelectedNotification(colors.normalMove);
+                    break;
+                case SDLK_s:
+                    std::cout << "SSSSSSSSSSSSSSSSSSSSSSSSS" << std::endl;
+                    inputData.typeOfMove = 's';
+                    //split move selection color
+                    paintMoveSelectedNotification(colors.splitMove);
+                    break;
+                case SDLK_m:
+                    std::cout << "MMMMMMMMMMMMMMMMMMMMM" << std::endl;
+                    inputData.typeOfMove = 'm';
+                    //merge move selection color
+                    paintMoveSelectedNotification(colors.mergeMove);
+                    break;
+            }
+            break;
+        case SDL_MOUSEBUTTONDOWN:
+            handleBoardClick();
+    }
+}
+
+void MainGameScreen::manageChatEvent(SDL_Event &event, bool& gameFinished) {
+    std::cout << "manage chat event" << std::endl;
+    switch (event.type) {
+        case SDL_KEYDOWN:
+            //Handle backspace
+            if( event.key.keysym.sym == SDLK_BACKSPACE && inputData.message.length() > 0 ) {
+                inputData.message.pop_back();
+            }
+                //Handle copy
+            else if( event.key.keysym.sym == SDLK_c && SDL_GetModState() & KMOD_CTRL ) {
+                SDL_SetClipboardText( inputData.message.c_str() );
+            }
+                //Handle paste
+            else if( event.key.keysym.sym == SDLK_v && SDL_GetModState() & KMOD_CTRL ) {
+                inputData.message += SDL_GetClipboardText();
+            }
+            else if (event.key.keysym.scancode == SDL_SCANCODE_RETURN) {
+                //done = SDL_TRUE;
+                chatUI->add(inputData.message);
+                this->userInputQueue->produce(
+                        std::make_shared<ChatMessage>(inputData.message, 0));
+                inputData.message = "";
+            }
+            break;
+        case SDL_QUIT:
+            std::cout << "GAME FINISHED" << std::endl;
+            gameFinished = true;
+            return;
+        case SDL_TEXTINPUT:
+            /* Add new text onto the end of our text */
+            inputData.message += event.text.text;
+            break;
+    }
+}
+
+void MainGameScreen::whereDidMouseClicked() {
+    int mouseX, mouseY;
+    SDL_GetMouseState(&mouseX, &mouseY);
+    inputData.chatClicked = chatUI->clickInChat(mouseX, mouseY);
 }

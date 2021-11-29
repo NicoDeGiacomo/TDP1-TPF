@@ -95,19 +95,19 @@ std::shared_ptr<Message> ServerProxy::recv() {
         std::cout << "about to decode chat message" << std::endl;
         msg_len = decodeChatMessageLen();
         msg_str = recvMessage(msg_len);
-        msg_ptr = std::make_shared<ChatMessage>(msg_str, id);
+        msg_ptr = std::make_shared<ChatMessage>(msg_str, msg_owner_id);
         break;
     case NORMAL_MOVE_CHAR:
         msg_str = recvMessage(4);
-        msg_ptr = std::make_shared<NormalMoveMessage>(msg_str, id);
+        msg_ptr = std::make_shared<NormalMoveMessage>(msg_str, msg_owner_id);
         break;
     case SPLIT_MOVE_CHAR:
         msg_str = recvMessage(6);
-        msg_ptr = std::make_shared<SplitMoveMessage>(msg_str, id);
+        msg_ptr = std::make_shared<SplitMoveMessage>(msg_str, msg_owner_id);
         break;
     case MERGE_MOVE_CHAR:
         msg_str = recvMessage(6);
-        msg_ptr = std::make_shared<MergeMoveMessage>(msg_str, id);
+        msg_ptr = std::make_shared<MergeMoveMessage>(msg_str, msg_owner_id);
         break;
     default:
         throw std::runtime_error("Unknown command");

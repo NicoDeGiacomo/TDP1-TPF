@@ -24,6 +24,7 @@ void Client::run() {
         mainGameScreen.processUserInput(gameFinished);
         mainGameScreen.refreshScreen();
         bool moreMessagesToProcess = true;
+        //BlockingQueue<std::string> chatQueue;
         while(moreMessagesToProcess) {
             std::shared_ptr<Message> msg_ptr = recvQueue.popIfNotEmpty();
 
