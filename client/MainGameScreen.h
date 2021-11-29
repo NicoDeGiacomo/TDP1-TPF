@@ -23,11 +23,8 @@ struct PersistentInputData {
 
 struct Colors {
     SDL_Color normalMove;
-    SDL_Color normalPossible;
     SDL_Color splitMove;
-    SDL_Color splitPossible;
     SDL_Color mergeMove;
-    SDL_Color mergePossible;
     SDL_Color grey;
     SDL_Color darkRed;
     SDL_Color darkGreen;
@@ -108,15 +105,12 @@ public:
 
     void processUserInput(bool& gameFinished);
 
-    void selectPiece(const int x, const int y, const SDL_Color& color);
+    void selectPiece(const int x, const int y, const SDL_Color& color, bool merge = false);
 
     void deselectAllPieces();
 
-    void handleMouseClick();
-
     void paintMoveSelectedNotification(const SDL_Color& color);
 
-    //SDL2pp::Renderer createRenderer();
     void initColors();
 
     void goToDefaultMovement();
@@ -140,15 +134,15 @@ public:
 
     void handleBoardClick();
 
-    void handleChatClick(int mouseX, int mouseY);
-
     void manageBoardEvent(SDL_Event &event, bool& gameFinished);
 
     void manageChatEvent(SDL_Event &event, bool& gameFinished);
 
     void whereDidMouseClicked();
 
-    void loadPossibleMoves(const int x, const int y, const SDL_Color& color);
+    void loadPossibleMoves(const Piece* piece, const SDL_Color& color, bool merge = false);
+
+    void endMessage(bool win);
 };
 
 
