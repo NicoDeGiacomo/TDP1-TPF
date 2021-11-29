@@ -1,6 +1,4 @@
-# TDP1-TPF
-Taller de Programación I - TP Final
-
+# Quantum Chess
 ## Content
 * [1. Build](#1-build)
   * [1.1. Install SDL2pp](#11-install-sdl2pp)
@@ -37,7 +35,9 @@ cmake . && make && make install
 ```
 
 ### 1.2. Build Project
-Use our bash script to build the project! This will also execute the tests automatically.
+Download the latest release, extract it, and open a terminal on the main folder.
+
+Use our bash script to build the project. This will also execute the tests automatically.
 ```shell
 $ sh build.sh
 $ cd build
@@ -72,11 +72,11 @@ Click on a piece, the piece will be selected, and then click on the destination.
 Click on a piece, the piece will be selected, and press 's'. Then click on two empty squares.
 
 #### 2.2.3 Merge
-Click on a piece, the piece will be selected, and press 'm'. Now click on a second piece, and finally on the destination of the merge.
+Click on a piece, the piece will be selected, and press 'm'. Now click on a second piece, and finally on the destination of the merge.\
 Merges can be made on a new square, or on a square of one of the selected pieces.
 
 #### 2.2.4 Entanglement
-An entanglement is made with a [normal move](#222-normal-move), that passes through a piece in a quantum state.
+An entanglement is made with a [normal move](#221-normal-move), that passes through a piece in a quantum state.
 
 ### 2.3. Chat
 Click on the side of the board, write a message, and press enter.
