@@ -465,3 +465,42 @@ void MainGameScreen::loadPossibleMoves(const int x, const int y, const SDL_Color
         dotTexture->SetColorAndAlphaMod(color);
     }
 }
+
+void MainGameScreen::endMessage(bool win) {
+    std::string message;
+    if (win){
+        message = "FIN DE LA PARTIDA\nGANASTE!";
+    } else {
+        message = "FIN DE LA PARTIDA\nPERDISTE:(";
+    }
+    
+    const SDL_MessageBoxButtonData buttons[] = {
+    { /* .flags, .buttonid, .text */        0, 0, "close" }
+    };
+    const SDL_MessageBoxColorScheme colorScheme = {
+        { /* .colors (.r, .g, .b) */
+            /* [SDL_MESSAGEBOX_COLOR_BACKGROUND] */
+            { 199, 201, 200},
+            /* [SDL_MESSAGEBOX_COLOR_TEXT] */
+            {   18, 18, 18},
+            /* [SDL_MESSAGEBOX_COLOR_BUTTON_BORDER] */
+            { 116, 212, 208 },
+            /* [SDL_MESSAGEBOX_COLOR_BUTTON_BACKGROUND] */
+            {   199, 201, 200 },
+            /* [SDL_MESSAGEBOX_COLOR_BUTTON_SELECTED] */
+            { 115, 8, 8  }
+        }
+    };
+
+    const SDL_MessageBoxData messageboxdata = {
+        SDL_MESSAGEBOX_INFORMATION, /* .flags */
+        NULL, /* .window */
+        "Quamtum Chess", /* .title */
+        message.c_str(), /* .message */
+        SDL_arraysize(buttons), /* .numbuttons */
+        buttons, /* .buttons */
+        &colorScheme /* .colorScheme */
+    };
+    int buttonid;
+    SDL_ShowMessageBox(&messageboxdata, &buttonid);
+}

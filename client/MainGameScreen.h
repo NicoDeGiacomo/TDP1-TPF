@@ -149,6 +149,8 @@ public:
     void whereDidMouseClicked();
 
     void loadPossibleMoves(const int x, const int y, const SDL_Color& color);
+
+    void endMessage(bool win);
 };
 
 
