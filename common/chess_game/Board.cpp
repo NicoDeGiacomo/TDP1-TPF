@@ -63,6 +63,11 @@ void Board::merge(Position from1, Position from2, Position to) {
 
     auto* pieceFrom1 = getPieceWithValidations_(from1);
     auto* pieceFrom2 = getPieceWithValidations_(from2);
+    auto pieceTo = getPiece(to);
+
+    if (pieceFrom1->getPosition() != to && pieceFrom2->getPosition() != to && pieceTo != nullptr) {
+        throw std::invalid_argument("Invalid move: merging on a non-empty position.");
+    }
 
     pieceFrom1->merge(to, pieceFrom2);
     changeTurn_();
