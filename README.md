@@ -42,7 +42,7 @@ Use our bash script to build the project. This will also execute the tests autom
 $ sh build.sh
 $ cd build
 $ ./SERVER
-$ ./CLIENT
+$ ./CLIENT localhost 7777
 ```
 
 Or, if you prefer to do it yourself, you can manually do the following.
@@ -54,7 +54,7 @@ $ cmake ..
 $ make
 $ ./TESTS
 $ ./SERVER
-$ ./CLIENT
+$ ./CLIENT localhost 7777
 ```
 
 ## 2. How to Play
