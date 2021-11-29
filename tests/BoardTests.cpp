@@ -66,6 +66,21 @@ TEST_CASE("Invalid move") {
     CHECK_THROWS_WITH_AS(board.move(Position("e7"), Position("e6")),
                          "Invalid move: out of turn.",
                          std::invalid_argument);
+
+    REQUIRE_EQ(32, countPieces_(board));
+
+    board.move(Position("e2"), Position("e4"));
+    board.move(Position("e7"), Position("e6"));
+    board.split(Position("d1"), Position("e2"), Position("f3"));
+    REQUIRE_EQ(33, countPieces_(board));
+    board.move(Position("e6"), Position("e5"));
+    board.move(Position("f1"), Position("a6"));
+    REQUIRE_EQ(34, countPieces_(board));
+    board.move(Position("h7"), Position("h6"));
+    CHECK_THROWS_WITH_AS(board.move(Position("f1"), Position("d3")),
+                         "Invalid move: not possible.",
+                         std::invalid_argument);
+    CHECK_EQ(34, countPieces_(board));
 }
 
 TEST_CASE("Invalid move - Step on own split") {
@@ -247,7 +262,18 @@ TEST_CASE("Invalid split") {
                          "Invalid move: equal split positions.",
                          std::invalid_argument);
 
-    CHECK_EQ(32, countPieces_(board));
+    REQUIRE_EQ(32, countPieces_(board));
+
+    board.move(Position("e2"), Position("e4"));
+    board.move(Position("e7"), Position("e6"));
+    board.split(Position("d1"), Position("e2"), Position("f3"));
+    board.move(Position("e6"), Position("e5"));
+    CHECK_THROWS_WITH_AS(board.split(Position("f1"),
+                                     Position("d3"),
+                                     Position("c4")),
+                         "Invalid split: cannot entangle.",
+                         std::invalid_argument);
+    CHECK_EQ(33, countPieces_(board));
 }
 
 TEST_CASE("Valid split") {
