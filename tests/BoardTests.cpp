@@ -823,4 +823,58 @@ TEST_CASE("Entanglement with own piece - deny") {
     CHECK_EQ(board.getPiece(Position("f6"))->getProbability(), 1.0f);
     CHECK_EQ(board.getPiece(Position("d8"))->getProbability(), 1.0f);
 }
+
+TEST_CASE("Entanglement with own piece - 25% - confirm") {
+    Board board(false, 5);
+    board.move(Position("e2"), Position("e4"));
+    board.move(Position("e7"), Position("e5"));
+
+    board.split(Position("d1"), Position("h5"), Position("g4"));
+    board.move(Position("a7"), Position("a6"));
+    REQUIRE_EQ(33, countPieces_(board));
+    board.split(Position("g4"), Position("f3"), Position("e2"));
+    board.move(Position("c7"), Position("c6"));
+    board.move(Position("f1"), Position("b5"));
+    REQUIRE_EQ(35, countPieces_(board));
+    REQUIRE_NE(board.getPiece(Position("b5")), nullptr);
+    REQUIRE_EQ(board.getPiece(Position("b5"))->getProbability(), 0.25f);
+
+    board.move(Position("a6"), Position("b5"));
+    REQUIRE_EQ(board.getPiece(Position("a6")), nullptr);
+    REQUIRE_EQ(board.getPiece(Position("f1")), nullptr);
+    REQUIRE_EQ(board.getPiece(Position("e2")), nullptr);
+    REQUIRE_NE(board.getPiece(Position("b5")), nullptr);
+    REQUIRE_NE(board.getPiece(Position("f3")), nullptr);
+    REQUIRE_NE(board.getPiece(Position("h5")), nullptr);
+
+    CHECK_EQ(board.getPiece(Position("f3"))->getProbability(), 0.5f);
+    CHECK_EQ(board.getPiece(Position("h5"))->getProbability(), 0.5f);
+}
+
+TEST_CASE("Entanglement with own piece - 25% - deny") {
+    Board board(false, 1);
+    board.move(Position("e2"), Position("e4"));
+    board.move(Position("e7"), Position("e5"));
+
+    board.split(Position("d1"), Position("h5"), Position("g4"));
+    board.move(Position("a7"), Position("a6"));
+    REQUIRE_EQ(33, countPieces_(board));
+    board.split(Position("g4"), Position("f3"), Position("e2"));
+    board.move(Position("c7"), Position("c6"));
+    board.move(Position("f1"), Position("b5"));
+    REQUIRE_EQ(35, countPieces_(board));
+    REQUIRE_NE(board.getPiece(Position("b5")), nullptr);
+    REQUIRE_EQ(board.getPiece(Position("b5"))->getProbability(), 0.25f);
+
+    board.move(Position("a6"), Position("b5"));
+    REQUIRE_EQ(board.getPiece(Position("b5")), nullptr);
+    REQUIRE_EQ(board.getPiece(Position("f3")), nullptr);
+    REQUIRE_EQ(board.getPiece(Position("h5")), nullptr);
+    REQUIRE_NE(board.getPiece(Position("a6")), nullptr);
+    REQUIRE_NE(board.getPiece(Position("f1")), nullptr);
+    REQUIRE_NE(board.getPiece(Position("f2")), nullptr);
+
+    CHECK_EQ(board.getPiece(Position("f1"))->getProbability(), 1.0f);
+    CHECK_EQ(board.getPiece(Position("f2"))->getProbability(), 1.0f);
+}
 }
