@@ -514,6 +514,28 @@ TEST_CASE("Stepping in own piece with pawn (two steps) - 0.5 - confirm") {
     CHECK_EQ(board.getPiece(Position("g4"))->getProbability(), 1.0f);
 }
 
+TEST_CASE("Stepping in own piece with pawn (two steps) - 0.5 - deny") {
+    Board board(false, 3);
+    board.move(Position("e2"), Position("e4"));
+    board.move(Position("e7"), Position("e6"));
+
+    board.split(Position("d1"), Position("g4"), Position("h5"));
+    board.move(Position("e6"), Position("e5"));
+    REQUIRE_EQ(33, countPieces_(board));
+
+    Piece* pawn = board.getPiece(Position("g2"));
+    board.move(Position("g2"), Position("g4"));
+
+    REQUIRE_EQ(32, countPieces_(board));
+    REQUIRE_EQ(board.getPiece(Position("g2")), nullptr);
+    REQUIRE_NE(board.getPiece(Position("g4")), nullptr);
+    CHECK_EQ(board.getPiece(Position("g4")), pawn);
+    CHECK_EQ(board.getPiece(Position("g4"))->getProbability(), 1.0f);
+
+    REQUIRE_NE(board.getPiece(Position("h5")), nullptr);
+    CHECK_EQ(board.getPiece(Position("h5"))->getProbability(), 1.0f);
+}
+
 TEST_CASE("Stepping in own piece with pawn (two steps) B - 0.5 - confirm") {
     Board board(false, 1);
     board.move(Position("e2"), Position("e4"));
@@ -576,6 +598,127 @@ TEST_CASE("Stepping in own piece with pawn (two steps) - 0.5 - deny") {
 
     REQUIRE_NE(board.getPiece(Position("h5")), nullptr);
     CHECK_EQ(board.getPiece(Position("h5"))->getProbability(), 1.0f);
+}
+
+TEST_CASE("Stepping in enemy piece with pawn (one step) - 0.5 - confirm") {
+    Board board(false, 1);
+    board.move(Position("e2"), Position("e4"));
+    board.move(Position("e7"), Position("e6"));
+
+    board.split(Position("f1"), Position("a6"), Position("b5"));
+    REQUIRE_EQ(33, countPieces_(board));
+
+    Piece* pawn = board.getPiece(Position("a7"));
+    board.move(Position("a7"), Position("a6"));
+
+    REQUIRE_EQ(32, countPieces_(board));
+    REQUIRE_NE(board.getPiece(Position("a7")), nullptr);
+    CHECK_EQ(board.getPiece(Position("a7")), pawn);
+
+    REQUIRE_EQ(board.getPiece(Position("b5")), nullptr);
+    REQUIRE_NE(board.getPiece(Position("a6")), nullptr);
+    CHECK_EQ(board.getPiece(Position("a6"))->getProbability(), 1.0f);
+}
+
+TEST_CASE("Stepping in enemy piece with pawn (one step) - 0.5 - deny") {
+    Board board(false, 3);
+    board.move(Position("e2"), Position("e4"));
+    board.move(Position("e7"), Position("e6"));
+
+    board.split(Position("f1"), Position("a6"), Position("b5"));
+    REQUIRE_EQ(33, countPieces_(board));
+
+    Piece* pawn = board.getPiece(Position("a7"));
+    board.move(Position("a7"), Position("a6"));
+
+    REQUIRE_EQ(32, countPieces_(board));
+    REQUIRE_EQ(board.getPiece(Position("a7")), nullptr);
+    REQUIRE_NE(board.getPiece(Position("a6")), nullptr);
+    CHECK_EQ(board.getPiece(Position("a6")), pawn);
+    CHECK_EQ(board.getPiece(Position("a6"))->getProbability(), 1.0f);
+
+    REQUIRE_NE(board.getPiece(Position("b5")), nullptr);
+    CHECK_EQ(board.getPiece(Position("b5"))->getProbability(), 1.0f);
+}
+
+TEST_CASE("Stepping in enemy piece with pawn (two steps) - 0.5 - confirm") {
+    Board board(false, 1);
+    board.move(Position("e2"), Position("e4"));
+    board.move(Position("e7"), Position("e6"));
+
+    board.split(Position("f1"), Position("a6"), Position("b5"));
+    REQUIRE_EQ(33, countPieces_(board));
+
+    Piece* pawn = board.getPiece(Position("b7"));
+    board.move(Position("b7"), Position("b5"));
+
+    REQUIRE_EQ(32, countPieces_(board));
+    REQUIRE_NE(board.getPiece(Position("b7")), nullptr);
+    CHECK_EQ(board.getPiece(Position("b7")), pawn);
+
+    REQUIRE_NE(board.getPiece(Position("b5")), nullptr);
+    CHECK_EQ(board.getPiece(Position("b5"))->getProbability(), 1.0f);
+}
+
+TEST_CASE("Stepping in enemy piece with pawn (two steps) - 0.5 - deny") {
+    Board board(false, 3);
+    board.move(Position("e2"), Position("e4"));
+    board.move(Position("e7"), Position("e6"));
+
+    board.split(Position("f1"), Position("a6"), Position("b5"));
+    REQUIRE_EQ(33, countPieces_(board));
+
+    Piece* pawn = board.getPiece(Position("b7"));
+    board.move(Position("b7"), Position("b5"));
+
+    REQUIRE_EQ(32, countPieces_(board));
+    REQUIRE_EQ(board.getPiece(Position("b7")), nullptr);
+    REQUIRE_NE(board.getPiece(Position("b5")), nullptr);
+    CHECK_EQ(board.getPiece(Position("b5")), pawn);
+    CHECK_EQ(board.getPiece(Position("b5"))->getProbability(), 1.0f);
+
+    REQUIRE_NE(board.getPiece(Position("a6")), nullptr);
+    CHECK_EQ(board.getPiece(Position("a6"))->getProbability(), 1.0f);
+}
+
+TEST_CASE("Stepping in enemy piece with pawn (two steps) B - 0.5 - confirm") {
+    Board board(false, 1);
+    board.move(Position("e2"), Position("e4"));
+    board.move(Position("e7"), Position("e6"));
+
+    board.split(Position("f1"), Position("a6"), Position("b5"));
+    REQUIRE_EQ(33, countPieces_(board));
+
+    Piece* pawn = board.getPiece(Position("a7"));
+    board.move(Position("a7"), Position("a5"));
+
+    REQUIRE_EQ(32, countPieces_(board));
+    REQUIRE_NE(board.getPiece(Position("a7")), nullptr);
+    CHECK_EQ(board.getPiece(Position("a7")), pawn);
+
+    REQUIRE_NE(board.getPiece(Position("a6")), nullptr);
+    CHECK_EQ(board.getPiece(Position("a6"))->getProbability(), 1.0f);
+}
+
+TEST_CASE("Stepping in enemy piece with pawn (two steps) B - 0.5 - deny") {
+    Board board(false, 3);
+    board.move(Position("e2"), Position("e4"));
+    board.move(Position("e7"), Position("e6"));
+
+    board.split(Position("f1"), Position("a6"), Position("b5"));
+    REQUIRE_EQ(33, countPieces_(board));
+
+    Piece* pawn = board.getPiece(Position("a7"));
+    board.move(Position("a7"), Position("a5"));
+
+    REQUIRE_EQ(32, countPieces_(board));
+    REQUIRE_EQ(board.getPiece(Position("a7")), nullptr);
+    REQUIRE_EQ(board.getPiece(Position("a6")), nullptr);
+    REQUIRE_NE(board.getPiece(Position("a5")), nullptr);
+    CHECK_EQ(board.getPiece(Position("a5")), pawn);
+
+    REQUIRE_NE(board.getPiece(Position("b5")), nullptr);
+    CHECK_EQ(board.getPiece(Position("b5"))->getProbability(), 1.0f);
 }
 
 TEST_CASE("Stepping in own piece with knight - 0.5 - confirm") {
