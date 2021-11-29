@@ -12,6 +12,7 @@
 class Board;
 class PieceSplits;
 enum class PieceColor { WHITE, BLACK };
+class Pawn;
 
 class Piece : public Drawable {
  public:
@@ -56,7 +57,7 @@ class Piece : public Drawable {
   Piece* getPieceFromBoard_(Position &position) const;
 
  private:
-  void move_(Position position, bool merge = false);
+  virtual void move_(Position position, bool merge = false);
   bool measure_();
   std::list<Position> getPossibleStepPositions_(__attribute__((unused)) bool merge = false) const;
   std::list<Position> getPossibleBeamPositions_(bool merge = false) const;
@@ -73,6 +74,7 @@ class Piece : public Drawable {
   void removeFromBoard_();
 
   friend PieceSplits;
+  friend Pawn;
 };
 
 #endif  // PIECE_H_
