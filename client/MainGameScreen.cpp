@@ -21,6 +21,7 @@ MainGameScreen::MainGameScreen(Board& board, BlockingQueue<std::shared_ptr<Messa
     this->loadMoveSelectedNotification(222);
     this->paintMoveSelectedNotification(colors.normalMove);
     this->dotTexture = std::make_unique<SDL2pp::Texture>((*renderer), DOT_FILEPATH);
+    this->dotTexture->SetAlphaMod(100);
     this->refreshScreen();
 }
 
@@ -80,7 +81,7 @@ void MainGameScreen::refreshScreen() {
                 colors.grey);
     }
     for(auto& position : possibleMoves){
-        std::cout << "positionx:" << position.getX() << " positiony: " << position.getY() << std::endl;
+        //std::cout << "positionx:" << position.getX() << " positiony: " << position.getY() << std::endl;
         //agarrar la textura y dibujarla en estas posiciones
         SDL2pp::Rect possibleMoveRect(
                 (position.getX() - 1) * pieceWidth, //map board position to world position
@@ -146,7 +147,7 @@ void MainGameScreen::selectPiece(const int x, const int y, const SDL_Color& colo
     selectedPieces.push_front(piece);
     SDL2pp::Texture &texture = selectedTexturesMap.at(toupper(piece->getDrawing()));
     texture.SetColorAndAlphaMod(color);
-    //loadPossibleMoves(piece);
+    loadPossibleMoves(piece, color);
     //showEntangledPieces(piece);
 }
 
@@ -171,30 +172,15 @@ void MainGameScreen::initColors() {
     this->colors.normalMove.b = 255;
     this->colors.normalMove.a = 255;
 
-    this->colors.normalPossible.r = 0;
-    this->colors.normalPossible.g = 255;
-    this->colors.normalPossible.b = 255;
-    this->colors.normalPossible.a = 100;
-
     this->colors.splitMove.r = 250;
     this->colors.splitMove.g = 15;
     this->colors.splitMove.b = 180;
     this->colors.splitMove.a = 255;
 
-    this->colors.splitPossible.r = 250;
-    this->colors.splitPossible.g = 15;
-    this->colors.splitPossible.b = 180;
-    this->colors.splitPossible.a = 100;
-
     this->colors.mergeMove.r = 0;
     this->colors.mergeMove.g = 128;
     this->colors.mergeMove.b = 0;
     this->colors.mergeMove.a = 255;
-
-    this->colors.mergePossible.r = 0;
-    this->colors.mergePossible.g = 128;
-    this->colors.mergePossible.b = 0;
-    this->colors.mergePossible.a = 100;
 
     this->colors.grey.r = 177;
     this->colors.grey.g = 177;
@@ -304,7 +290,6 @@ void MainGameScreen::handleBoardClick() {
                 inputData.positionFromX = clampedMouseXToGrid;
                 inputData.positionFromY = clampedMouseYToGrid;
                 selectPiece(clampedMouseXToGrid, clampedMouseYToGrid, colors.normalMove);
-                loadPossibleMoves(clampedMouseXToGrid, clampedMouseYToGrid, colors.normalPossible);
                 // NTH: pintar movimientos posibles
             }
             inputData.pieceSelected = !inputData.pieceSelected;
@@ -319,18 +304,12 @@ void MainGameScreen::handleBoardClick() {
                 selectPiece(clampedMouseXToGrid,
                             clampedMouseYToGrid,
                             inputData.typeOfMove == 's' ? colors.splitMove : colors.mergeMove);
-                loadPossibleMoves(
-                        clampedMouseXToGrid,
-                        clampedMouseYToGrid,
-                        inputData.typeOfMove == 's' ? colors.splitPossible : colors.mergePossible);
             } else if (!inputData.firstEmptySelected) {
                 inputData.secondPositionX = clampedMouseXToGrid;
                 inputData.secondPositionY = clampedMouseYToGrid;
                 inputData.firstEmptySelected = true;
-                if (inputData.typeOfMove == 'm') {
+                if (inputData.typeOfMove == 'm')
                     selectPiece(clampedMouseXToGrid, clampedMouseYToGrid, colors.mergeMove);
-                    loadPossibleMoves(clampedMouseXToGrid, clampedMouseYToGrid, colors.mergePossible);
-                }
             } else {
                 Position pos_1(inputData.positionFromX, inputData.positionFromY);
                 Position pos_2(inputData.secondPositionX, inputData.secondPositionY);
@@ -353,10 +332,6 @@ void MainGameScreen::handleBoardClick() {
             break;
     }
 }
-
-/*void MainGameScreen::handleChatClick(int mouseX, int mouseY) {
-    //cambiar a "modo chat"
-}*/
 
 void MainGameScreen::manageBoardEvent(SDL_Event &event, bool& gameFinished) {
     switch (event.type) {
@@ -440,8 +415,7 @@ void MainGameScreen::whereDidMouseClicked() {
     inputData.chatClicked = chatUI->clickInChat(mouseX, mouseY);
 }
 
-void MainGameScreen::loadPossibleMoves(const int x, const int y, const SDL_Color& color) {
-    Piece* piece = _board.getPiece(Position(x,y));
+void MainGameScreen::loadPossibleMoves(const Piece* piece, const SDL_Color& color) {
     if (!piece)
         return;
     if (!possibleMoves.empty()){
@@ -459,10 +433,11 @@ void MainGameScreen::loadPossibleMoves(const int x, const int y, const SDL_Color
             }
             possibleMove = possibleMoves.erase(possibleMove);
         }
+        std::cout << ": " << possibleMoves.size() << std::endl;
 
     } else {
         possibleMoves = piece->getPossibleMoves();
-        dotTexture->SetColorAndAlphaMod(color);
+        dotTexture->SetColorMod(color.r, color.g, color.b);
     }
 }
 
