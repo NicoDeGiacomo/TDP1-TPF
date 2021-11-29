@@ -105,7 +105,7 @@ public:
 
     void processUserInput(bool& gameFinished);
 
-    void selectPiece(const int x, const int y, const SDL_Color& color);
+    void selectPiece(const int x, const int y, const SDL_Color& color, bool merge = false);
 
     void deselectAllPieces();
 
@@ -140,7 +140,7 @@ public:
 
     void whereDidMouseClicked();
 
-    void loadPossibleMoves(const Piece* piece, const SDL_Color& color);
+    void loadPossibleMoves(const Piece* piece, const SDL_Color& color, bool merge = false);
 
     void endMessage(bool win);
 };

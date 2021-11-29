@@ -140,14 +140,14 @@ void MainGameScreen::renderProbabilityBar(const int x,
     renderer->SetDrawBlendMode(SDL_BLENDMODE_NONE);
 }
 
-void MainGameScreen::selectPiece(const int x, const int y, const SDL_Color& color) {
+void MainGameScreen::selectPiece(const int x, const int y, const SDL_Color& color, bool merge) {
     Piece* piece = _board.getPiece(Position(x,y));
     if (!piece)
         return;
     selectedPieces.push_front(piece);
     SDL2pp::Texture &texture = selectedTexturesMap.at(toupper(piece->getDrawing()));
     texture.SetColorAndAlphaMod(color);
-    loadPossibleMoves(piece, color);
+    loadPossibleMoves(piece, color, merge);
     //showEntangledPieces(piece);
 }
 
@@ -303,13 +303,14 @@ void MainGameScreen::handleBoardClick() {
                 inputData.firstEmptySelected = false;
                 selectPiece(clampedMouseXToGrid,
                             clampedMouseYToGrid,
-                            inputData.typeOfMove == 's' ? colors.splitMove : colors.mergeMove);
+                            inputData.typeOfMove == 's' ? colors.splitMove : colors.mergeMove,
+                            inputData.typeOfMove != 's');
             } else if (!inputData.firstEmptySelected) {
                 inputData.secondPositionX = clampedMouseXToGrid;
                 inputData.secondPositionY = clampedMouseYToGrid;
                 inputData.firstEmptySelected = true;
                 if (inputData.typeOfMove == 'm')
-                    selectPiece(clampedMouseXToGrid, clampedMouseYToGrid, colors.mergeMove);
+                    selectPiece(clampedMouseXToGrid, clampedMouseYToGrid, colors.mergeMove, true);
             } else {
                 Position pos_1(inputData.positionFromX, inputData.positionFromY);
                 Position pos_2(inputData.secondPositionX, inputData.secondPositionY);
@@ -415,12 +416,12 @@ void MainGameScreen::whereDidMouseClicked() {
     inputData.chatClicked = chatUI->clickInChat(mouseX, mouseY);
 }
 
-void MainGameScreen::loadPossibleMoves(const Piece* piece, const SDL_Color& color) {
+void MainGameScreen::loadPossibleMoves(const Piece* piece, const SDL_Color& color, bool merge) {
     if (!piece)
         return;
     if (!possibleMoves.empty()){
         //inner join of possible moves
-        auto newPossibleMoves = piece->getPossibleMoves();
+        auto newPossibleMoves = piece->getPossibleMoves(merge);
         auto possibleMove = possibleMoves.begin();
         while (possibleMove != possibleMoves.end()){
             bool found = (std::find(
@@ -436,7 +437,7 @@ void MainGameScreen::loadPossibleMoves(const Piece* piece, const SDL_Color& colo
         std::cout << ": " << possibleMoves.size() << std::endl;
 
     } else {
-        possibleMoves = piece->getPossibleMoves();
+        possibleMoves = piece->getPossibleMoves(merge);
         dotTexture->SetColorMod(color.r, color.g, color.b);
     }
 }
