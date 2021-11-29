@@ -23,8 +23,11 @@ struct PersistentInputData {
 
 struct Colors {
     SDL_Color normalMove;
+    SDL_Color normalPossible;
     SDL_Color splitMove;
+    SDL_Color splitPossible;
     SDL_Color mergeMove;
+    SDL_Color mergePossible;
     SDL_Color grey;
     SDL_Color darkRed;
     SDL_Color darkGreen;
@@ -47,6 +50,7 @@ struct Colors {
 
 
 #define BOARD_FILEPATH "../assets/sprites/board.png"
+#define DOT_FILEPATH "../assets/sprites/dot.png"
 
 #define WHITE_PAWN_FILEPATH "../assets/sprites/whitePawn.png"
 #define WHITE_ROOK_FILEPATH "../assets/sprites/whiteRook.png"
@@ -78,7 +82,9 @@ private:
     std::unordered_map<char,SDL2pp::Texture> texturesMap;
     std::unordered_map<char,SDL2pp::Texture> selectedTexturesMap;
     std::unique_ptr<SDL2pp::Texture> moveNotificationTexture;
+    std::unique_ptr<SDL2pp::Texture> dotTexture;
     std::list<Piece*> selectedPieces;
+    std::list<Position> possibleMoves;
     Board &_board;
     //Client *_client;
     //std::vector<Button> buttons;
@@ -102,7 +108,7 @@ public:
 
     void processUserInput(bool& gameFinished);
 
-    void selectPiece(int x, int y, const SDL_Color& color);
+    void selectPiece(const int x, const int y, const SDL_Color& color);
 
     void deselectAllPieces();
 
@@ -141,6 +147,8 @@ public:
     void manageChatEvent(SDL_Event &event, bool& gameFinished);
 
     void whereDidMouseClicked();
+
+    void loadPossibleMoves(const int x, const int y, const SDL_Color& color);
 };
 
 
