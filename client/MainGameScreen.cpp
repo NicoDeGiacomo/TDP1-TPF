@@ -442,15 +442,18 @@ void MainGameScreen::loadPossibleMoves(const Piece* piece, const SDL_Color& colo
     }
 }
 
-void MainGameScreen::endMessage(bool win) {
+void MainGameScreen::endMessage(int end_state) {
     std::string message;
-    if (win){
+    if (end_state == WIN){
         message = "FIN DE LA PARTIDA\nGANASTE!";
-    } else {
+    } else if (end_state == LOSS){
         message = "FIN DE LA PARTIDA\nPERDISTE:(";
+    } else {
+        message = "FIN DE LA PARTIDA\n";
     }
     
     const SDL_MessageBoxButtonData buttons[] = {
+    { /* .flags, .buttonid, .text */        0, 1, "download game" },
     { /* .flags, .buttonid, .text */        0, 0, "close" }
     };
     const SDL_MessageBoxColorScheme colorScheme = {
@@ -479,4 +482,7 @@ void MainGameScreen::endMessage(bool win) {
     };
     int buttonid;
     SDL_ShowMessageBox(&messageboxdata, &buttonid);
+    if (buttonid == 1){
+        //TODO: download game file
+    }
 }
