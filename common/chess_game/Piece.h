@@ -25,13 +25,15 @@ class Piece : public Drawable {
 
   std::list<Position> getPossibleMoves(bool merge = false) const;
 
+  std::list<Position> getEntanglements() const;
+
   float getProbability() const;
 
   Position getPosition() const;
 
   PieceColor getColor() const;
 
-    char getDrawing() const override;
+  char getDrawing() const override;
 
   virtual ~Piece() = default;
 

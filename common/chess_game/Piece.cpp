@@ -304,3 +304,7 @@ void Piece::denySplit_() {
 void Piece::resetSplits_() {
     splits_ = std::make_shared<PieceSplits>(this);
 }
+
+std::list<Position> Piece::getEntanglements() const {
+    return splits_->getEntanglements(this);
+}

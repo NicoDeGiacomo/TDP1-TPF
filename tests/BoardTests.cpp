@@ -712,6 +712,9 @@ TEST_CASE("Entanglement with opponent piece") {
     CHECK_EQ(board.getPiece(Position("c8"))->getProbability(), 0.5f);
     CHECK_NE(board.getPiece(Position("h3")), nullptr);
     CHECK_EQ(board.getPiece(Position("h3"))->getProbability(), 0.5f);
+
+    CHECK(findPosition_(board.getPiece(Position("h3"))->getEntanglements(), Position("g4")));
+    CHECK(findPosition_(board.getPiece(Position("g4"))->getEntanglements(), Position("h3")));
 }
 
 TEST_CASE("Entanglement with own piece") {
@@ -734,6 +737,9 @@ TEST_CASE("Entanglement with own piece") {
     CHECK_EQ(board.getPiece(Position("f3"))->getProbability(), 0.5f);
     CHECK_EQ(board.getPiece(Position("f1"))->getProbability(), 0.5f);
     CHECK_EQ(board.getPiece(Position("d3"))->getProbability(), 0.5f);
+
+    CHECK(findPosition_(board.getPiece(Position("d3"))->getEntanglements(), Position("e2")));
+    CHECK(findPosition_(board.getPiece(Position("e2"))->getEntanglements(), Position("d3")));
 }
 
 TEST_CASE("Entanglement with opponent piece - confirm") {
@@ -773,5 +779,13 @@ TEST_CASE("Entanglement with opponent piece - deny") {
 
     CHECK_EQ(board.getPiece(Position("g4"))->getProbability(), 1.0f);
     CHECK_EQ(board.getPiece(Position("c8"))->getProbability(), 1.0f);
+}
+
+TEST_CASE("Entanglement with opponent piece - confirm") {
+    // todo
+}
+
+TEST_CASE("Entanglement with opponent piece - deny") {
+    // todo
 }
 }

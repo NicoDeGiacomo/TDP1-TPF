@@ -206,3 +206,13 @@ bool PieceSplits::areBrothers_(const std::shared_ptr<SplitNode_>& node1, const s
 
     return true;
 }
+
+std::list<Position> PieceSplits::getEntanglements(const Piece *piece) const {
+    std::list<Position> positions;
+    std::shared_ptr<SplitNode_> node = findNode_(piece);
+    if (node && node->entanglement) {
+        positions.push_back(node->entanglement->getPosition());
+    }
+
+    return positions;
+}
