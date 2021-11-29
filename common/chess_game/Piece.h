@@ -52,7 +52,7 @@ class Piece : public Drawable {
   virtual std::list<std::pair<int, int>> getVectorStepMoves_() const = 0;
   virtual Piece * createSplit_(Position to) = 0;
   virtual void validateMerge_();
-  virtual void validateSplit_();
+  virtual void validateSplit_(Position position);
   Piece* getPieceFromBoard_(Position &position) const;
 
  private:
@@ -63,7 +63,7 @@ class Piece : public Drawable {
   void validateMove_(const Position &position, bool merge = false) const;
   void appendToBoard_();
   bool isSplit_(Piece *other) const;
-  virtual bool checkEntanglement_(Position to);
+  bool checkEntanglement_(Position to, bool validate = false);
   void entagle_(__attribute__((unused)) Piece *with, Position to);
   void confirmSplit_();
   void confirmEntanglement_();

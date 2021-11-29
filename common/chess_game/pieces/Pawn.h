@@ -13,7 +13,6 @@ class Pawn : public Piece {
   std::list<std::pair<int, int>> getVectorStepMoves_() const override;
   Piece * createSplit_(Position to) override;
   void validateMerge_() override;
-  bool checkEntanglement_(Position to) override;
 };
 
 #endif  // PAWN_H_
