@@ -7,6 +7,7 @@
 #include <SDL_image.h>
 #include <SDL2pp/SDL2pp.hh>
 #include <deque>
+#include "BlockingQueue.h"
 
 #define BACKGROUND_FILEPATH "../assets/sprites/chatBackground.png"
 #define CHAT_FONT_SIZE 15
@@ -23,13 +24,18 @@ private:
     _height,
     yOffset = CHAT_FONT_SIZE + CHAT_FONT_PADDING * 2,
     xOffset = CHAT_FONT_SIZE + CHAT_FONT_PADDING;
+    BlockingQueue<std::shared_ptr<std::string>> &chatQueue;
 
     std::deque<std::string> splitMessageIntoRenderableChunks(const std::string &basicString,
                                                              const SDL2pp::Font& font,
                                                              const char divider) const;
     void drawInputMessage(std::string& inputMessage);
 public:
-    ChatUI(SDL2pp::Renderer& renderer, const int x, const int width, const int height);
+    ChatUI(SDL2pp::Renderer& renderer, 
+           const int x, 
+           const int width, 
+           const int height,
+           BlockingQueue<std::shared_ptr<std::string>> &chatQueue);
 
     void renderMessages(std::string& inputMessage);
 

@@ -103,7 +103,10 @@ private:
     Colors colors;
     std::unique_ptr<ChatUI> chatUI;
 public:
-    MainGameScreen(Board& board, BlockingQueue<std::shared_ptr<Message>>* userInputQueue);
+    MainGameScreen(Board& board, 
+                   BlockingQueue<std::shared_ptr<Message>>* userInputQueue,
+                   BlockingQueue<std::shared_ptr<std::string>> &chatQueue);
+
     void refreshScreen();
 
     void processUserInput(bool& gameFinished);

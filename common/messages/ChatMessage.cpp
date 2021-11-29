@@ -44,3 +44,8 @@ void ChatMessage::apply(Board&) const {
         std::cout << "User " << this->id << " added a message to chat. Message: " 
                     << _message << std::endl;
 }
+
+void ChatMessage::apply(Board&, 
+                        BlockingQueue<std::shared_ptr<std::string>> &chatQueue) const {
+    chatQueue.produce(std::make_shared<std::string>(_message));
+}

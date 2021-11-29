@@ -20,6 +20,8 @@ public:
     const std::string getMessage() const override;
     // const std::string& getId() const override;
     virtual void apply(Board& board) const override;
+    virtual void apply(Board& board, 
+                    BlockingQueue<std::shared_ptr<std::string>>&) const override;
 
     int charToInt(const char &i);
 };

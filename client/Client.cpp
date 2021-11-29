@@ -24,7 +24,7 @@ void Client::run() {
         mainGameScreen.processUserInput(gameFinished);
         mainGameScreen.refreshScreen();
         bool moreMessagesToProcess = true;
-        //BlockingQueue<std::string> chatQueue;
+        
         while(moreMessagesToProcess) {
             std::shared_ptr<Message> msg_ptr = recvQueue.popIfNotEmpty();
 
@@ -33,7 +33,7 @@ void Client::run() {
                 continue;
             }
             try {
-                msg_ptr->apply(_board);
+                msg_ptr->apply(_board, chatQueue);
             } catch (const std::exception &e) {
                 std::cerr << "Exception caught in client: '"
                           << e.what() << "'" << std::endl;
@@ -50,15 +50,13 @@ void Client::run() {
     sendThread.stop();
     sendThread.join();
 }
-/*Client::Client movePieze(Position&& from, Position&& to){
-
-}*/
 
 BlockingQueue<std::shared_ptr<Message>>* Client::getQueue(){
     return &sendQueue;
 }
 
-Client::Client(const char *host, const char *service, Board& board) : mainGameScreen(board, &sendQueue), proxy(), _board(board) {
+Client::Client(const char *host, const char *service, Board& board) 
+            : mainGameScreen(board, &sendQueue, chatQueue), proxy(), _board(board) {
 
     //std::cin.ignore();
     proxy.connect(host, service);

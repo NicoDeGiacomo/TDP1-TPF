@@ -13,6 +13,7 @@ public:
     const std::string getMessage() const override;
     // const std::string& getId() const override;
     virtual void apply(Board&) const override;
+    void apply(Board&, BlockingQueue<std::shared_ptr<std::string>> &chatQueue) const override;
 };
 
 

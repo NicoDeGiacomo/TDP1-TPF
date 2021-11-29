@@ -4,14 +4,16 @@
 
 #include "ChatUI.h"
 
-ChatUI::ChatUI(SDL2pp::Renderer& renderer,
-               const int x,
-               const int width,
-               const int height) : _renderer(renderer), _x(x), _width(width), _height(height) {
-    /*for(int i = 0; i < 18; ++i) {
-        add("hola mundo " + std::to_string(i));
-    }*/
-    //add("hhhhhhhhhhhhhhhh oooooooooooooooooo ooooooooooooooooo");
+ChatUI::ChatUI(SDL2pp::Renderer& renderer, 
+               const int x, 
+               const int width, 
+               const int height,
+               BlockingQueue<std::shared_ptr<std::string>> &chatQueue) 
+               : _renderer(renderer), 
+               _x(x), 
+               _width(width), 
+               _height(height), 
+               chatQueue(chatQueue) {
     backgroundImageTexture = std::make_unique<SDL2pp::Texture>(SDL2pp::Texture(_renderer, BACKGROUND_FILEPATH));
 }
 void ChatUI::drawInputMessage(std::string& inputMessage) {
@@ -40,7 +42,24 @@ void ChatUI::drawInputMessage(std::string& inputMessage) {
     _renderer.Copy((*inputMessageTexture), SDL2pp::NullOpt, messageRect);
 }
 void ChatUI::renderMessages(std::string& inputMessage) {
-    // cola.popifnotempty
+    bool moreChatMessagesToProcess = true;
+    while(moreChatMessagesToProcess) {
+        std::shared_ptr<std::string> msg_ptr = chatQueue.popIfNotEmpty();
+
+        if (!msg_ptr) {
+            moreChatMessagesToProcess = false;
+            continue;
+        }
+        try {
+            this->add(*msg_ptr);
+        } catch (const std::exception &e) {
+            std::cerr << "Exception caught in ChatUI: '"
+                        << e.what() << "'" << std::endl;
+        } catch (...) {
+            std::cerr << "Unknown error caught in ChatUI.\n";
+        }
+    }
+
     _renderer.Copy((*backgroundImageTexture), SDL2pp::NullOpt, SDL2pp::Rect(_x, 0, _width, _height));
     drawInputMessage(inputMessage);
 

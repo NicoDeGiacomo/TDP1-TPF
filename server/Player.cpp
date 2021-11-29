@@ -4,8 +4,6 @@
 
 #include <iostream>
 #include <messages/ChatMessage.h>
-#include <messages/PlayerIdMessage.h>
-#include <messages/PlayerInfoMessage.h>
 #include "Player.h"
 #include "Protocol.h"
 #include "RecvThread.h"

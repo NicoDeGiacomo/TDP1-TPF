@@ -11,10 +11,13 @@
 #include <ChatMessage.h>
 #include "MainGameScreen.h"
 
-MainGameScreen::MainGameScreen(Board& board, BlockingQueue<std::shared_ptr<Message>>* queue) : _board(board) {
+MainGameScreen::MainGameScreen(Board& board, 
+                   BlockingQueue<std::shared_ptr<Message>>* userInputQueue,
+                   BlockingQueue<std::shared_ptr<std::string>> &chatQueue) 
+                   : _board(board) {
     this->startSDLWindow();
-    this->chatUI = std::make_unique<ChatUI>((*renderer), boardWidth, chatWidth, screenHeight);
-    this->userInputQueue = queue;
+    this->chatUI = std::make_unique<ChatUI>((*renderer), boardWidth, chatWidth, screenHeight, chatQueue);
+    this->userInputQueue = userInputQueue;
     this->setUserInputDefaultValues();
     this->loadBoardTextures();
     this->initColors();

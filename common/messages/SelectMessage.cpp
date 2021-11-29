@@ -24,3 +24,6 @@ SelectMessage::SelectMessage(const std::string &message, int id) : Message(messa
     std::cout << "constructor of SelectMessage class" << std::endl;
     this->type = SELECT_CHAR;
 }
+
+void SelectMessage::apply(Board&, 
+                        BlockingQueue<std::shared_ptr<std::string>>&) const {}

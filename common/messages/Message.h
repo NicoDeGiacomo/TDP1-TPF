@@ -8,6 +8,7 @@
 
 #include <string>
 #include <Board.h>
+#include <BlockingQueue.h>
 
 class Message {
 protected:
@@ -23,6 +24,7 @@ public:
     int getId() const;
     char getType() const;
     virtual void apply(Board&) const {}
+    virtual void apply(Board&, BlockingQueue<std::shared_ptr<std::string>>&) const {}
     // virtual apply(Board, Chat)
         // board.move(pos1, pos2)
         // chat
