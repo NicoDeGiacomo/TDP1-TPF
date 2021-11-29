@@ -452,6 +452,91 @@ TEST_CASE("Double split and merge") {
 }
 
 TEST_SUITE("Measurements") {
+TEST_CASE("Stepping in own piece with knight - 0.5 - confirm") {
+    Board board(false, 1);
+    board.move(Position("e2"), Position("e4"));
+    board.move(Position("e7"), Position("e6"));
+
+    board.split(Position("d1"), Position("f3"), Position("h5"));
+    board.move(Position("e6"), Position("e5"));
+    REQUIRE_EQ(33, countPieces_(board));
+
+    Piece* knight = board.getPiece(Position("g1"));
+    board.move(Position("g1"), Position("f3"));
+
+    REQUIRE_EQ(32, countPieces_(board));
+    REQUIRE_NE(board.getPiece(Position("g1")), nullptr);
+    CHECK_EQ(board.getPiece(Position("g1")), knight);
+
+    REQUIRE_NE(board.getPiece(Position("f3")), nullptr);
+    CHECK_EQ(board.getPiece(Position("f3"))->getProbability(), 1.0f);
+}
+
+TEST_CASE("Stepping in own piece with knight - 0.5 - deny") {
+    Board board(false, 3);
+    board.move(Position("e2"), Position("e4"));
+    board.move(Position("e7"), Position("e6"));
+
+    board.split(Position("d1"), Position("f3"), Position("h5"));
+    board.move(Position("e6"), Position("e5"));
+    REQUIRE_EQ(33, countPieces_(board));
+
+    Piece* knight = board.getPiece(Position("g1"));
+    board.move(Position("g1"), Position("f3"));
+
+    REQUIRE_EQ(32, countPieces_(board));
+    REQUIRE_EQ(board.getPiece(Position("g1")), nullptr);
+    REQUIRE_NE(board.getPiece(Position("f3")), nullptr);
+    CHECK_EQ(board.getPiece(Position("f3")), knight);
+    CHECK_EQ(board.getPiece(Position("f3"))->getProbability(), 1.0f);
+
+    REQUIRE_NE(board.getPiece(Position("h5")), nullptr);
+    CHECK_EQ(board.getPiece(Position("h5"))->getProbability(), 1.0f);
+}
+
+TEST_CASE("Stepping in own piece with bishop - 0.5 - confirm") {
+    Board board(false, 1);
+    board.move(Position("e2"), Position("e4"));
+    board.move(Position("e7"), Position("e6"));
+
+    board.split(Position("d1"), Position("f3"), Position("e2"));
+    board.move(Position("e6"), Position("e5"));
+    REQUIRE_EQ(33, countPieces_(board));
+
+    Piece* bishop = board.getPiece(Position("f1"));
+    board.move(Position("f1"), Position("e2"));
+
+    REQUIRE_EQ(32, countPieces_(board));
+    REQUIRE_NE(board.getPiece(Position("f1")), nullptr);
+    CHECK_EQ(board.getPiece(Position("f1")), bishop);
+
+    REQUIRE_NE(board.getPiece(Position("e2")), nullptr);
+    CHECK_EQ(board.getPiece(Position("e2"))->getProbability(), 1.0f);
+}
+
+TEST_CASE("Stepping in own piece with bishop - 0.5 - deny") {
+    Board board(false, 3);
+    board.move(Position("e2"), Position("e4"));
+    board.move(Position("e7"), Position("e6"));
+
+    board.split(Position("d1"), Position("f3"), Position("e2"));
+    board.move(Position("e6"), Position("e5"));
+    REQUIRE_EQ(33, countPieces_(board));
+
+    Piece* bishop = board.getPiece(Position("f1"));
+    board.move(Position("f1"), Position("e2"));
+
+    REQUIRE_EQ(32, countPieces_(board));
+    REQUIRE_EQ(board.getPiece(Position("f1")), nullptr);
+
+    REQUIRE_NE(board.getPiece(Position("e2")), nullptr);
+    CHECK_EQ(board.getPiece(Position("e2")), bishop);
+    CHECK_EQ(board.getPiece(Position("e2"))->getProbability(), 1.0f);
+
+    REQUIRE_NE(board.getPiece(Position("f3")), nullptr);
+    CHECK_EQ(board.getPiece(Position("f3"))->getProbability(), 1.0f);
+}
+
 TEST_CASE("Eating split - Eaten piece 0.5 - confirm") {
     Board board(false, 1);
     board.move(Position("e2"), Position("e4"));
@@ -720,7 +805,7 @@ TEST_CASE("Possible moves allows entanglement with own piece") {
     board.split(Position("f1"), Position("e2"), Position("d3"));
 
     auto queenPositions = board.getPossibleMoves(Position("d1"));
-    CHECK_EQ(3, queenPositions.size());
+    CHECK_EQ(4, queenPositions.size());
     CHECK(findPosition_(queenPositions, Position("h5")));
 }
 

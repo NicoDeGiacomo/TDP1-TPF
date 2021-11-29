@@ -64,7 +64,7 @@ void Piece::move(Position position) {
     } catch (std::invalid_argument &e) {
         // After the measurement, the move might invalid and should not be done.
     }
-    if (confirmed) {
+    if (confirmed && color_ != pieceTo->color_) {
         pieceTo->eat();
     }
 }
@@ -116,6 +116,8 @@ std::list<Position> Piece::getPossibleStepPositions_(__attribute__((unused)) boo
             Piece* otherPiece = getPieceFromBoard_(newPosition);
             if (otherPiece == nullptr || otherPiece->color_ != color_ || isSplit_(otherPiece)) {
                 possiblePositions.push_back(newPosition);
+            } else if (otherPiece->getProbability() < 1.0f) {
+                possiblePositions.push_back(newPosition);
             }
         } catch (std::invalid_argument &) {
             continue;
@@ -149,7 +151,7 @@ std::list<Position> Piece::getPossibleBeamPositions_(bool merge) const {
                         if (merge) {
                             possiblePositions.push_back(newPosition);
                         }
-                    } else if (color_ != otherPiece->color_) {
+                    } else {
                         possiblePositions.push_back(newPosition);
                     }
 
