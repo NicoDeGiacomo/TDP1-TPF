@@ -61,11 +61,11 @@ void Piece::move(Position position) {
     confirmed = pieceTo->measure_();
     try {
         move_(position);
+        if (confirmed && color_ != pieceTo->color_) {
+            pieceTo->eat();
+        }
     } catch (std::invalid_argument &e) {
         // After the measurement, the move might invalid and should not be done.
-    }
-    if (confirmed && color_ != pieceTo->color_) {
-        pieceTo->eat();
     }
 }
 
