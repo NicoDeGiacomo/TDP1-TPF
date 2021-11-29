@@ -67,7 +67,7 @@ While the game is running, the following interactions are available with the scr
 
 #### 2.2.0 Move modes
 There are three types of move modes normal, split and merge.  
-To swap between move modes you can press 'n' (for normal mode, color:![#f03c15](https://via.placeholder.com/15/00ffff/000000?text=+)), 's' (for split mode, color:![#f03c15](https://via.placeholder.com/15/fa0fb4/000000?text=+)) and 'm' (for merge mode), color:![#f03c15](https://via.placeholder.com/15/008000/000000?text=+), normal mode will always be the default one.  
+To swap between move modes you can press 'n' (for normal mode, color:![normal](https://via.placeholder.com/15/00ffff/000000?text=+)), 's' (for split mode, color:![split](https://via.placeholder.com/15/fa0fb4/000000?text=+)) and 'm' (for merge mode, color:![merge](https://via.placeholder.com/15/008000/000000?text=+)), normal mode will always be the default one.  
 You can see which mode you are currently in by looking at the color of the '*' placed at the top of the screen.
 #### 2.2.1 Normal Move
 Click on a piece, the piece will be selected, and then click on the destination.
