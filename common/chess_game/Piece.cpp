@@ -64,7 +64,7 @@ void Piece::move(Position position) {
     } catch (std::invalid_argument &e) {
         // After the measurement, the move might invalid and should not be done.
     }
-    if (confirmed) {
+    if (confirmed && color_ != pieceTo->color_) {
         pieceTo->eat();
     }
 }
@@ -116,6 +116,8 @@ std::list<Position> Piece::getPossibleStepPositions_(__attribute__((unused)) boo
             Piece* otherPiece = getPieceFromBoard_(newPosition);
             if (otherPiece == nullptr || otherPiece->color_ != color_ || isSplit_(otherPiece)) {
                 possiblePositions.push_back(newPosition);
+            } else if (otherPiece->getProbability() < 1.0f) {
+                possiblePositions.push_back(newPosition);
             }
         } catch (std::invalid_argument &) {
             continue;
@@ -149,11 +151,12 @@ std::list<Position> Piece::getPossibleBeamPositions_(bool merge) const {
                         if (merge) {
                             possiblePositions.push_back(newPosition);
                         }
-                    } else if (color_ != otherPiece->color_) {
+                    } else {
                         possiblePositions.push_back(newPosition);
                     }
 
-                    if (entangled) {
+                    if (entangled || (getProbability() < 1.0f
+                        && otherPiece->getProbability() < 1.0f && !merge)) {
                         break;
                     } else if (getProbability() >= 1.0f && !merge) {
                         entangled = true;
@@ -188,10 +191,11 @@ void Piece::eat() {
 }
 
 void Piece::split(Position position1, Position position2) {
-    validateSplit_();
-
     validateMove_(position1);
     validateMove_(position2);
+
+    validateSplit_(position2);
+    validateSplit_(position1);
 
     auto* split1 = createSplit_(position1);
     auto* split2 = createSplit_(position2);
@@ -227,7 +231,7 @@ bool Piece::isSplit_(Piece *other) const {
     return splits_->contains(this) && splits_->contains(other);
 }
 
-bool Piece::checkEntanglement_(Position to) {
+bool Piece::checkEntanglement_(Position to, bool validate) {
     if (getProbability() < 1.0f) {
         return false;
     }
@@ -264,7 +268,9 @@ bool Piece::checkEntanglement_(Position to) {
     }
 
     if (found && entanglement != nullptr) {
-        entagle_(entanglement, to);
+        if (!validate) {
+            entagle_(entanglement, to);
+        }
         return true;
     }
 
@@ -284,9 +290,14 @@ void Piece::entagle_(__attribute__((unused)) Piece *with, Position to) {
     split1->splits_->setProbability(split1, 1.0f - with->getProbability());
 }
 
-void Piece::validateSplit_() {
+void Piece::validateSplit_(Position position) {
     if (!splits_->getEntanglements(this).empty()) {
         throw std::invalid_argument("Invalid move: entangled piece.");
+    }
+
+    bool entangle = checkEntanglement_(position, true);
+    if (entangle) {
+        throw std::invalid_argument("Invalid split: cannot entangle.");
     }
 }
 

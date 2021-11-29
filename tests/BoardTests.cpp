@@ -66,6 +66,21 @@ TEST_CASE("Invalid move") {
     CHECK_THROWS_WITH_AS(board.move(Position("e7"), Position("e6")),
                          "Invalid move: out of turn.",
                          std::invalid_argument);
+
+    REQUIRE_EQ(32, countPieces_(board));
+
+    board.move(Position("e2"), Position("e4"));
+    board.move(Position("e7"), Position("e6"));
+    board.split(Position("d1"), Position("e2"), Position("f3"));
+    REQUIRE_EQ(33, countPieces_(board));
+    board.move(Position("e6"), Position("e5"));
+    board.move(Position("f1"), Position("a6"));
+    REQUIRE_EQ(34, countPieces_(board));
+    board.move(Position("h7"), Position("h6"));
+    CHECK_THROWS_WITH_AS(board.move(Position("f1"), Position("d3")),
+                         "Invalid move: not possible.",
+                         std::invalid_argument);
+    CHECK_EQ(34, countPieces_(board));
 }
 
 TEST_CASE("Invalid move - Step on own split") {
@@ -247,7 +262,18 @@ TEST_CASE("Invalid split") {
                          "Invalid move: equal split positions.",
                          std::invalid_argument);
 
-    CHECK_EQ(32, countPieces_(board));
+    REQUIRE_EQ(32, countPieces_(board));
+
+    board.move(Position("e2"), Position("e4"));
+    board.move(Position("e7"), Position("e6"));
+    board.split(Position("d1"), Position("e2"), Position("f3"));
+    board.move(Position("e6"), Position("e5"));
+    CHECK_THROWS_WITH_AS(board.split(Position("f1"),
+                                     Position("d3"),
+                                     Position("c4")),
+                         "Invalid split: cannot entangle.",
+                         std::invalid_argument);
+    CHECK_EQ(33, countPieces_(board));
 }
 
 TEST_CASE("Valid split") {
@@ -426,6 +452,175 @@ TEST_CASE("Double split and merge") {
 }
 
 TEST_SUITE("Measurements") {
+TEST_CASE("Stepping in own piece with pawn (one step) - 0.5 - confirm") {
+    Board board(false, 1);
+    board.move(Position("e2"), Position("e4"));
+    board.move(Position("e7"), Position("e6"));
+
+    board.split(Position("d1"), Position("f3"), Position("h5"));
+    board.move(Position("e6"), Position("e5"));
+    REQUIRE_EQ(33, countPieces_(board));
+
+    Piece* pawn = board.getPiece(Position("f2"));
+    board.move(Position("f2"), Position("f3"));
+
+    REQUIRE_EQ(32, countPieces_(board));
+    REQUIRE_NE(board.getPiece(Position("f2")), nullptr);
+    CHECK_EQ(board.getPiece(Position("f2")), pawn);
+
+    REQUIRE_NE(board.getPiece(Position("f3")), nullptr);
+    CHECK_EQ(board.getPiece(Position("f3"))->getProbability(), 1.0f);
+}
+
+TEST_CASE("Stepping in own piece with pawn (one step) - 0.5 - deny") {
+    Board board(false, 3);
+    board.move(Position("e2"), Position("e4"));
+    board.move(Position("e7"), Position("e6"));
+
+    board.split(Position("d1"), Position("f3"), Position("h5"));
+    board.move(Position("e6"), Position("e5"));
+    REQUIRE_EQ(33, countPieces_(board));
+
+    Piece* pawn = board.getPiece(Position("f2"));
+    board.move(Position("f2"), Position("f3"));
+
+    REQUIRE_EQ(32, countPieces_(board));
+    REQUIRE_EQ(board.getPiece(Position("f2")), nullptr);
+    REQUIRE_NE(board.getPiece(Position("f3")), nullptr);
+    CHECK_EQ(board.getPiece(Position("f3")), pawn);
+    CHECK_EQ(board.getPiece(Position("f3"))->getProbability(), 1.0f);
+
+    REQUIRE_NE(board.getPiece(Position("h5")), nullptr);
+    CHECK_EQ(board.getPiece(Position("h5"))->getProbability(), 1.0f);
+}
+
+TEST_CASE("Stepping in own piece with pawn (two steps) - 0.5 - confirm") {
+    Board board(false, 1);
+    board.move(Position("e2"), Position("e4"));
+    board.move(Position("e7"), Position("e6"));
+
+    board.split(Position("d1"), Position("g4"), Position("h5"));
+    board.move(Position("e6"), Position("e5"));
+    REQUIRE_EQ(33, countPieces_(board));
+
+    Piece* pawn = board.getPiece(Position("g2"));
+    board.move(Position("g2"), Position("g4"));
+
+    REQUIRE_EQ(32, countPieces_(board));
+    REQUIRE_NE(board.getPiece(Position("g2")), nullptr);
+    CHECK_EQ(board.getPiece(Position("g2")), pawn);
+
+    REQUIRE_NE(board.getPiece(Position("g4")), nullptr);
+    CHECK_EQ(board.getPiece(Position("g4"))->getProbability(), 1.0f);
+}
+
+TEST_CASE("Stepping in own piece with pawn (two steps) - 0.5 - deny") {
+    Board board(false, 3);
+    board.move(Position("e2"), Position("e4"));
+    board.move(Position("e7"), Position("e6"));
+
+    board.split(Position("d1"), Position("g4"), Position("h5"));
+    board.move(Position("e6"), Position("e5"));
+    REQUIRE_EQ(33, countPieces_(board));
+
+    Piece* pawn = board.getPiece(Position("g2"));
+    board.move(Position("g2"), Position("g4"));
+
+    REQUIRE_EQ(32, countPieces_(board));
+    REQUIRE_EQ(board.getPiece(Position("g2")), nullptr);
+    REQUIRE_NE(board.getPiece(Position("g4")), nullptr);
+    CHECK_EQ(board.getPiece(Position("g4")), pawn);
+    CHECK_EQ(board.getPiece(Position("g4"))->getProbability(), 1.0f);
+
+    REQUIRE_NE(board.getPiece(Position("h5")), nullptr);
+    CHECK_EQ(board.getPiece(Position("h5"))->getProbability(), 1.0f);
+}
+
+TEST_CASE("Stepping in own piece with knight - 0.5 - confirm") {
+    Board board(false, 1);
+    board.move(Position("e2"), Position("e4"));
+    board.move(Position("e7"), Position("e6"));
+
+    board.split(Position("d1"), Position("f3"), Position("h5"));
+    board.move(Position("e6"), Position("e5"));
+    REQUIRE_EQ(33, countPieces_(board));
+
+    Piece* knight = board.getPiece(Position("g1"));
+    board.move(Position("g1"), Position("f3"));
+
+    REQUIRE_EQ(32, countPieces_(board));
+    REQUIRE_NE(board.getPiece(Position("g1")), nullptr);
+    CHECK_EQ(board.getPiece(Position("g1")), knight);
+
+    REQUIRE_NE(board.getPiece(Position("f3")), nullptr);
+    CHECK_EQ(board.getPiece(Position("f3"))->getProbability(), 1.0f);
+}
+
+TEST_CASE("Stepping in own piece with knight - 0.5 - deny") {
+    Board board(false, 3);
+    board.move(Position("e2"), Position("e4"));
+    board.move(Position("e7"), Position("e6"));
+
+    board.split(Position("d1"), Position("f3"), Position("h5"));
+    board.move(Position("e6"), Position("e5"));
+    REQUIRE_EQ(33, countPieces_(board));
+
+    Piece* knight = board.getPiece(Position("g1"));
+    board.move(Position("g1"), Position("f3"));
+
+    REQUIRE_EQ(32, countPieces_(board));
+    REQUIRE_EQ(board.getPiece(Position("g1")), nullptr);
+    REQUIRE_NE(board.getPiece(Position("f3")), nullptr);
+    CHECK_EQ(board.getPiece(Position("f3")), knight);
+    CHECK_EQ(board.getPiece(Position("f3"))->getProbability(), 1.0f);
+
+    REQUIRE_NE(board.getPiece(Position("h5")), nullptr);
+    CHECK_EQ(board.getPiece(Position("h5"))->getProbability(), 1.0f);
+}
+
+TEST_CASE("Stepping in own piece with bishop - 0.5 - confirm") {
+    Board board(false, 1);
+    board.move(Position("e2"), Position("e4"));
+    board.move(Position("e7"), Position("e6"));
+
+    board.split(Position("d1"), Position("f3"), Position("e2"));
+    board.move(Position("e6"), Position("e5"));
+    REQUIRE_EQ(33, countPieces_(board));
+
+    Piece* bishop = board.getPiece(Position("f1"));
+    board.move(Position("f1"), Position("e2"));
+
+    REQUIRE_EQ(32, countPieces_(board));
+    REQUIRE_NE(board.getPiece(Position("f1")), nullptr);
+    CHECK_EQ(board.getPiece(Position("f1")), bishop);
+
+    REQUIRE_NE(board.getPiece(Position("e2")), nullptr);
+    CHECK_EQ(board.getPiece(Position("e2"))->getProbability(), 1.0f);
+}
+
+TEST_CASE("Stepping in own piece with bishop - 0.5 - deny") {
+    Board board(false, 3);
+    board.move(Position("e2"), Position("e4"));
+    board.move(Position("e7"), Position("e6"));
+
+    board.split(Position("d1"), Position("f3"), Position("e2"));
+    board.move(Position("e6"), Position("e5"));
+    REQUIRE_EQ(33, countPieces_(board));
+
+    Piece* bishop = board.getPiece(Position("f1"));
+    board.move(Position("f1"), Position("e2"));
+
+    REQUIRE_EQ(32, countPieces_(board));
+    REQUIRE_EQ(board.getPiece(Position("f1")), nullptr);
+
+    REQUIRE_NE(board.getPiece(Position("e2")), nullptr);
+    CHECK_EQ(board.getPiece(Position("e2")), bishop);
+    CHECK_EQ(board.getPiece(Position("e2"))->getProbability(), 1.0f);
+
+    REQUIRE_NE(board.getPiece(Position("f3")), nullptr);
+    CHECK_EQ(board.getPiece(Position("f3"))->getProbability(), 1.0f);
+}
+
 TEST_CASE("Eating split - Eaten piece 0.5 - confirm") {
     Board board(false, 1);
     board.move(Position("e2"), Position("e4"));
@@ -694,7 +889,7 @@ TEST_CASE("Possible moves allows entanglement with own piece") {
     board.split(Position("f1"), Position("e2"), Position("d3"));
 
     auto queenPositions = board.getPossibleMoves(Position("d1"));
-    CHECK_EQ(3, queenPositions.size());
+    CHECK_EQ(4, queenPositions.size());
     CHECK(findPosition_(queenPositions, Position("h5")));
 }
 
