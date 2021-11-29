@@ -12,7 +12,7 @@ class Pawn : public Piece {
   std::list<std::pair<int, int>> getVectorBeamMoves_() const override;
   std::list<std::pair<int, int>> getVectorStepMoves_() const override;
   Piece * createSplit_(Position to) override;
-  void merge_() override;
+  void validateMerge_() override;
   bool checkEntanglement_(Position to) override;
 };
 

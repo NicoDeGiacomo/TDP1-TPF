@@ -24,6 +24,8 @@ class PieceSplits {
 
   float getProbability(const Piece* piece) const;
 
+  void setProbability(Piece* piece, float probability);
+
   std::list<Position> getEntanglements(const Piece *piece) const;
 
   void confirmSplit(Piece *piece);

@@ -51,7 +51,8 @@ class Piece : public Drawable {
   virtual std::list<std::pair<int, int>> getVectorBeamMoves_() const = 0;
   virtual std::list<std::pair<int, int>> getVectorStepMoves_() const = 0;
   virtual Piece * createSplit_(Position to) = 0;
-  virtual void merge_();
+  virtual void validateMerge_();
+  virtual void validateSplit_();
   Piece* getPieceFromBoard_(Position &position) const;
 
  private:

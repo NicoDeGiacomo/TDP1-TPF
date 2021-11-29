@@ -62,7 +62,7 @@ Piece * Pawn::createSplit_(__attribute__((unused)) Position to) {
     throw std::invalid_argument("Invalid move: cannot split a pawn.");
 }
 
-void Pawn::merge_() {
+void Pawn::validateMerge_() {
     throw std::invalid_argument("Invalid move: cannot merge a pawn.");
 }
 

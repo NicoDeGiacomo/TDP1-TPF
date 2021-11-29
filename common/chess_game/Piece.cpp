@@ -188,6 +188,8 @@ void Piece::eat() {
 }
 
 void Piece::split(Position position1, Position position2) {
+    validateSplit_();
+
     validateMove_(position1);
     validateMove_(position2);
 
@@ -197,8 +199,8 @@ void Piece::split(Position position1, Position position2) {
 }
 
 void Piece::merge(Position to, Piece* other) {
-    merge_();
-    other->merge_();
+    validateMerge_();
+    other->validateMerge_();
 
     if (!isSplit_(other)) {
         throw std::invalid_argument("Invalid move: non split.");
@@ -277,9 +279,22 @@ void Piece::entagle_(__attribute__((unused)) Piece *with, Position to) {
 
     split2->splits_->addEntanglement(split2, with);
     with->splits_->addEntanglement(with, split2);
+
+    split2->splits_->setProbability(split2, with->getProbability());
+    split1->splits_->setProbability(split1, 1.0f - with->getProbability());
 }
 
-void Piece::merge_() {}
+void Piece::validateSplit_() {
+    if (!splits_->getEntanglements(this).empty()) {
+        throw std::invalid_argument("Invalid move: entangled piece.");
+    }
+}
+
+void Piece::validateMerge_() {
+    if (!splits_->getEntanglements(this).empty()) {
+        throw std::invalid_argument("Invalid move: entangled piece.");
+    }
+}
 
 void Piece::removeFromBoard_() {
     board_->pieces_.remove(this);

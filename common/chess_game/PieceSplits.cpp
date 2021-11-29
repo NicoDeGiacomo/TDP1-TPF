@@ -110,6 +110,13 @@ float PieceSplits::getProbability(const Piece *piece) const {
     return findNode_(piece)->probability;
 }
 
+void PieceSplits::setProbability(Piece *piece, float probability) {
+    std::shared_ptr<SplitNode_> node = findNode_(piece);
+    if (node) {
+        node->probability = probability;
+    }
+}
+
 void PieceSplits::confirmSplit(Piece *piece) {
     removeAllSplits_(root_, piece);
     piece->resetSplits_();
@@ -168,7 +175,6 @@ std::shared_ptr<SplitNode_> PieceSplits::findNode_(const std::shared_ptr<SplitNo
 
     return nullptr;
 }
-
 bool PieceSplits::propagateProbability_(const std::shared_ptr<SplitNode_>& node, float probability) {
     if (node->leaf) {
         node->probability += probability;
@@ -195,6 +201,7 @@ bool PieceSplits::propagateProbability_(const std::shared_ptr<SplitNode_>& node,
 
     return false;
 }
+
 bool PieceSplits::areBrothers_(const std::shared_ptr<SplitNode_>& node1, const std::shared_ptr<SplitNode_>& node2) {
     if (node1 == nullptr || node2 == nullptr) {
         return false;
