@@ -795,15 +795,32 @@ TEST_CASE("Entanglement with own piece - confirm") {
 
     board.move(Position("e3"), Position("h6"));
     REQUIRE_EQ(board.getPiece(Position("f6")), nullptr);
-    REQUIRE_EQ(board.getPiece(Position("h4")), nullptr);
+    REQUIRE_EQ(board.getPiece(Position("d8")), nullptr);
     REQUIRE_NE(board.getPiece(Position("h6")), nullptr);
-    REQUIRE_NE(board.getPiece(Position("d8")), nullptr);
+    REQUIRE_NE(board.getPiece(Position("h4")), nullptr);
 
     CHECK_EQ(board.getPiece(Position("h6"))->getProbability(), 1.0f);
-    CHECK_EQ(board.getPiece(Position("d8"))->getProbability(), 1.0f);
+    CHECK_EQ(board.getPiece(Position("h4"))->getProbability(), 1.0f);
 }
 
 TEST_CASE("Entanglement with own piece - deny") {
-    // todo
+    Board board(false, 3);
+    board.move(Position("d2"), Position("d4"));
+    board.move(Position("e7"), Position("e5"));
+    board.move(Position("c1"), Position("d2"));
+
+    board.split(Position("g8"), Position("h6"), Position("f6"));
+    board.move(Position("d2"), Position("e3"));
+    REQUIRE_EQ(33, countPieces_(board));
+    board.move(Position("d8"), Position("h4"));
+    REQUIRE_EQ(34, countPieces_(board));
+
+    board.move(Position("e3"), Position("h6"));
+    REQUIRE_EQ(board.getPiece(Position("h4")), nullptr);
+    REQUIRE_NE(board.getPiece(Position("f6")), nullptr);
+    REQUIRE_NE(board.getPiece(Position("d8")), nullptr);
+
+    CHECK_EQ(board.getPiece(Position("f6"))->getProbability(), 1.0f);
+    CHECK_EQ(board.getPiece(Position("d8"))->getProbability(), 1.0f);
 }
 }

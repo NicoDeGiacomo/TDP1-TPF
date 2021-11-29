@@ -87,11 +87,11 @@ bool Piece::measure_() {
     }
 
     if (board_->getRandomValue_() <= getProbability()) {
-        confirmEntanglement_();
+        denyEntanglement_();
         confirmSplit_();
         return true;
     } else {
-        denyEntanglement_();
+        confirmEntanglement_();
         denySplit_();
         return false;
     }

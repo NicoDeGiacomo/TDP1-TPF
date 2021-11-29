@@ -125,16 +125,16 @@ void PieceSplits::confirmSplit(Piece *piece) {
 void PieceSplits::confirmEntanglement(Piece *piece) {
     std::shared_ptr<SplitNode_> node = findNode_(piece);
     if (node && node->entanglement) {
-        node->entanglement->denySplit_();
+        node->entanglement->confirmSplit_();
     }
-
-    denyAllSplits_(root_, piece);
 }
 
 void PieceSplits::denyEntanglement(Piece *piece) {
     std::shared_ptr<SplitNode_> node = findNode_(piece);
     if (node && node->entanglement) {
-        node->entanglement->confirmSplit_();
+        node->entanglement->denySplit_();
+    } else {
+        denyAllSplits_(root_, piece);  // confirm all splits no
     }
 }
 
@@ -156,7 +156,7 @@ void PieceSplits::removeAllSplits_(const std::shared_ptr<SplitNode_> &node,
 void PieceSplits::denyAllSplits_(const std::shared_ptr<SplitNode_> &node,
                                    Piece *piece) {
     if (node->leaf && node->entanglement && node->piece != piece) {
-        node->entanglement->denySplit_();
+        node->entanglement->confirmSplit_();
     }
     if (node->left) {
         denyAllSplits_(node->left, piece);
@@ -194,6 +194,9 @@ bool PieceSplits::propagateProbability_(const std::shared_ptr<SplitNode_>& node,
     if (node->leaf) {
         node->probability += probability;
         if (node->probability >= 1.0f) {
+            if (node->leaf && node->entanglement) {
+                node->entanglement->denySplit_();
+            }
             node->piece->resetSplits_();
             return true;
         }
