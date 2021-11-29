@@ -11,7 +11,8 @@ ChatUI::ChatUI(SDL2pp::Renderer& renderer,
     /*for(int i = 0; i < 18; ++i) {
         add("hola mundo " + std::to_string(i));
     }*/
-    add("hhhhhhhhhhhhhhhh oooooooooooooooooo ooooooooooooooooo");
+    //add("hhhhhhhhhhhhhhhh oooooooooooooooooo ooooooooooooooooo");
+    backgroundImageTexture = std::make_unique<SDL2pp::Texture>(SDL2pp::Texture(_renderer, BACKGROUND_FILEPATH));
 }
 void ChatUI::drawInputMessage(std::string& inputMessage) {
     if (inputMessage.empty()) return;
@@ -31,8 +32,8 @@ void ChatUI::drawInputMessage(std::string& inputMessage) {
                     255,
                     255}));
     SDL2pp::Rect messageRect(
-            _x,
-            _height - CHAT_FONT_SIZE,
+            _x + xOffset,
+            _height - yOffset,
             inputMessageTexture->GetWidth(),
             inputMessageTexture->GetHeight()
     );
@@ -40,19 +41,20 @@ void ChatUI::drawInputMessage(std::string& inputMessage) {
 }
 void ChatUI::renderMessages(std::string& inputMessage) {
     // cola.popifnotempty
+    _renderer.Copy((*backgroundImageTexture), SDL2pp::NullOpt, SDL2pp::Rect(_x, 0, _width, _height));
     drawInputMessage(inputMessage);
 
-    int i = 0;
+    int i = 1;
     auto texture = textures.begin();
     while (texture != textures.end()) {
-        int y = _height - initialOffset - i * (CHAT_FONT_SIZE + CHAT_FONT_PADDING);
+        int y = _height - yOffset - i * (CHAT_FONT_SIZE + CHAT_FONT_PADDING);
         //if i cant render it, delete it from the queue
         if (y < 0) {
             texture = textures.erase(texture);
             continue;
         }
         SDL2pp::Rect messageRect(
-                _x,
+                _x + xOffset,
                 y,
                 (*texture)->GetWidth(),
                 (*texture)->GetHeight()

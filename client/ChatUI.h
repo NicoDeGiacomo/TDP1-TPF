@@ -8,15 +8,21 @@
 #include <SDL2pp/SDL2pp.hh>
 #include <deque>
 
+#define BACKGROUND_FILEPATH "../assets/sprites/chatBackground.png"
 #define CHAT_FONT_SIZE 15
-#define CHAT_FONT_PADDING 15
+#define CHAT_FONT_PADDING 11
 
 class ChatUI {
 private:
     std::unique_ptr<SDL2pp::Texture> inputMessageTexture;
+    std::unique_ptr<SDL2pp::Texture> backgroundImageTexture;
     std::deque<std::unique_ptr<SDL2pp::Texture>> textures;
     SDL2pp::Renderer& _renderer;
-    const int _x, _width, _height, initialOffset = (CHAT_FONT_SIZE + CHAT_FONT_PADDING) * 2;
+    const int _x,
+    _width,
+    _height,
+    yOffset = CHAT_FONT_SIZE + CHAT_FONT_PADDING * 2,
+    xOffset = CHAT_FONT_SIZE + CHAT_FONT_PADDING;
 
     std::deque<std::string> splitMessageIntoRenderableChunks(const std::string &basicString,
                                                              const SDL2pp::Font& font,

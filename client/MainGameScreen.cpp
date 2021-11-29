@@ -379,6 +379,10 @@ void MainGameScreen::manageChatEvent(SDL_Event &event, bool& gameFinished) {
                 this->userInputQueue->produce(
                         std::make_shared<ChatMessage>(inputData.message, 0));
                 inputData.message = "";
+            } else if (event.key.keysym.sym == SDLK_ESCAPE) {
+                std::cout << "GAME FINISHED" << std::endl;
+                gameFinished = true;
+                return;
             }
             break;
         case SDL_QUIT:
