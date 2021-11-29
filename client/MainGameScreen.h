@@ -70,6 +70,10 @@ struct Colors {
 #define SELECTED_KING_FILEPATH "../assets/sprites/selectedKing.png"
 #define SELECTED_QUEEN_FILEPATH "../assets/sprites/selectedQueen.png"
 
+#define LOSS 0
+#define WIN 1
+#define ESPECTATOR 2
+
 class MainGameScreen {
 private:
     std::unique_ptr<SDL2pp::Renderer> renderer;
@@ -142,7 +146,7 @@ public:
 
     void loadPossibleMoves(const Piece* piece, const SDL_Color& color, bool merge = false);
 
-    void endMessage(bool win);
+    void endMessage(int endstate);
 };
 
 
