@@ -54,7 +54,7 @@ class Piece : public Drawable {
 
  private:
   void move_(Position position, bool merge = false);
-  void measure_();
+  bool measure_();
   std::list<Position> getPossibleStepPositions_(__attribute__((unused)) bool merge = false) const;
   std::list<Position> getPossibleBeamPositions_(bool merge = false) const;
   void validateMove_(const Position &position, bool merge = false) const;

@@ -10,15 +10,10 @@
 #include <stdexcept>
 #include <random>
 
-Board::Board(bool empty, unsigned int seed) : turn_(PieceColor::WHITE), finished_(false), seed_(seed) {
+Board::Board(bool empty, unsigned int seed) : turn_(PieceColor::WHITE), finished_(false), distribution_(1, 100), engine_(seed == 0 ? std::random_device()() : seed) {
     if (!empty) {
         generatePiecesForColor_(PieceColor::WHITE);
         generatePiecesForColor_(PieceColor::BLACK);
-    }
-
-    if (seed_ == 0) {
-        std::random_device rd;
-        seed_ = rd();
     }
 }
 
@@ -152,6 +147,10 @@ void Board::printBoard() {
         printf("\n");
     }
     printf("-----------------\n");
+}
+
+float Board::getRandomValue_() {
+    return (float) distribution_(engine_) / 100;
 }
 
 Piece* Board::getPieceWithValidations_(Position position) {

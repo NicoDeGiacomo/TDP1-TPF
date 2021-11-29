@@ -1,6 +1,5 @@
 #include <stdexcept>
 #include <algorithm>
-#include <random>
 #include <utility>
 #include "Piece.h"
 
@@ -51,17 +50,24 @@ void Piece::move(Position position) {
         return;
     }
 
-    pieceTo->measure_();
-
-    pieceTo = board_->getPiece(position);
-    try {
-        move_(position);
-    } catch (std::invalid_argument &e) {
-        // After the measurement, the move might invalid and should not be done.
+    bool confirmed;
+    if (getProbability() < 1.0f) {
+        confirmed = measure_();
+        if (!confirmed) {
+            return;
+        }
     }
 
-    if (pieceTo != nullptr) {
+    confirmed = pieceTo->measure_();
+    if (confirmed) {
+        move_(position);
         pieceTo->eat();
+    } else {
+        try {
+            move_(position);
+        } catch (std::invalid_argument &e) {
+            // After the measurement, the move might invalid and should not be done.
+        }
     }
 }
 
@@ -77,18 +83,17 @@ void Piece::move_(Position position, bool merge) {
     has_moved_ = true;
 }
 
-void Piece::measure_() {
+bool Piece::measure_() {
     if (getProbability() >= 1.0f) {
-        return;
+        return true;
     }
 
-    std::uniform_int_distribution<int> distribution(1, 100);
-    std::mt19937 engine(board_->seed_);
-    int value = distribution(engine);
-    if (((float) value)  / 100 <= getProbability()) {
+    if (board_->getRandomValue_() <= getProbability()) {
         splits_->confirmSplit(this);
+        return true;
     } else {
         splits_->removeSplit(this);
+        return false;
     }
 }
 

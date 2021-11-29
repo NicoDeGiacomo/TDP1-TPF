@@ -2,6 +2,7 @@
 #define BOARD_H_
 
 #include <list>
+#include <random>
 #include "Piece.h"
 
 class Piece;
@@ -39,8 +40,10 @@ private:
   std::list<Piece*> pieces_;
   PieceColor turn_;
   bool finished_;
-  unsigned int seed_;
+  std::uniform_int_distribution<int> distribution_;
+  std::mt19937 engine_;
 
+  float getRandomValue_();
   Piece* getPieceWithValidations_(Position position);
   static void validatePieceNotNull_(Piece* piece);
   void validateTurn_(Piece* piece);

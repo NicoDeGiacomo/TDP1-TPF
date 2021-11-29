@@ -426,7 +426,7 @@ TEST_CASE("Double split and merge") {
 }
 
 TEST_SUITE("Measurements") {
-TEST_CASE("Eating split - confirm") {
+TEST_CASE("Eating split - Eaten piece 0.5 - confirm") {
     Board board(false, 1);
     board.move(Position("e2"), Position("e4"));
     board.move(Position("e7"), Position("e5"));
@@ -446,7 +446,49 @@ TEST_CASE("Eating split - confirm") {
     CHECK_EQ(board.getPiece(Position("f1")), nullptr);
 }
 
-TEST_CASE("Eating split - deny") {
+TEST_CASE("Eating split - Moved piece 0.5 - confirm") {
+    Board board(false, 1);
+    board.move(Position("e2"), Position("e4"));
+    board.move(Position("e7"), Position("e5"));
+
+    board.split(Position("f1"), Position("c4"), Position("b5"));
+    board.move(Position("f7"), Position("f6"));
+    REQUIRE_EQ(33, countPieces_(board));
+
+    Piece* bishop = board.getPiece(Position("c4"));
+    board.move(Position("c4"), Position("g8"));
+
+    REQUIRE_EQ(31, countPieces_(board));
+    REQUIRE_NE(board.getPiece(Position("g8")), nullptr);
+    REQUIRE_EQ(board.getPiece(Position("c4")), nullptr);
+    REQUIRE_EQ(board.getPiece(Position("b5")), nullptr);
+
+    CHECK_EQ(board.getPiece(Position("g8")), bishop);
+    CHECK_EQ(board.getPiece(Position("g8"))->getProbability(), 1.0f);
+}
+
+TEST_CASE("Eating split - Both pieces 0.5 - confirm") {
+    Board board(false, 2);
+    board.move(Position("e2"), Position("e4"));
+    board.move(Position("d7"), Position("d5"));
+
+    board.split(Position("f1"), Position("c4"), Position("b5"));
+    board.split(Position("d8"), Position("d7"), Position("d6"));
+    REQUIRE_EQ(34, countPieces_(board));
+
+    Piece* bishop = board.getPiece(Position("b5"));
+    board.move(Position("b5"), Position("d7"));
+
+    REQUIRE_EQ(31, countPieces_(board));
+    REQUIRE_NE(board.getPiece(Position("d7")), nullptr);
+    REQUIRE_EQ(board.getPiece(Position("c4")), nullptr);
+    REQUIRE_EQ(board.getPiece(Position("b5")), nullptr);
+
+    CHECK_EQ(board.getPiece(Position("d7")), bishop);
+    CHECK_EQ(board.getPiece(Position("d7"))->getProbability(), 1.0f);
+}
+
+TEST_CASE("Eating split - Eaten piece 0.5 - deny") {
     Board board(false, 3);
     board.move(Position("e2"), Position("e4"));
     board.move(Position("e7"), Position("e5"));
@@ -464,6 +506,72 @@ TEST_CASE("Eating split - deny") {
 
     CHECK_EQ(board.getPiece(Position("f1")), nullptr);
     CHECK_NE(board.getPiece(Position("b5")), nullptr);
+}
+
+TEST_CASE("Eating split - Moved piece 0.5 - deny") {
+    Board board(false, 3);
+    board.move(Position("e2"), Position("e4"));
+    board.move(Position("e7"), Position("e5"));
+
+    board.split(Position("f1"), Position("c4"), Position("b5"));
+    board.move(Position("f7"), Position("f6"));
+    REQUIRE_EQ(33, countPieces_(board));
+
+    Piece* knight = board.getPiece(Position("g8"));
+    board.move(Position("c4"), Position("g8"));
+
+    REQUIRE_EQ(32, countPieces_(board));
+    REQUIRE_NE(board.getPiece(Position("g8")), nullptr);
+    REQUIRE_NE(board.getPiece(Position("b5")), nullptr);
+    REQUIRE_EQ(board.getPiece(Position("c4")), nullptr);
+
+    CHECK_EQ(board.getPiece(Position("g8")), knight);
+    CHECK_EQ(board.getPiece(Position("g8"))->getProbability(), 1.0f);
+
+    CHECK_EQ(board.getPiece(Position("b5"))->getProbability(), 1.0f);
+}
+
+TEST_CASE("Eating split - Both pieces 0.5 - deny - case 1") {
+    Board board(false, 3);
+    board.move(Position("e2"), Position("e4"));
+    board.move(Position("d7"), Position("d5"));
+
+    board.split(Position("f1"), Position("c4"), Position("b5"));
+    board.split(Position("d8"), Position("d7"), Position("d6"));
+    REQUIRE_EQ(34, countPieces_(board));
+
+    board.move(Position("b5"), Position("d7"));
+
+    REQUIRE_EQ(33, countPieces_(board));
+    REQUIRE_NE(board.getPiece(Position("d7")), nullptr);
+    REQUIRE_NE(board.getPiece(Position("d6")), nullptr);
+    REQUIRE_NE(board.getPiece(Position("c4")), nullptr);
+    REQUIRE_EQ(board.getPiece(Position("b5")), nullptr);
+
+    CHECK_EQ(board.getPiece(Position("c4"))->getProbability(), 1.0f);
+    CHECK_EQ(board.getPiece(Position("d7"))->getProbability(), 0.5f);
+    CHECK_EQ(board.getPiece(Position("d6"))->getProbability(), 0.5f);
+}
+
+TEST_CASE("Eating split - Both pieces 0.5 - deny - case 2") {
+    Board board(false, 1);
+    board.move(Position("e2"), Position("e4"));
+    board.move(Position("d7"), Position("d5"));
+
+    board.split(Position("f1"), Position("c4"), Position("b5"));
+    board.split(Position("d8"), Position("d7"), Position("d6"));
+    REQUIRE_EQ(34, countPieces_(board));
+
+    board.move(Position("b5"), Position("d7"));
+
+    REQUIRE_EQ(32, countPieces_(board));
+    REQUIRE_NE(board.getPiece(Position("d7")), nullptr);
+    REQUIRE_NE(board.getPiece(Position("d6")), nullptr);
+    REQUIRE_EQ(board.getPiece(Position("b5")), nullptr);
+    REQUIRE_EQ(board.getPiece(Position("c4")), nullptr);
+
+    CHECK_EQ(board.getPiece(Position("d7"))->getProbability(), 1.0f);
+    CHECK_EQ(board.getPiece(Position("d6"))->getProbability(), 1.0f);
 }
 
 TEST_CASE("Double split and Measurement - Confirm - 25%") {
