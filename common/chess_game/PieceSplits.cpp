@@ -8,7 +8,7 @@ struct SplitNode_ {
   std::shared_ptr<SplitNode_> left;
   std::shared_ptr<SplitNode_> right;
   std::weak_ptr<SplitNode_> father;
-  // todo std::weak_ptr<SplitNode_> entanglement;
+  Piece* entanglement;
   bool leaf;
 
   explicit SplitNode_(Piece *piece)
@@ -17,6 +17,7 @@ struct SplitNode_ {
         left(nullptr),
         right(nullptr),
         father(),
+        entanglement(nullptr),
         leaf(true) {}
 
   SplitNode_(Piece *piece, const std::shared_ptr<SplitNode_>& father)
@@ -25,6 +26,7 @@ struct SplitNode_ {
         left(nullptr),
         right(nullptr),
         father(father),
+        entanglement(nullptr),
         leaf(true) {}
 
   ~SplitNode_() = default;
@@ -95,6 +97,11 @@ void PieceSplits::mergeSplits(Piece *piece, Piece *with) {
     delete with;
 }
 
+void PieceSplits::addEntanglement(Piece* piece, Piece* with) {
+    std::shared_ptr<SplitNode_> node = findNode_(piece);
+    node->entanglement = with;
+}
+
 bool PieceSplits::contains(const Piece* piece) const {
     return findNode_(piece) != nullptr;
 }
@@ -105,7 +112,21 @@ float PieceSplits::getProbability(const Piece *piece) const {
 
 void PieceSplits::confirmSplit(Piece *piece) {
     removeAllSplits_(root_, piece);
-    piece->resetSplits();
+    piece->resetSplits_();
+}
+
+void PieceSplits::confirmEntanglement(Piece *piece) {
+    std::shared_ptr<SplitNode_> node = findNode_(piece);
+    if (node && node->entanglement) {
+        node->entanglement->denySplit_();
+    }
+}
+
+void PieceSplits::denyEntanglement(Piece *piece) {
+    std::shared_ptr<SplitNode_> node = findNode_(piece);
+    if (node && node->entanglement) {
+        node->entanglement->confirmSplit_();
+    }
 }
 
 void PieceSplits::removeAllSplits_(const std::shared_ptr<SplitNode_> &node,
@@ -152,7 +173,7 @@ bool PieceSplits::propagateProbability_(const std::shared_ptr<SplitNode_>& node,
     if (node->leaf) {
         node->probability += probability;
         if (node->probability >= 1.0f) {
-            node->piece->resetSplits();
+            node->piece->resetSplits_();
             return true;
         }
     } else {
@@ -174,7 +195,6 @@ bool PieceSplits::propagateProbability_(const std::shared_ptr<SplitNode_>& node,
 
     return false;
 }
-
 bool PieceSplits::areBrothers_(const std::shared_ptr<SplitNode_>& node1, const std::shared_ptr<SplitNode_>& node2) {
     if (node1 == nullptr || node2 == nullptr) {
         return false;

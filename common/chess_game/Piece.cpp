@@ -59,15 +59,13 @@ void Piece::move(Position position) {
     }
 
     confirmed = pieceTo->measure_();
-    if (confirmed) {
+    try {
         move_(position);
+    } catch (std::invalid_argument &e) {
+        // After the measurement, the move might invalid and should not be done.
+    }
+    if (confirmed) {
         pieceTo->eat();
-    } else {
-        try {
-            move_(position);
-        } catch (std::invalid_argument &e) {
-            // After the measurement, the move might invalid and should not be done.
-        }
     }
 }
 
@@ -89,10 +87,12 @@ bool Piece::measure_() {
     }
 
     if (board_->getRandomValue_() <= getProbability()) {
-        splits_->confirmSplit(this);
+        confirmEntanglement_();
+        confirmSplit_();
         return true;
     } else {
-        splits_->removeSplit(this);
+        denyEntanglement_();
+        denySplit_();
         return false;
     }
 }
@@ -274,8 +274,9 @@ void Piece::entagle_(__attribute__((unused)) Piece *with, Position to) {
     auto* split2 = createSplit_(to);
 
     splits_->addSplit(this, split1, split2);
-    // todo splits_->addEntanglement(with)
-    // todo add methods: confirmEntanglement and denyEntanglement
+
+    split2->splits_->addEntanglement(split2, with);
+    with->splits_->addEntanglement(with, split2);
 }
 
 void Piece::merge_() {}
@@ -284,6 +285,22 @@ void Piece::removeFromBoard_() {
     board_->pieces_.remove(this);
 }
 
-void Piece::resetSplits() {
+void Piece::confirmSplit_() {
+    splits_->confirmSplit(this);
+}
+
+void Piece::confirmEntanglement_() {
+    splits_->confirmEntanglement(this);
+}
+
+void Piece::denyEntanglement_() {
+    splits_->denyEntanglement(this);
+}
+
+void Piece::denySplit_() {
+    splits_->removeSplit(this);
+}
+
+void Piece::resetSplits_() {
     splits_ = std::make_shared<PieceSplits>(this);
 }

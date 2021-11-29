@@ -18,11 +18,17 @@ class PieceSplits {
 
   void mergeSplits(Piece* piece, Piece* with);
 
+  void addEntanglement(Piece* piece, Piece* with);
+
   bool contains(const Piece* piece) const;
 
   float getProbability(const Piece* piece) const;
 
   void confirmSplit(Piece *piece);
+
+  void confirmEntanglement(Piece *piece);
+
+  void denyEntanglement(Piece *piece);
 
  private:
   std::shared_ptr<SplitNode_> root_;

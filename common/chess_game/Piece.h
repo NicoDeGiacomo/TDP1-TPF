@@ -62,7 +62,11 @@ class Piece : public Drawable {
   bool isSplit_(Piece *other) const;
   virtual bool checkEntanglement_(Position to);
   void entagle_(__attribute__((unused)) Piece *with, Position to);
-  void resetSplits();
+  void confirmSplit_();
+  void confirmEntanglement_();
+  void denyEntanglement_();
+  void denySplit_();
+  void resetSplits_();
   void removeFromBoard_();
 
   friend PieceSplits;
