@@ -39,6 +39,8 @@ class PieceSplits {
 
   void removeAllSplits_(const std::shared_ptr<SplitNode_> &node,
                         Piece *piece);
+  void denyAllSplits_(const std::shared_ptr<SplitNode_> &node,
+                        Piece *piece);
   std::shared_ptr<SplitNode_> findNode_(const Piece *piece) const;
   std::shared_ptr<SplitNode_> findNode_(const std::shared_ptr<SplitNode_>& node, const Piece *piece) const;
   bool propagateProbability_(const std::shared_ptr<SplitNode_>& node, float probability);

@@ -26,10 +26,13 @@ std::list<std::pair<int, int>> Pawn::getVectorStepMoves_() const {
     // Different optional first move
     if (!has_moved_) {
         try {
+            Position front1
+                (position_.getX(), position_.getY() + (1 * direction));
+            Piece* front1Piece = getPieceFromBoard_(front1);
             Position front2
                 (position_.getX(), position_.getY() + (2 * direction));
             Piece* front2Piece = getPieceFromBoard_(front2);
-            if (front2Piece == nullptr) {
+            if (front2Piece == nullptr && front1Piece == nullptr) {
                 moves.emplace_back(0, 2 * direction);
             }
         } catch (std::invalid_argument &e) {}

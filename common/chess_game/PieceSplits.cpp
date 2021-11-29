@@ -127,6 +127,8 @@ void PieceSplits::confirmEntanglement(Piece *piece) {
     if (node && node->entanglement) {
         node->entanglement->denySplit_();
     }
+
+    denyAllSplits_(root_, piece);
 }
 
 void PieceSplits::denyEntanglement(Piece *piece) {
@@ -148,6 +150,19 @@ void PieceSplits::removeAllSplits_(const std::shared_ptr<SplitNode_> &node,
     }
     if (node->right) {
         removeAllSplits_(node->right, piece);
+    }
+}
+
+void PieceSplits::denyAllSplits_(const std::shared_ptr<SplitNode_> &node,
+                                   Piece *piece) {
+    if (node->leaf && node->entanglement && node->piece != piece) {
+        node->entanglement->denySplit_();
+    }
+    if (node->left) {
+        denyAllSplits_(node->left, piece);
+    }
+    if (node->right) {
+        denyAllSplits_(node->right, piece);
     }
 }
 
