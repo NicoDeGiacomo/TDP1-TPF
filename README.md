@@ -6,10 +6,6 @@
 * [2. How to Play](#2-how-to-play)
   * [2.1. Connect to a Game](#21-connect-to-a-game)
   * [2.2. Play](#22-play)
-    * [2.2.1. Normal Move](#221-normal-move)
-    * [2.2.2. Split](#222-split)
-    * [2.2.3 Merge](#223-merge)
-    * [2.2.4 Entanglement](#224-entanglement)
   * [2.3. Chat](#23-chat)
   * [2.4. Exit](#24-exit)
 * [3. Technical Documentation](#3-technical-documentation)
@@ -63,30 +59,34 @@ While the server is running, launch a client application.
 The first client will be assigned to the white pieces, and the second client to the black pieces. The following clients will join as spectators.
 
 ### 2.2. Play
-While the game is running, the following interactions are available with the screen.
+There are three types of moves: normal, split and merge.  
+To swap between move modes, you can press:
+ - `n` For normal mode. Color:![normal](https://via.placeholder.com/15/00ffff/000000?text=+)
+ - `s` For split mode. Color:![split](https://via.placeholder.com/15/fa0fb4/000000?text=+)
+ - `m` For merge mode. Color:![merge](https://via.placeholder.com/15/008000/000000?text=+)
 
-#### 2.2.0 Move modes
-There are three types of move modes normal, split and merge.  
-To swap between move modes you can press 'n' (for normal mode, color:![normal](https://via.placeholder.com/15/00ffff/000000?text=+)), 's' (for split mode, color:![split](https://via.placeholder.com/15/fa0fb4/000000?text=+)) and 'm' (for merge mode, color:![merge](https://via.placeholder.com/15/008000/000000?text=+)), normal mode will always be the default one.  
-You can see which mode you are currently in by looking at the color of the '*' placed at the top of the screen.
-#### 2.2.1 Normal Move
+Normal is the default type.\
+You can see which mode you are currently in, by looking at the color of the asterisk placed in the top-left corner of the screen.
+
+#### Normal Move
 Click on a piece, the piece will be selected, and then click on the destination.
 
-#### 2.2.2 Split
-Press 's', click on a piece, the piece will be selected. Then click on two empty squares.
+#### Split Move
+Press `s` and click on a piece (the piece will be selected). Then click on two empty squares.
 
-#### 2.2.3 Merge
-Press 'm', click on a piece, the piece will be selected. Now click on a second piece, and finally on the destination of the merge.\
-Merges can be made on a new square, or on a square of one of the selected pieces.
+#### Merge Move
+Press `m` and click on a piece (the piece will be selected). Now click on a second piece, and finally on the destination of the merge.\
+Merges can be made on a new square, or on a square currently occupied by one of the pieces being merged.
 
-#### 2.2.4 Entanglement
-An entanglement is made with a [normal move](#221-normal-move), that passes through a piece in a quantum state.
+#### Entanglement
+An entanglement is made with a [normal move](#normal-move). 
+Select a classic piece and a destination square, so that the move 'passes through' a piece in a quantum state.
 
 ### 2.3. Chat
 Click on the side of the board, write a message, and press enter.
 
 ### 2.4. Exit
-Close the window, press ESC or with the board selected (click anywhere on the board) to avoid writing in the chat, press 'q'.
+Close the window, press ESC, or with the board selected (click anywhere on the board, to avoid writing in the chat) press `q`.
 
 ## 3. Technical Documentation
 ### 3.1. Chess Logic
