@@ -109,16 +109,16 @@ void MainGameScreen::refreshScreen() {
         renderer->Copy((*dotTexture), SDL2pp::NullOpt, possibleMoveRect);
     }
 
+    chatUI->renderMessages(inputData.message);
+
     //render move notification text
     SDL2pp::Rect textNotificationRect(
-            0,
-            -moveNotificationTexture->GetHeight() / 8, //place the '*' on the top left
+            boardWidth,
+            -moveNotificationTexture->GetHeight() / 8, //place the '*' on the top
             moveNotificationTexture->GetWidth(),
             moveNotificationTexture->GetHeight()
-            );
+    );
     renderer->Copy((*moveNotificationTexture), SDL2pp::NullOpt, textNotificationRect);
-
-    chatUI->renderMessages(inputData.message);
 
     //show rendered frame
     renderer->Present();
