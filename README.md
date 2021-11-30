@@ -38,7 +38,7 @@ cmake . && make && make install
 ```
 
 ### 1.2. Build Project
-Download the latest release, extract it, and open a terminal on the main folder.
+Download the [latest release](https://github.com/NicoDeGiacomo/TDP1-TPF/releases/latest), extract it, and open a terminal on the main folder.
 
 Use our bash script to build the project. This will also execute the tests automatically.
 ```shell
