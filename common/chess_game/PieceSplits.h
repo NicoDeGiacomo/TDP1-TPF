@@ -34,6 +34,8 @@ class PieceSplits {
 
   void denyEntanglement(Piece *piece);
 
+  bool hasEntanglements(const Piece *piece) const;
+
  private:
   std::shared_ptr<SplitNode_> root_;
 

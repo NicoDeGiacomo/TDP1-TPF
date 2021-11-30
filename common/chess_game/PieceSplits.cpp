@@ -141,6 +141,9 @@ void PieceSplits::denyEntanglement(Piece *piece) {
 void PieceSplits::removeAllSplits_(const std::shared_ptr<SplitNode_> &node,
                                    Piece *piece) {
     if (node->leaf && node->piece != piece) {
+        if (node->entanglement) {
+            node->entanglement->confirmSplit_();
+        }
         node->piece->removeFromBoard_();
         delete node->piece;
         return;
@@ -240,4 +243,10 @@ std::list<Position> PieceSplits::getEntanglements(const Piece *piece) const {
     }
 
     return positions;
+}
+
+bool PieceSplits::hasEntanglements(const Piece *piece) const {
+    std::shared_ptr<SplitNode_> node = findNode_(piece);
+    // find ANY entanglement in all the splits
+    return node->entanglement != nullptr;
 }

@@ -1257,4 +1257,51 @@ TEST_CASE("Entanglement with own piece - 25% - deny") {
     CHECK_EQ(board.getPiece(Position("f1"))->getProbability(), 1.0f);
     CHECK_EQ(board.getPiece(Position("f2"))->getProbability(), 1.0f);
 }
+
+TEST_CASE("Double entanglement - confirm") {
+    Board board(false, 1);
+    board.move(Position("e2"), Position("e4"));
+    board.move(Position("e7"), Position("e6"));
+
+    board.split(Position("d1"), Position("e2"), Position("g4"));
+    board.move(Position("e6"), Position("e5"));
+    REQUIRE_EQ(33, countPieces_(board));
+    board.move(Position("f1"), Position("a6"));
+    board.move(Position("d7"), Position("d6"));
+    board.move(Position("a2"), Position("a3"));
+    board.move(Position("c8"), Position("h3"));
+
+    board.move(Position("g2"), Position("h3"));
+    REQUIRE_EQ(board.getPiece(Position("g2")), nullptr);
+    REQUIRE_EQ(board.getPiece(Position("g4")), nullptr);
+    REQUIRE_EQ(board.getPiece(Position("a6")), nullptr);
+
+    REQUIRE_NE(board.getPiece(Position("h3")), nullptr);
+    REQUIRE_NE(board.getPiece(Position("f1")), nullptr);
+    REQUIRE_NE(board.getPiece(Position("e2")), nullptr);
+}
+
+TEST_CASE("Double entanglement - deny") {
+    Board board(false, 3);
+    board.move(Position("e2"), Position("e4"));
+    board.move(Position("e7"), Position("e6"));
+
+    board.split(Position("d1"), Position("e2"), Position("g4"));
+    board.move(Position("e6"), Position("e5"));
+    REQUIRE_EQ(33, countPieces_(board));
+    board.move(Position("f1"), Position("a6"));
+    board.move(Position("d7"), Position("d6"));
+    board.move(Position("a2"), Position("a3"));
+    board.move(Position("c8"), Position("h3"));
+
+    board.move(Position("g2"), Position("h3"));
+    REQUIRE_EQ(board.getPiece(Position("h3")), nullptr);
+    REQUIRE_EQ(board.getPiece(Position("e2")), nullptr);
+    REQUIRE_EQ(board.getPiece(Position("f1")), nullptr);
+
+    REQUIRE_NE(board.getPiece(Position("a6")), nullptr);
+    REQUIRE_NE(board.getPiece(Position("g4")), nullptr);
+    REQUIRE_NE(board.getPiece(Position("c8")), nullptr);
+    REQUIRE_NE(board.getPiece(Position("g2")), nullptr);
+}
 }

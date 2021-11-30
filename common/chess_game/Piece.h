@@ -72,6 +72,7 @@ class Piece : public Drawable {
   void denySplit_();
   void resetSplits_();
   void removeFromBoard_();
+  bool hasEntanglements_() const;
 
   friend PieceSplits;
   friend Pawn;

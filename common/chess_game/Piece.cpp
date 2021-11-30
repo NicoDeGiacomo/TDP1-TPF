@@ -158,7 +158,7 @@ std::list<Position> Piece::getPossibleBeamPositions_(bool merge) const {
                     if (entangled || (getProbability() < 1.0f
                         && otherPiece->getProbability() < 1.0f && !merge)) {
                         break;
-                    } else if (getProbability() >= 1.0f && !merge) {
+                    } else if (getProbability() >= 1.0f && !merge && !otherPiece->hasEntanglements_()) {
                         entangled = true;
                     }
                 } else {
@@ -333,4 +333,8 @@ void Piece::resetSplits_() {
 
 std::list<Position> Piece::getEntanglements() const {
     return splits_->getEntanglements(this);
+}
+
+bool Piece::hasEntanglements_() const {
+    return splits_->hasEntanglements(this);
 }
