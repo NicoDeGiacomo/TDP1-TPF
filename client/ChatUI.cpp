@@ -44,7 +44,7 @@ void ChatUI::drawInputMessage(std::string& inputMessage) {
 void ChatUI::renderMessages(__attribute__((unused)) std::string& inputMessage) {
     bool moreChatMessagesToProcess = true;
     while(moreChatMessagesToProcess) {
-        std::shared_ptr<std::string> msg_ptr = nullptr; // chatQueue.popIfNotEmpty();
+        std::shared_ptr<std::string> msg_ptr = chatQueue.popIfNotEmpty();
 
         if (!msg_ptr) {
             moreChatMessagesToProcess = false;
