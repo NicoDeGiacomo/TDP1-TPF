@@ -15,6 +15,7 @@ struct PersistentInputData {
 
 #include <unordered_map>
 #include "BlockingQueue.h"
+#include "Protocol.h"
 #include "ChatUI.h"
 
 struct Colors {
@@ -66,10 +67,6 @@ struct Colors {
 #define SELECTED_BISHOP_FILEPATH "../assets/sprites/selectedBishop.png"
 #define SELECTED_KING_FILEPATH "../assets/sprites/selectedKing.png"
 #define SELECTED_QUEEN_FILEPATH "../assets/sprites/selectedQueen.png"
-
-#define PLAYER_WHITE 'W'
-#define PLAYER_BLACK 'B'
-#define PLAYER_SPECTATOR 'O'
 
 class MainGameScreen {
 private:
