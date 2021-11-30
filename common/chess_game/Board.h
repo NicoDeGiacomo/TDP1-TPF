@@ -4,6 +4,7 @@
 #include <list>
 #include <random>
 #include "Piece.h"
+#include "MoveNotation.h"
 
 class Piece;
 enum class PieceColor;
@@ -32,6 +33,8 @@ class Board {
 
   bool isFinished() const;
 
+  std::vector<std::shared_ptr<MoveNotation>> getCurrentMoves();
+
   virtual ~Board();
 
     void printBoard();
@@ -40,6 +43,7 @@ private:
   std::list<Piece*> pieces_;
   PieceColor turn_;
   bool finished_;
+  std::vector<std::shared_ptr<MoveNotation>> moves_;
   std::uniform_int_distribution<int> distribution_;
   std::mt19937 engine_;
 

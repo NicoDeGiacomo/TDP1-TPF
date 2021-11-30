@@ -39,6 +39,14 @@ std::string Position::getString() const {
     return position;
 }
 
+std::string Position::getAlgebraic() const {
+    char position[2];
+    position[0] = (char) (x_ + 96);
+    position[1] = (char) (y_ + 48);
+
+    return position;
+}
+
 bool Position::operator==(const Position &other) const {
     return x_ == other.x_ && y_ == other.y_;
 }

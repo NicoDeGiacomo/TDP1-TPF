@@ -1305,3 +1305,13 @@ TEST_CASE("Double entanglement - deny") {
     REQUIRE_NE(board.getPiece(Position("g2")), nullptr);
 }
 }
+
+TEST_SUITE("Notation") {
+TEST_CASE("Move notation") {
+    Board board;
+    board.move(Position("e2"), Position("e4"));
+
+    REQUIRE_EQ(1, board.getCurrentMoves().size());
+    REQUIRE_EQ("Ne2e4", board.getCurrentMoves().front()->getString());
+}
+}

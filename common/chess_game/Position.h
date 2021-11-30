@@ -21,6 +21,8 @@ class Position {
 
   std::string getString() const;
 
+  std::string getAlgebraic() const;
+
   bool operator==(const Position &other) const;
   bool operator!=(const Position &other) const;
 };

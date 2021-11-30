@@ -9,8 +9,11 @@
 #include <algorithm>
 #include <stdexcept>
 #include <random>
+#include <NormalNotation.h>
+#include <SplitNotation.h>
+#include <MergeNotation.h>
 
-Board::Board(bool empty, unsigned int seed) : turn_(PieceColor::WHITE), finished_(false), distribution_(1, 100), engine_(seed == 0 ? std::random_device()() : seed) {
+Board::Board(bool empty, unsigned int seed) : turn_(PieceColor::WHITE), finished_(false), moves_(), distribution_(1, 100), engine_(seed == 0 ? std::random_device()() : seed) {
     if (!empty) {
         generatePiecesForColor_(PieceColor::WHITE);
         generatePiecesForColor_(PieceColor::BLACK);
@@ -33,7 +36,10 @@ PieceColor Board::getCurrentTurn() {
 void Board::move(Position from, Position to) {
     auto piece = getPieceWithValidations_(from);
     piece->move(to);
+
     changeTurn_();
+    moves_.push_back(std::make_shared<NormalNotation>(from, to));
+
     //for debugging
     printBoard();
 }
@@ -51,7 +57,10 @@ void Board::split(Position from, Position to1, Position to2) {
     }
 
     pieceFrom->split(to1, to2);
+
     changeTurn_();
+    moves_.push_back(std::make_shared<SplitNotation>(from, to1, to2));
+
     //for debugging
     printBoard();
 }
@@ -70,7 +79,10 @@ void Board::merge(Position from1, Position from2, Position to) {
     }
 
     pieceFrom1->merge(to, pieceFrom2);
+
     changeTurn_();
+    moves_.push_back(std::make_shared<MergeNotation>(from1, from2, to));
+
     //for debugging
     printBoard();
 }
@@ -175,4 +187,8 @@ void Board::validateTurn_(Piece* piece) {
     if (piece->getColor() != getCurrentTurn()) {
         throw std::invalid_argument("Invalid move: out of turn.");
     }
+}
+
+std::vector<std::shared_ptr<MoveNotation>> Board::getCurrentMoves() {
+    return moves_;
 }
