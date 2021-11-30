@@ -42,8 +42,7 @@ void Client::run() {
             }
         }
 
-        // sleep para fps, maybe hay una mejor forma de hacerlo
-        SDL_Delay(1);
+        SDL_Delay(1000 * 1.0f/60);
         if (_board.isFinished()){
             mainGameScreen.refreshScreen();
             mainGameScreen.endMessage(PLAYER_SPECTATOR);
