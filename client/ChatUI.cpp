@@ -41,10 +41,10 @@ void ChatUI::drawInputMessage(std::string& inputMessage) {
     );
     _renderer.Copy((*inputMessageTexture), SDL2pp::NullOpt, messageRect);
 }
-void ChatUI::renderMessages(std::string& inputMessage) {
+void ChatUI::renderMessages(__attribute__((unused)) std::string& inputMessage) {
     bool moreChatMessagesToProcess = true;
     while(moreChatMessagesToProcess) {
-        std::shared_ptr<std::string> msg_ptr = chatQueue.popIfNotEmpty();
+        std::shared_ptr<std::string> msg_ptr = nullptr; // chatQueue.popIfNotEmpty();
 
         if (!msg_ptr) {
             moreChatMessagesToProcess = false;
