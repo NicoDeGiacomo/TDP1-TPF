@@ -1310,8 +1310,14 @@ TEST_SUITE("Notation") {
 TEST_CASE("Move notation") {
     Board board;
     board.move(Position("e2"), Position("e4"));
+    board.split(Position("b8"), Position("a6"), Position("c6"));
+    board.move(Position("e4"), Position("e5"));
+    board.merge(Position("a6"), Position("c6"), Position("b4"));
 
-    REQUIRE_EQ(1, board.getCurrentMoves().size());
-    REQUIRE_EQ("Ne2e4", board.getCurrentMoves().front()->getString());
+    REQUIRE_EQ(4, board.getCurrentMoves().size());
+    REQUIRE_EQ("Ne2e4", board.getCurrentMoves()[0]->getString());
+    REQUIRE_EQ("Sb8a6c6", board.getCurrentMoves()[1]->getString());
+    REQUIRE_EQ("Ne4e5", board.getCurrentMoves()[2]->getString());
+    REQUIRE_EQ("Ma6c6b4", board.getCurrentMoves()[3]->getString());
 }
 }

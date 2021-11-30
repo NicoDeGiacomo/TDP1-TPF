@@ -1,7 +1,7 @@
 # Quantum Chess
 ## Content
 * [1. Build](#1-build)
-  * [1.1. Install SDL2pp](#11-install-sdl2pp)
+  * [1.1. Install Dependencies](#11-install-dependencies)
   * [1.2. Build Project](#12-build-project)
 * [2. How to Play](#2-how-to-play)
   * [2.1. Connect to a Game](#21-connect-to-a-game)
@@ -14,7 +14,14 @@
   * [3.3. Tests](#33-tests)
 
 ## 1. Build
-### 1.1. Install SDL2pp
+### 1.1. Install Dependencies
+#### Install cmake
+Minimum version required is 3.16
+```shell
+sudo apt install cmake
+```
+
+#### Install SDL2pp
 ```shell
 sudo apt-get install libsdl2-2.0-0
 sudo apt-get install libsdl2-image-2.0-0
