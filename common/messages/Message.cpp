@@ -23,6 +23,6 @@ Message::Message(const std::string& message, int id) : _message(message), id(id)
     // std::cout << "constructor of Message class" << std::endl;
 }
 
-Message::Message() {
+Message::Message(const std::string& message) : _message(message), id(-1) {}
 
-}
+Message::Message() : id(-1) {}

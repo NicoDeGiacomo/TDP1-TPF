@@ -24,16 +24,13 @@ const std::string ChatMessage::getMessage() const {
     return _message;
 }
 
-// const std::string &ChatMessage::getId() const {
-//     // std::cout << "get id from ChatMessage class" << std::endl;
-//     return Message::getId();
-// }
+ChatMessage::ChatMessage(const std::string &message) : Message(message){
+    this->type = CHAT_CHAR;
+}
 
 //TODO: here i should encode the message
 ChatMessage::ChatMessage(const std::string &message, int id) : Message(message, id){
-    // this->_message = message;
     this->type = CHAT_CHAR;
-    // std::cout << "constructor of ChatMessage class" << std::endl;
 }
 
 void ChatMessage::apply(Board&) const {
@@ -47,5 +44,11 @@ void ChatMessage::apply(Board&) const {
 
 void ChatMessage::apply(Board&, 
                         BlockingQueue<std::shared_ptr<std::string>> &chatQueue) const {
-    chatQueue.produce(std::make_shared<std::string>(_message));
+    std::string msg;
+    if (this->id == -1) msg = "You: ";
+    else msg = "User " + std::to_string(this->id) + ": ";
+
+    msg += this->_message;
+
+    chatQueue.produce(std::make_shared<std::string>(msg));
 }

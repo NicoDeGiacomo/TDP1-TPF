@@ -14,7 +14,7 @@
 
 void Client::run() {
     RecvThread recvThread(proxy, recvQueue);
-    SendThread sendThread(proxy, _board, id, sendQueue);
+    SendThread sendThread(proxy, _board, id, sendQueue, chatQueue);
     recvThread.start();
     sendThread.start();
     // mainGameScreen()

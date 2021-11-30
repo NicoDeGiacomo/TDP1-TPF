@@ -17,9 +17,10 @@ protected:
     std::string _message;
     char type;
     int id;
-public:
     Message();
+    Message(const std::string& message);
     Message(const std::string& message, int id);
+public:
     virtual const std::string getMessage() const;
     int getId() const;
     char getType() const;
