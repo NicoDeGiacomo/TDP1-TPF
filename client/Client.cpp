@@ -44,6 +44,10 @@ void Client::run() {
 
         // sleep para fps, maybe hay una mejor forma de hacerlo
         SDL_Delay(1);
+        if (_board.isFinished()){
+            mainGameScreen.endMessage(ESPECTATOR);
+            break; 
+        }
     }
     recvThread.stop();
     recvThread.join();
