@@ -73,7 +73,7 @@ To swap between move modes, you can press:
  - `m` For merge mode. Color:![merge](https://via.placeholder.com/15/008000/000000?text=+)
 
 Normal is the default type.\
-You can see which mode you are currently in, by looking at the color of the asterisk placed in the top-left corner of the screen.
+You can see which mode you are currently in, by looking at the color of the asterisk placed in the top-right corner of the screen.
 
 #### Normal Move
 Click on a piece, the piece will be selected, and then click on the destination.
