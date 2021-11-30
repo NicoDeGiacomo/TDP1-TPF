@@ -65,6 +65,7 @@ Client::Client(const char *host, const char *service, Board& board)
 
     //std::cin.ignore();
     proxy.connect(host, service);
+    playerType = proxy.getPlayerType();
     id = -1;
     // std::cout << "Choose your name: ";
     // std::getline(std::cin, name);

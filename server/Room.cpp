@@ -16,19 +16,19 @@ void Room::addClient(Socket &socket) {
     //TODO: this is placeholder, it shouldnt receive a socket, rooms should receive players
     if (this->playerWhite.isVacant()) {
         //TODO: think if passing Queue To Send is needed, right now is just for debugging
-        this->playerWhite.initPlayer(socket, next_id);
+        this->playerWhite.initPlayer(socket, next_id, WHITE_CHAR);
         std::cout << "white player created" << std::endl;
         this->playerWhite.startReceivingMessages();
     }
     else if (this->playerBlack.isVacant()) {
         //TODO: think if passing Queue To Send is needed, right now is just for debugging
-        this->playerBlack.initPlayer(socket, next_id);
+        this->playerBlack.initPlayer(socket, next_id, BLACK_CHAR);
         std::cout << "black player created" << std::endl;
         this->playerBlack.startReceivingMessages();
     }
     else {
         //TODO: think if passing Queue To Send is needed, right now is just for debugging
-        this->_spectators.emplace_front(socket, queueOfReceived, next_id);
+        this->_spectators.emplace_front(socket, queueOfReceived, next_id, SPECTATOR_CHAR);
         std::cout << "spectator created" << std::endl;
         this->_spectators.front().startReceivingMessages();
     }

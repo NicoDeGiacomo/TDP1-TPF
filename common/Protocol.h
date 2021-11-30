@@ -18,6 +18,9 @@
 #define SPLIT_MOVE_CHAR 's'
 #define MERGE_MOVE_CHAR 'm'
 #define SELECT_CHAR 's'
+#define WHITE_CHAR 'W'
+#define BLACK_CHAR 'B'
+#define SPECTATOR_CHAR 'O'
 
 
 namespace Protocol {

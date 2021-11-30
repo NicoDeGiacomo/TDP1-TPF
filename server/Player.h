@@ -25,9 +25,12 @@ private:
 public:
     Player(BlockingQueue <std::shared_ptr<Message>> &queueOfReceived);
 
-    Player(Socket &socket, BlockingQueue<std::shared_ptr<Message>> &queue, int id);
+    Player(Socket &socket,
+           BlockingQueue<std::shared_ptr<Message>> &queue, 
+           int id, 
+           char type);
 
-    void initPlayer(Socket &socket, int id);
+    void initPlayer(Socket &socket, int id, char type);
 
     void send(const std::shared_ptr<Message>& message) const;
 

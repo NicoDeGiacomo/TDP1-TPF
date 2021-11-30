@@ -11,12 +11,17 @@
 Player::Player(BlockingQueue<std::shared_ptr<Message>> &queue)
                  : queueOfReceived(queue), recvThread(proxy, queue) {}
 
-Player::Player(Socket &socket, BlockingQueue<std::shared_ptr<Message>> &queue, int id) 
-                : proxy(socket, id), queueOfReceived(queue), recvThread(proxy, queue), id(id) {
-}
+Player::Player(Socket &socket, 
+              BlockingQueue<std::shared_ptr<Message>> &queue, 
+              int id, 
+              char type) 
+              : proxy(socket, id, type), 
+              queueOfReceived(queue), 
+              recvThread(proxy, queue), 
+              id(id) {}
 
-void Player::initPlayer(Socket &connectedSocket, int id) {
-    proxy.initProxy(connectedSocket, id);
+void Player::initPlayer(Socket &connectedSocket, int id, char type) {
+    proxy.initProxy(connectedSocket, id, type);
     this->id = id;
 }
 

@@ -18,6 +18,7 @@ private:
     ServerProxy proxy;
     Board &_board;
     int id;
+    char playerType;
     std::string name;
     BlockingQueue<std::shared_ptr<Message>> recvQueue;
     BlockingQueue<std::shared_ptr<Message>> sendQueue;

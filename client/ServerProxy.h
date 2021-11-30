@@ -12,6 +12,7 @@ class ServerProxy {
 private:
     Socket socket;
     int id;
+    char playerType;
     std::shared_ptr<Message> decodeChatMessage();
     std::string recvMessage(unsigned short int msg_len);
     unsigned short int decodeChatMessageLen();
@@ -33,6 +34,8 @@ public:
      *  Cierra la conexion con el server.
      */
     void close_connection();
+
+    char getPlayerType();
 };
 
 
