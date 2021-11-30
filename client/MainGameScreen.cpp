@@ -525,6 +525,6 @@ void MainGameScreen::endMessage(int end_state) {
     int buttonid;
     SDL_ShowMessageBox(&messageboxdata, &buttonid);
     if (buttonid == 1){
-        //TODO: download game file
+        _board.generateDump();
     }
 }

@@ -35,6 +35,8 @@ class Board {
 
   std::vector<std::shared_ptr<MoveNotation>> getCurrentMoves();
 
+  void generateDump();
+
   virtual ~Board();
 
     void printBoard();

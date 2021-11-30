@@ -9,6 +9,8 @@
 #include <algorithm>
 #include <stdexcept>
 #include <random>
+#include <iostream>
+#include <fstream>
 #include <NormalNotation.h>
 #include <SplitNotation.h>
 #include <MergeNotation.h>
@@ -191,4 +193,12 @@ void Board::validateTurn_(Piece* piece) {
 
 std::vector<std::shared_ptr<MoveNotation>> Board::getCurrentMoves() {
     return moves_;
+}
+
+void Board::generateDump() {
+    std::ofstream outfile ("./chess-game.txt");
+    for (const auto& move: moves_) {
+        outfile << move->getString();
+    }
+    outfile.close();
 }
