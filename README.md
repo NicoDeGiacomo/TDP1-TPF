@@ -80,7 +80,11 @@ Merges can be made on a new square, or on a square currently occupied by one of 
 
 #### Entanglement
 An entanglement is made with a [normal move](#normal-move). 
-Select a classic piece and a destination square, so that the move 'passes through' a piece in a quantum state.
+Select a **classic** piece and a destination square, so that the move 'passes through' a piece in a quantum state.
+Restrictions:
+- Only one entanglement per piece.
+- Entangled pieces cannot split or merge.
+- Only classic pieces can become entangled.
 
 ### 2.3. Chat
 Click on the right side of the board, write a message, and press enter.
