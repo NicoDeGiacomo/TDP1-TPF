@@ -60,7 +60,9 @@ std::string ServerProxy::recvMessage(unsigned short int msg_len) {
     Metodos publicos
 ************************/
 
-ServerProxy::ServerProxy() : id(-1) {}
+ServerProxy::ServerProxy(const char *host, const char *service) : id(-1) {
+    connect(host, service);
+}
 
 void ServerProxy::connect(const char *host, const char *service) {
     socket.connect(host, service);

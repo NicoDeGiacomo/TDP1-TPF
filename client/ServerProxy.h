@@ -17,7 +17,7 @@ private:
     std::string recvMessage(unsigned short int msg_len);
     unsigned short int decodeChatMessageLen();
 public:
-    ServerProxy();
+    ServerProxy(const char *host, const char *service);
 
     void connect(const char *host, const char *service);
     /*

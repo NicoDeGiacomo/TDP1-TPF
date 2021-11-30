@@ -1,7 +1,3 @@
-//
-// Created by ale on 20/11/21.
-//
-
 #ifndef QUANTUM_CHESS_MAINGAMESCREEN_H
 #define QUANTUM_CHESS_MAINGAMESCREEN_H
 
@@ -71,16 +67,14 @@ struct Colors {
 #define SELECTED_KING_FILEPATH "../assets/sprites/selectedKing.png"
 #define SELECTED_QUEEN_FILEPATH "../assets/sprites/selectedQueen.png"
 
-#define LOSS 0
-#define WIN 1
-#define ESPECTATOR 2
+#define PLAYER_WHITE 'W'
+#define PLAYER_BLACK 'B'
+#define PLAYER_SPECTATOR 'O'
 
 class MainGameScreen {
 private:
     std::unique_ptr<SDL2pp::Renderer> renderer;
     std::unique_ptr<SDL2pp::Window> window;
-    //std::unique_ptr<SDL2pp::SDL> sdl;
-    //std::thread myThread;
     std::unordered_map<char,SDL2pp::Texture> texturesMap;
     std::unordered_map<char,SDL2pp::Texture> selectedTexturesMap;
     std::unordered_map<char,SDL2pp::Texture> entangledTexturesMap;
@@ -90,8 +84,6 @@ private:
     std::list<Position> possibleMoves;
     std::list<Position> entangledPiecesPosition;
     Board &_board;
-    //Client *_client;
-    //std::vector<Button> buttons;
     BlockingQueue<std::shared_ptr<Message>>* userInputQueue;
     const int boardWidth = 640;
     const int chatWidth = 300;
@@ -106,10 +98,12 @@ private:
     PersistentInputData inputData;
     Colors colors;
     std::unique_ptr<ChatUI> chatUI;
+    char _playerType;
 public:
-    MainGameScreen(Board& board, 
+    MainGameScreen(Board& board,
                    BlockingQueue<std::shared_ptr<Message>>* userInputQueue,
-                   BlockingQueue<std::shared_ptr<std::string>> &chatQueue);
+                   BlockingQueue<std::shared_ptr<std::string>> &chatQueue,
+                   char playerType);
 
     void refreshScreen();
 
@@ -152,9 +146,11 @@ public:
 
     void loadPossibleMoves(const Piece* piece, const SDL_Color& color, bool merge = false);
 
-    void endMessage(int endstate);
+    void endMessage(char endstate);
 
     void showEntangledPieces(Piece *piece);
+
+    bool canMovePiece();
 };
 
 

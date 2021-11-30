@@ -1,7 +1,3 @@
-//
-// Created by ale on 28/11/21.
-//
-
 #include "ChatUI.h"
 
 ChatUI::ChatUI(SDL2pp::Renderer& renderer, 

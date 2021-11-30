@@ -1,8 +1,3 @@
-//
-// Created by ale on 20/11/21.
-//
-
-//#include <SDL_image.h>
 #include <NormalMove.h>
 #include <NormalMoveMessage.h>
 #include <thread>
@@ -13,7 +8,8 @@
 
 MainGameScreen::MainGameScreen(Board& board, 
                    BlockingQueue<std::shared_ptr<Message>>* userInputQueue,
-                   BlockingQueue<std::shared_ptr<std::string>> &chatQueue) 
+                   BlockingQueue<std::shared_ptr<std::string>> &chatQueue,
+                   char playerType)
                    : _board(board) {
     this->initColors();
     this->startSDLWindow();
@@ -26,15 +22,12 @@ MainGameScreen::MainGameScreen(Board& board,
     this->dotTexture = std::make_unique<SDL2pp::Texture>((*renderer), DOT_FILEPATH);
     this->dotTexture->SetAlphaMod(100);
     this->refreshScreen();
+    _playerType = playerType;
 }
 
 void MainGameScreen::processUserInput(bool& gameFinished) {
-    // Event processing:
-    // - If window is closed, or Q or Escape buttons are pressed,
-    //   quit the application
     SDL_Event event;
     while (SDL_PollEvent(&event)) {
-        //escucho clicks
         if (event.type == SDL_MOUSEBUTTONDOWN)
             whereDidMouseClicked();
         inputData.chatClicked ? manageChatEvent(event, gameFinished) : manageBoardEvent(event, gameFinished);
@@ -99,8 +92,6 @@ void MainGameScreen::refreshScreen() {
                 colors.grey);
     }
     for(auto& position : possibleMoves){
-        //std::cout << "positionx:" << position.getX() << " positiony: " << position.getY() << std::endl;
-        //agarrar la textura y dibujarla en estas posiciones
         SDL2pp::Rect possibleMoveRect(
                 (position.getX() - 1) * pieceWidth, //map board position to world position
                 (position.getY() - 1) * pieceHeight, //map board position to world position
@@ -287,7 +278,6 @@ void MainGameScreen::setUserInputDefaultValues() {
 }
 
 void MainGameScreen::startSDLWindow() {
-    //sdl = std::make_unique<SDL2pp::SDL>((SDL_INIT_VIDEO | SDL_INIT_AUDIO));
     SDL2pp::SDL(SDL_INIT_VIDEO | SDL_INIT_AUDIO);
     this->window = std::make_unique<SDL2pp::Window>("Quantum Chess",
                                                     SDL_WINDOWPOS_UNDEFINED,
@@ -308,18 +298,19 @@ void MainGameScreen::handleBoardClick() {
     switch (inputData.typeOfMove) {
         case 'n':
             if (inputData.pieceSelected) {
-                Position from(inputData.positionFromX, inputData.positionFromY);
-                Position to(clampedMouseXToGrid, clampedMouseYToGrid);
-                this->userInputQueue->produce(std::make_shared<NormalMoveMessage>(
-                        from, to
-                ));
+                if (canMovePiece()) {
+                    Position from(inputData.positionFromX, inputData.positionFromY);
+                    Position to(clampedMouseXToGrid, clampedMouseYToGrid);
+                    this->userInputQueue->produce(std::make_shared<NormalMoveMessage>(
+                            from, to
+                    ));
+                }
                 deselectAllPieces();
             }
             else {
                 inputData.positionFromX = clampedMouseXToGrid;
                 inputData.positionFromY = clampedMouseYToGrid;
                 selectPiece(clampedMouseXToGrid, clampedMouseYToGrid, colors.normalMove);
-                // NTH: pintar movimientos posibles
             }
             inputData.pieceSelected = !inputData.pieceSelected;
             break;
@@ -341,21 +332,23 @@ void MainGameScreen::handleBoardClick() {
                 if (inputData.typeOfMove == 'm')
                     selectPiece(clampedMouseXToGrid, clampedMouseYToGrid, colors.mergeMove, true);
             } else {
-                Position pos_1(inputData.positionFromX, inputData.positionFromY);
-                Position pos_2(inputData.secondPositionX, inputData.secondPositionY);
-                Position pos_3(clampedMouseXToGrid, clampedMouseYToGrid);
+                if (canMovePiece()) {
+                    Position pos_1(inputData.positionFromX, inputData.positionFromY);
+                    Position pos_2(inputData.secondPositionX, inputData.secondPositionY);
+                    Position pos_3(clampedMouseXToGrid, clampedMouseYToGrid);
 
-                (inputData.typeOfMove == 's') ?
-                this->userInputQueue->produce(
-                        std::make_shared<SplitMoveMessage>(
-                                pos_1,
-                                pos_2,
-                                pos_3)) :
-                this->userInputQueue->produce(
-                        std::make_shared<MergeMoveMessage>(
-                                pos_1,
-                                pos_2,
-                                pos_3));
+                    (inputData.typeOfMove == 's') ?
+                    this->userInputQueue->produce(
+                            std::make_shared<SplitMoveMessage>(
+                                    pos_1,
+                                    pos_2,
+                                    pos_3)) :
+                    this->userInputQueue->produce(
+                            std::make_shared<MergeMoveMessage>(
+                                    pos_1,
+                                    pos_2,
+                                    pos_3));
+                }
                 goToDefaultMovement();
             }
         default:
@@ -417,7 +410,6 @@ void MainGameScreen::manageChatEvent(SDL_Event &event, bool& gameFinished) {
                 inputData.message += SDL_GetClipboardText();
             }
             else if (event.key.keysym.scancode == SDL_SCANCODE_RETURN) {
-                //done = SDL_TRUE;
                 this->userInputQueue->produce(
                         std::make_shared<ChatMessage>(inputData.message));
                 inputData.message = "";
@@ -484,11 +476,12 @@ void MainGameScreen::showEntangledPieces(Piece *piece) {
         entangledPiecesPosition = newEntangledPieces;
 }
 
-void MainGameScreen::endMessage(int end_state) {
+void MainGameScreen::endMessage(char end_state) {
+    //todo: fix this messages
     std::string message;
-    if (end_state == WIN){
+    if (end_state == PLAYER_BLACK){
         message = "FIN DE LA PARTIDA\nGANASTE!";
-    } else if (end_state == LOSS){
+    } else if (end_state == PLAYER_WHITE){
         message = "FIN DE LA PARTIDA\nPERDISTE:(";
     } else {
         message = "FIN DE LA PARTIDA\n";
@@ -527,4 +520,12 @@ void MainGameScreen::endMessage(int end_state) {
     if (buttonid == 1){
         _board.generateDump();
     }
+}
+
+bool MainGameScreen::canMovePiece() {
+    if (_playerType == PLAYER_WHITE && _board.getCurrentTurn() == PieceColor::WHITE)
+        return true;
+    if (_playerType == PLAYER_BLACK && _board.getCurrentTurn() == PieceColor::BLACK)
+        return true;
+    return false;
 }

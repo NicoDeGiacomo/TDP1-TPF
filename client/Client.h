@@ -13,10 +13,10 @@
 
 class Client {
 private:
-    BlockingQueue<std::shared_ptr<std::string>> chatQueue;
-    MainGameScreen mainGameScreen;
     ServerProxy proxy;
     Board &_board;
+    BlockingQueue<std::shared_ptr<std::string>> chatQueue;
+    MainGameScreen mainGameScreen;
     int id;
     char playerType;
     std::string name;

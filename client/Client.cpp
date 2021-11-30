@@ -46,7 +46,7 @@ void Client::run() {
         SDL_Delay(1);
         if (_board.isFinished()){
             mainGameScreen.refreshScreen();
-            mainGameScreen.endMessage(ESPECTATOR);
+            mainGameScreen.endMessage(PLAYER_SPECTATOR);
             break; 
         }
     }
@@ -61,10 +61,10 @@ BlockingQueue<std::shared_ptr<Message>>* Client::getQueue(){
 }
 
 Client::Client(const char *host, const char *service, Board& board) 
-            : chatQueue(), mainGameScreen(board, &sendQueue, chatQueue), proxy(), _board(board) {
+            : proxy(host, service), _board(board), chatQueue(), mainGameScreen(board, &sendQueue, chatQueue, proxy.getPlayerType()) {
 
     //std::cin.ignore();
-    proxy.connect(host, service);
+    //proxy.connect(host, service);
     playerType = proxy.getPlayerType();
     id = -1;
     // std::cout << "Choose your name: ";

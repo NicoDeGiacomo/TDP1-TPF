@@ -1,7 +1,3 @@
-//
-// Created by ale on 28/11/21.
-//
-
 #ifndef QUANTUM_CHESS_CHATUI_H
 #define QUANTUM_CHESS_CHATUI_H
 #include <SDL_image.h>
