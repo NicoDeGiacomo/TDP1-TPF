@@ -46,7 +46,7 @@ void Client::run() {
         SDL_Delay(1);
         if (_board.isFinished()){
             mainGameScreen.refreshScreen();
-            mainGameScreen.endMessage(PLAYER_SPECTATOR);
+            mainGameScreen.endMessage(SPECTATOR_CHAR);
             break; 
         }
     }

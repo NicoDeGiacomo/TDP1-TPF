@@ -479,9 +479,9 @@ void MainGameScreen::showEntangledPieces(Piece *piece) {
 void MainGameScreen::endMessage(char end_state) {
     //todo: fix this messages
     std::string message;
-    if (end_state == PLAYER_BLACK){
+    if (end_state == BLACK_CHAR){
         message = "FIN DE LA PARTIDA\nGANASTE!";
-    } else if (end_state == PLAYER_WHITE){
+    } else if (end_state == WHITE_CHAR){
         message = "FIN DE LA PARTIDA\nPERDISTE:(";
     } else {
         message = "FIN DE LA PARTIDA\n";
@@ -523,9 +523,9 @@ void MainGameScreen::endMessage(char end_state) {
 }
 
 bool MainGameScreen::canMovePiece() {
-    if (_playerType == PLAYER_WHITE && _board.getCurrentTurn() == PieceColor::WHITE)
+    if (_playerType == WHITE_CHAR && _board.getCurrentTurn() == PieceColor::WHITE)
         return true;
-    if (_playerType == PLAYER_BLACK && _board.getCurrentTurn() == PieceColor::BLACK)
+    if (_playerType == BLACK_CHAR && _board.getCurrentTurn() == PieceColor::BLACK)
         return true;
     return false;
 }
