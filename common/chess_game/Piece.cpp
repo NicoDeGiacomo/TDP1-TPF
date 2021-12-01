@@ -153,8 +153,10 @@ std::list<Position> Piece::getPossibleBeamPositions_(bool merge) const {
                     if (isSplit_(otherPiece)) {
                         if (merge) {
                             possiblePositions.push_back(newPosition);
+                        } else {
+                            break;
                         }
-                    } else {
+                    } else if (!entangled) {
                         possiblePositions.push_back(newPosition);
                     }
 
