@@ -1,6 +1,7 @@
 #include <stdexcept>
 #include <algorithm>
 #include <utility>
+#include <MeasurementNotation.h>
 #include "Piece.h"
 
 Piece::Piece(PieceColor color, Position position, const char pieceKey)
@@ -87,10 +88,12 @@ bool Piece::measure_() {
     }
 
     if (board_->getRandomValue_() <= getProbability()) {
+        board_->moves_.push_back(std::make_shared<MeasurementNotation>(true));
         denyEntanglement_();
         confirmSplit_();
         return true;
     } else {
+        board_->moves_.push_back(std::make_shared<MeasurementNotation>(false));
         confirmEntanglement_();
         denySplit_();
         return false;
