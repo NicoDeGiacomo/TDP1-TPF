@@ -59,8 +59,8 @@ BlockingQueue<std::shared_ptr<Message>>* Client::getQueue(){
     return &sendQueue;
 }
 
-Client::Client(const char *host, const char *service, Board& board) 
-            : proxy(host, service), _board(board), chatQueue(), mainGameScreen(board, &sendQueue, chatQueue, proxy.getPlayerType()) {
+Client::Client(const char *host, const char *service)
+            : proxy(host, service), _board(false, proxy.getSeed()), chatQueue(), mainGameScreen(_board, &sendQueue, chatQueue, proxy.getPlayerType()) {
 
     //std::cin.ignore();
     //proxy.connect(host, service);

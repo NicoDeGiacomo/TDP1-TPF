@@ -13,6 +13,7 @@ private:
     Socket socket;
     int id;
     char playerType;
+    unsigned int seed;
     std::shared_ptr<Message> decodeChatMessage();
     std::string recvMessage(unsigned short int msg_len);
     unsigned short int decodeChatMessageLen();
@@ -36,6 +37,8 @@ public:
     void close_connection();
 
     char getPlayerType();
+
+    unsigned int getSeed();
 };
 
 

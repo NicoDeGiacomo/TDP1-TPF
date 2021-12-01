@@ -14,7 +14,7 @@
 class Client {
 private:
     ServerProxy proxy;
-    Board &_board;
+    Board _board;
     BlockingQueue<std::shared_ptr<std::string>> chatQueue;
     MainGameScreen mainGameScreen;
     int id;
@@ -23,7 +23,7 @@ private:
     BlockingQueue<std::shared_ptr<Message>> recvQueue;
     BlockingQueue<std::shared_ptr<Message>> sendQueue;
 public:
-    Client(const char *host, const char *service, Board &board);
+    Client(const char *host, const char *service);
 
     void run();
 

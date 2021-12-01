@@ -49,11 +49,15 @@ class Socket {
   /// \throw SocketException or ClosedSocketException accordingly.
   void send(const char *buffer, unsigned int size) const;
 
+  void send(unsigned int i) const;
+
   /// Receives and array of bytes
   /// \param buffer Array of bytes to receive.
   /// \param size Length of the array of bytes.
   /// \throw SocketException or ClosedSocketException accordingly.
   void receive(char* buffer, unsigned int size) const;
+
+  unsigned int receive() const;
 
   /// Shutdowns the Socket.
   void shutdown();

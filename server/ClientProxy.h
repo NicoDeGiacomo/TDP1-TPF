@@ -20,9 +20,9 @@ private:
 public:
     ClientProxy();
 
-    ClientProxy(Socket &socket, int id, char type);
+    ClientProxy(Socket &socket, int id, char type, unsigned int seed);
 
-    void initProxy(Socket &socket, int id, char type);
+    void initProxy(Socket &socket, int id, char type, unsigned int seed);
 
     bool isNotActive() const;
     /*

@@ -33,6 +33,8 @@ class Board {
 
   bool isFinished() const;
 
+  unsigned int getSeed() const;
+
   std::vector<std::shared_ptr<MoveNotation>> getCurrentMoves();
 
   void generateDump();
@@ -46,6 +48,7 @@ private:
   PieceColor turn_;
   bool finished_;
   std::vector<std::shared_ptr<MoveNotation>> moves_;
+  unsigned int seed_;
   std::uniform_int_distribution<int> distribution_;
   std::mt19937 engine_;
 

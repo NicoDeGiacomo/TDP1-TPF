@@ -15,7 +15,7 @@
 #include <SplitNotation.h>
 #include <MergeNotation.h>
 
-Board::Board(bool empty, unsigned int seed) : turn_(PieceColor::WHITE), finished_(false), moves_(), distribution_(1, 100), engine_(seed == 0 ? std::random_device()() : seed) {
+Board::Board(bool empty, unsigned int seed) : turn_(PieceColor::WHITE), finished_(false), moves_(), seed_(seed == 0 ? std::random_device()() : seed), distribution_(1, 100), engine_(seed_) {
     if (!empty) {
         generatePiecesForColor_(PieceColor::WHITE);
         generatePiecesForColor_(PieceColor::BLACK);
@@ -201,4 +201,8 @@ void Board::generateDump() {
         outfile << move->getString();
     }
     outfile.close();
+}
+
+unsigned int Board::getSeed() const {
+    return seed_;
 }

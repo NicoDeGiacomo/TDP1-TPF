@@ -98,6 +98,16 @@ void Socket::send(const char *buffer, unsigned int size) const {
     }
 }
 
+void Socket::send(unsigned int i) const {
+    i = htonl(i);
+    unsigned char bytes[4];
+    bytes[0] = (i >> 24) & 0xFF;
+    bytes[1] = (i >> 16) & 0xFF;
+    bytes[2] = (i >> 8) & 0xFF;
+    bytes[3] = i & 0xFF;
+    send((const char*) &bytes, 4);
+}
+
 void Socket::receive(char* buffer, unsigned int size) const {
     size_t received = 0;
     while (received < size) {
@@ -110,6 +120,18 @@ void Socket::receive(char* buffer, unsigned int size) const {
         }
         received += s;
     }
+}
+
+unsigned int Socket::receive() const {
+    unsigned char bytes[4];
+    receive((char*) bytes, 4);
+
+    int i = 0;
+    for (unsigned char byte : bytes) {
+        i <<= 8;
+        i |= byte;
+    }
+    return ntohl(i);
 }
 
 Socket::Socket(Socket&& other) noexcept {

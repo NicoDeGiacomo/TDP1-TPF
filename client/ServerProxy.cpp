@@ -68,6 +68,7 @@ void ServerProxy::connect(const char *host, const char *service) {
     socket.connect(host, service);
     // Justo despues de conectarse podria recibir el id que le corresponde
     socket.receive(&playerType, 1);
+    seed = socket.receive();
 }
 
 void ServerProxy::send(const std::shared_ptr<Message> message) {
@@ -125,4 +126,8 @@ void ServerProxy::close_connection() {
 
 char ServerProxy::getPlayerType() {
     return playerType;
+}
+
+unsigned int ServerProxy::getSeed() {
+    return seed;
 }

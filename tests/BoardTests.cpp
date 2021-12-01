@@ -1337,4 +1337,38 @@ TEST_CASE("Move notation with a measurement - confirm") {
     REQUIRE_EQ("*", board.getCurrentMoves()[4]->getString());
     REQUIRE_EQ("Nd5c6", board.getCurrentMoves()[5]->getString());
 }
+
+TEST_CASE("Move notation with a measurement - deny") {
+    Board board(false, 3);
+    board.move(Position("d2"), Position("d4"));
+    board.split(Position("b8"), Position("a6"), Position("c6"));
+    board.move(Position("d4"), Position("d5"));
+    board.move(Position("e7"), Position("e6"));
+    board.move(Position("d5"), Position("c6"));
+
+    REQUIRE_EQ(6, board.getCurrentMoves().size());
+    REQUIRE_EQ("Nd2d4", board.getCurrentMoves()[0]->getString());
+    REQUIRE_EQ("Sb8a6c6", board.getCurrentMoves()[1]->getString());
+    REQUIRE_EQ("Nd4d5", board.getCurrentMoves()[2]->getString());
+    REQUIRE_EQ("Ne7e6", board.getCurrentMoves()[3]->getString());
+    REQUIRE_EQ("#", board.getCurrentMoves()[4]->getString());
+    REQUIRE_EQ("Nd5c6", board.getCurrentMoves()[5]->getString());
+}
+
+TEST_CASE("Move notation measurements - confirm->deny") {
+    Board board(false, 3);
+    board.move(Position("d2"), Position("d4"));
+    board.split(Position("b8"), Position("a6"), Position("c6"));
+    board.move(Position("d4"), Position("d5"));
+    board.move(Position("e7"), Position("e6"));
+    board.move(Position("d5"), Position("c6"));
+
+    REQUIRE_EQ(6, board.getCurrentMoves().size());
+    REQUIRE_EQ("Nd2d4", board.getCurrentMoves()[0]->getString());
+    REQUIRE_EQ("Sb8a6c6", board.getCurrentMoves()[1]->getString());
+    REQUIRE_EQ("Nd4d5", board.getCurrentMoves()[2]->getString());
+    REQUIRE_EQ("Ne7e6", board.getCurrentMoves()[3]->getString());
+    REQUIRE_EQ("#", board.getCurrentMoves()[4]->getString());
+    REQUIRE_EQ("Nd5c6", board.getCurrentMoves()[5]->getString());
+}
 }

@@ -59,15 +59,17 @@ std::string ClientProxy::recvMessage(unsigned short int msg_len) {
 
 ClientProxy::ClientProxy() : id(-1) {}
 
-ClientProxy::ClientProxy(Socket &socket, int id, char type) 
+ClientProxy::ClientProxy(Socket &socket, int id, char type, unsigned int seed)
                         : socket(std::move(socket)), is_player(false), id(id) {
     this->socket.send(&type, 1);
+    this->socket.send(seed);
 }
 
-void ClientProxy::initProxy(Socket &socket, int id, char type) {
+void ClientProxy::initProxy(Socket &socket, int id, char type, unsigned int seed) {
     this->socket = std::move(socket);
     this->id = id;
     this->socket.send(&type, 1);
+    this->socket.send(seed);
 }
 
 

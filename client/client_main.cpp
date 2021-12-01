@@ -26,7 +26,7 @@ int main(int argc, const char *argv[]) {
 
     /////////////////////////////////
     /// Testing board window, you can comment this block if you want (640x480 hardcoded)
-    Board board;
+    //Board board;
     //Client client(argv[1], argv[2], board);
     //MainGameScreen mainGameScreen(renderer, &board, client.getQueue());
     // run thread
@@ -69,7 +69,7 @@ int main(int argc, const char *argv[]) {
     }
 
     try {
-        Client client(argv[1], argv[2], board);
+        Client client(argv[1], argv[2]);
         client.run();
         close_client();
     } catch(const std::exception &e) {
