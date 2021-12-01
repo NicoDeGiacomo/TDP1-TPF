@@ -144,7 +144,7 @@ std::list<Position> Piece::getPossibleBeamPositions_(bool merge) const {
                 Piece* otherPiece = getPieceFromBoard_(newPosition);
                 if (otherPiece != nullptr) {
                     if (otherPiece->getProbability() >= 1.0f) {
-                        if (color_ != otherPiece->color_) {
+                        if (color_ != otherPiece->color_ && !entangled) {
                             possiblePositions.push_back(newPosition);
                         }
                         break;

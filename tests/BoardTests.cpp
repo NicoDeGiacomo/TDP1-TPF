@@ -83,6 +83,20 @@ TEST_CASE("Invalid move") {
     CHECK_EQ(34, countPieces_(board));
 }
 
+TEST_CASE("Invalid move - eating entanglement") {
+    Board board(false, 3);
+    board.move(Position("e2"), Position("e4"));
+    board.move(Position("e7"), Position("e6"));
+    board.split(Position("d1"), Position("e2"), Position("f3"));
+    board.move(Position("b8"), Position("a6"));
+    CHECK_THROWS_WITH_AS(board.move(Position("f1"), Position("a6")),
+                         "Invalid move: not possible.",
+                         std::invalid_argument);
+    REQUIRE_EQ(33, countPieces_(board));
+    REQUIRE_NE(board.getPiece(Position("f1")), nullptr);
+    REQUIRE_EQ(board.getPiece(Position("f1"))->getProbability(), 1.0f);
+}
+
 TEST_CASE("Invalid move - Step on own split") {
     Board board;
     board.move(Position("e2"), Position("e4"));
