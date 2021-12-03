@@ -8,7 +8,6 @@ int Login::start() {
 	
 	SDL_bool done = SDL_FALSE;
 
-    SDL_StartTextInput();
     while (!done) {
         SDL_Event event;
         if (SDL_PollEvent(&event)) {
@@ -44,7 +43,7 @@ int Login::start() {
 		// Frame limiter: sleep for a little bit to not eat 100% of CPU
 		SDL_Delay(1);
     }
-	SDL_StopTextInput();
+
 	return 0;
 }
 

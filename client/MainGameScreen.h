@@ -148,6 +148,8 @@ public:
     void showEntangledPieces(Piece *piece);
 
     bool canMovePiece();
+
+    std::string login();
 };
 
 

@@ -5,6 +5,7 @@
 #include <MergeMoveMessage.h>
 #include <ChatMessage.h>
 #include "MainGameScreen.h"
+#include "Login.h"
 
 MainGameScreen::MainGameScreen(Board& board, 
                    BlockingQueue<std::shared_ptr<Message>>* userInputQueue,
@@ -528,4 +529,10 @@ bool MainGameScreen::canMovePiece() {
     if (_playerType == BLACK_CHAR && _board.getCurrentTurn() == PieceColor::BLACK)
         return true;
     return false;
+}
+
+std::string MainGameScreen::login() {
+    Login login(*renderer);
+    login.start();
+    return login.get_user_name();
 }

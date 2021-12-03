@@ -20,6 +20,8 @@ void Client::run() {
     // mainGameScreen()
     bool gameFinished = false;
 
+    std::string user_name = mainGameScreen.login();
+    
     while (!gameFinished) {
         mainGameScreen.processUserInput(gameFinished);
         mainGameScreen.refreshScreen();
