@@ -13,6 +13,7 @@ class Board;
 class PieceSplits;
 enum class PieceColor { WHITE, BLACK };
 class Pawn;
+class King;
 
 class Piece : public Drawable {
  public:
@@ -76,6 +77,7 @@ class Piece : public Drawable {
 
   friend PieceSplits;
   friend Pawn;
+  friend King;
 };
 
 #endif  // PIECE_H_

@@ -179,6 +179,44 @@ TEST_CASE("Promotion") {
     CHECK_EQ(board.getPiece(Position("e8"))->getDrawing(), 'Q');
 }
 
+TEST_CASE("Castling - short") {
+    Board board;
+    board.move(Position("e2"), Position("e3"));
+    board.move(Position("e7"), Position("e6"));
+    board.move(Position("g1"), Position("f3"));
+    board.move(Position("g8"), Position("f6"));
+    board.move(Position("f1"), Position("e2"));
+    board.move(Position("f8"), Position("e7"));
+    board.move(Position("e1"), Position("g1"));
+    board.move(Position("e8"), Position("g8"));
+    REQUIRE_EQ(32, countPieces_(board));
+    CHECK_EQ(board.getPiece(Position("g1"))->getDrawing(), 'K');
+    CHECK_EQ(board.getPiece(Position("g8"))->getDrawing(), 'k');
+    CHECK_EQ(board.getPiece(Position("f1"))->getDrawing(), 'R');
+    CHECK_EQ(board.getPiece(Position("f8"))->getDrawing(), 'r');
+}
+
+TEST_CASE("Castling - long") {
+    Board board;
+    board.move(Position("e2"), Position("e3"));
+    board.move(Position("e7"), Position("e6"));
+    board.move(Position("d2"), Position("d3"));
+    board.move(Position("d7"), Position("d6"));
+    board.move(Position("b1"), Position("c3"));
+    board.move(Position("b8"), Position("c6"));
+    board.move(Position("c1"), Position("d2"));
+    board.move(Position("c8"), Position("d7"));
+    board.move(Position("d1"), Position("e2"));
+    board.move(Position("d8"), Position("e7"));
+    board.move(Position("e1"), Position("c1"));
+    board.move(Position("e8"), Position("c8"));
+    REQUIRE_EQ(32, countPieces_(board));
+    CHECK_EQ(board.getPiece(Position("c1"))->getDrawing(), 'K');
+    CHECK_EQ(board.getPiece(Position("c8"))->getDrawing(), 'k');
+    CHECK_EQ(board.getPiece(Position("d1"))->getDrawing(), 'R');
+    CHECK_EQ(board.getPiece(Position("d8"))->getDrawing(), 'r');
+}
+
 TEST_CASE("Finish game") {
     Board board;
     CHECK(!board.isFinished());

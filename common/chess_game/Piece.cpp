@@ -104,11 +104,9 @@ bool Piece::measure_() {
 std::list<Position> Piece::getPossibleMoves(bool merge) const {
     std::list<Position> possibleStepPositions = getPossibleStepPositions_(merge);
     std::list<Position> possibleBeamPositions = getPossibleBeamPositions_(merge);
-    if (possibleStepPositions.empty()) {
-        return possibleBeamPositions;
-    }
+    possibleStepPositions.splice(possibleStepPositions.end(), possibleBeamPositions);
 
-    return possibleStepPositions;  // todo join lists
+    return possibleStepPositions;
 }
 
 std::list<Position> Piece::getPossibleStepPositions_(__attribute__((unused)) bool merge) const {
@@ -180,7 +178,7 @@ std::list<Position> Piece::getPossibleBeamPositions_(bool merge) const {
 }
 
 Piece *Piece::getPieceFromBoard_(Position &position) const {
-    return board_ != nullptr ? board_->getPiece(position) : nullptr;
+    return board_->getPiece(position);
 }
 
 void Piece::validateMove_(const Position &position, bool merge) const {
