@@ -140,7 +140,7 @@ TEST_CASE("Capture") {
     CHECK_EQ(28, countPieces_(board));
 }
 
-TEST_CASE("Promotion") {
+TEST_CASE("Capture and promotion") {
     Board board;
     board.move(Position(1, 2), Position(1, 4));
     board.move(Position(8, 7), Position(8, 5));
@@ -158,9 +158,25 @@ TEST_CASE("Promotion") {
     board.move(Position(7, 2), Position(8, 1));
     CHECK_EQ(28, countPieces_(board));
 
-    // todo
-    // CHECK_EQ(board.getPiece(Position(1, 8))->getDrawing(), 'Q');
-    // CHECK_EQ(board.getPiece(Position(8, 1))->getDrawing(), 'Q');
+    CHECK_EQ(board.getPiece(Position(1, 8))->getDrawing(), 'Q');
+    CHECK_EQ(board.getPiece(Position(8, 1))->getDrawing(), 'q');
+}
+
+TEST_CASE("Promotion") {
+    Board board;
+    board.move(Position("e2"), Position("e4"));
+    board.move(Position("e7"), Position("e5"));
+    board.move(Position("d2"), Position("d4"));
+    board.move(Position("e5"), Position("d4"));
+    board.move(Position("e4"), Position("e5"));
+    board.move(Position("d7"), Position("d6"));
+    board.move(Position("e5"), Position("e6"));
+    board.move(Position("f7"), Position("f6"));
+    board.move(Position("e6"), Position("e7"));
+    board.move(Position("e8"), Position("d7"));
+    board.move(Position("e7"), Position("e8"));
+    CHECK_EQ(31, countPieces_(board));
+    CHECK_EQ(board.getPiece(Position("e8"))->getDrawing(), 'Q');
 }
 
 TEST_CASE("Finish game") {

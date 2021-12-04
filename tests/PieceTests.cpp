@@ -178,9 +178,6 @@ TEST_CASE("Valid moves") {
 
         whitePawn.move(Position(2, 7));
         CHECK_EQ(2, whitePawn.getPossibleMoves().size());
-
-        whitePawn.move(Position(1, 8));
-        CHECK_EQ(0, whitePawn.getPossibleMoves().size());
     }
 
     SUBCASE("Rook") {

@@ -1,4 +1,5 @@
 #include "Pawn.h"
+#include "Queen.h"
 
 #include <stdexcept>
 
@@ -85,6 +86,13 @@ void Pawn::move_(Position position, bool merge) {
     }
 
     Piece::move_(position, merge);
+
+    if (position_.getY() == 1 || position_.getY() == 8) {
+        auto queen = new Queen(color_, position_, board_);
+        queen->appendToBoard_();
+        removeFromBoard_();
+        delete this;
+    }
 }
 
 Piece * Pawn::createSplit_(__attribute__((unused)) Position to) {
@@ -94,3 +102,4 @@ Piece * Pawn::createSplit_(__attribute__((unused)) Position to) {
 void Pawn::validateMerge_() {
     throw std::invalid_argument("Invalid move: cannot merge a pawn.");
 }
+

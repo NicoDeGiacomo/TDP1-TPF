@@ -61,8 +61,9 @@ void Piece::move(Position position) {
 
     confirmed = pieceTo->measure_();
     try {
+        bool eatPiece = confirmed && color_ != pieceTo->color_;
         move_(position);
-        if (confirmed && color_ != pieceTo->color_) {
+        if (eatPiece) {
             pieceTo->eat();
         }
     } catch (std::invalid_argument &e) {

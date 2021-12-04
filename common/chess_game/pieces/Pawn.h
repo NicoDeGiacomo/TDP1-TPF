@@ -7,7 +7,6 @@ class Pawn : public Piece {
  public:
   Pawn(PieceColor color, Position position, Board* board);
 
-
  private:
   std::list<std::pair<int, int>> getVectorBeamMoves_() const override;
   std::list<std::pair<int, int>> getVectorStepMoves_() const override;
