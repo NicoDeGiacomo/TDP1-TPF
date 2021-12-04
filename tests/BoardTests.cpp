@@ -217,6 +217,18 @@ TEST_CASE("Castling - long") {
     CHECK_EQ(board.getPiece(Position("d8"))->getDrawing(), 'r');
 }
 
+TEST_CASE("En passant") {
+    Board board;
+    board.move(Position("e2"), Position("e4"));
+    board.move(Position("h7"), Position("h6"));
+    board.move(Position("e4"), Position("e5"));
+    board.move(Position("d7"), Position("d5"));
+    board.move(Position("e5"), Position("d6"));
+    CHECK_EQ(31, countPieces_(board));
+    CHECK_EQ(board.getPiece(Position("d6"))->getDrawing(), 'P');
+    CHECK_EQ(board.getPiece(Position("d5")), nullptr);
+}
+
 TEST_CASE("Finish game") {
     Board board;
     CHECK(!board.isFinished());

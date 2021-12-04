@@ -39,13 +39,16 @@ class Piece : public Drawable {
 
   virtual ~Piece() = default;
 
+  void changeTurn();
+
  protected:
   Position position_;
   PieceColor color_;
   bool has_moved_;
   Board* board_;
   std::shared_ptr<PieceSplits> splits_;
-    const char pieceKey_;
+  const char pieceKey_;
+  short enPassantFlag_ = 0;
 
   Piece(PieceColor color, Position position, const char pieceKey);
   Piece(PieceColor color, Position position, Board* board, const char pieceKey);

@@ -342,3 +342,13 @@ std::list<Position> Piece::getEntanglements() const {
 bool Piece::hasEntanglements_() const {
     return splits_->hasEntanglements(this);
 }
+
+void Piece::changeTurn() {
+    if (enPassantFlag_ == 1) {
+        enPassantFlag_ = 2;
+    } else if (enPassantFlag_ == -1) {
+        enPassantFlag_ = -2;
+    } else {
+        enPassantFlag_ = 0;
+    }
+}

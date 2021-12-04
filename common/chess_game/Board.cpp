@@ -117,6 +117,9 @@ bool Board::isFinished() const {
 
 void Board::changeTurn_() {
     turn_ = turn_ == PieceColor::WHITE ? PieceColor::BLACK : PieceColor::WHITE;
+    for (auto piece : pieces_) {
+        piece->changeTurn();
+    }
 }
 
 void Board::generatePiecesForColor_(PieceColor color) {

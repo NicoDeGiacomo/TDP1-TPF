@@ -62,7 +62,25 @@ std::list<std::pair<int, int>> Pawn::getVectorStepMoves_() const {
         }
     } catch (std::invalid_argument &e) {}
 
-    // todo: en passant
+    if (enPassantFlag_ == 2) {
+        try {
+            auto right = Position(position_.getX() + 1, position_.getY());
+            auto pieceRight = getPieceFromBoard_(right);
+            if (pieceRight != nullptr) {
+                moves.emplace_back(1, 1 * direction);
+            }
+        } catch (std::invalid_argument &e) {}
+    }
+
+    if (enPassantFlag_ == -2) {
+        try {
+            auto left = Position(position_.getX() - 1, position_.getY());
+            auto pieceLeft = getPieceFromBoard_(left);
+            if (pieceLeft != nullptr) {
+                moves.emplace_back(-1, 1 * direction);
+            }
+        } catch (std::invalid_argument &e) {}
+    }
 
     return moves;
 }
@@ -83,9 +101,37 @@ void Pawn::move_(Position position, bool merge) {
                 return;
             }
         }
+
+        try {
+            auto left = Position(position.getX() - 1, position.getY());
+            auto pieceLeft = getPieceFromBoard_(left);
+            if (pieceLeft != nullptr && pieceLeft->color_ != color_) {
+                pieceLeft->enPassantFlag_ = 1;
+            }
+        } catch (std::invalid_argument &e) {}
+
+        try {
+            auto right = Position(position.getX() + 1, position.getY());
+            auto pieceRight = getPieceFromBoard_(right);
+            if (pieceRight != nullptr && pieceRight->color_ != color_) {
+                pieceRight->enPassantFlag_ = -1;
+            }
+        } catch (std::invalid_argument &e) {}
     }
 
     Piece::move_(position, merge);
+
+    if (position.getX() != 0) {
+        if (enPassantFlag_ == 2 || enPassantFlag_ == -2) {
+            try {
+                auto pos = Position(position_.getX(), position_.getY() - (1 * direction));
+                auto piece = getPieceFromBoard_(pos);
+                if (piece != nullptr) {
+                    piece->eat();
+                }
+            } catch (std::invalid_argument &e) {}
+        }
+    }
 
     if (position_.getY() == 1 || position_.getY() == 8) {
         auto queen = new Queen(color_, position_, board_);
