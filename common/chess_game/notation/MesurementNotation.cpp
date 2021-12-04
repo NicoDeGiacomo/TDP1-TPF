@@ -9,3 +9,6 @@ std::string MeasurementNotation::getString() {
 
     return "#";
 }
+std::shared_ptr<Message> MeasurementNotation::getMoveMessage() {
+    return nullptr;
+}

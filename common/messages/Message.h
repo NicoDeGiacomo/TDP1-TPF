@@ -10,6 +10,8 @@
 #include <Board.h>
 #include <BlockingQueue.h>
 
+class Board;
+
 class Message {
 protected:
     bool server;

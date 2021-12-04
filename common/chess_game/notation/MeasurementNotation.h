@@ -5,9 +5,11 @@
 
 class MeasurementNotation : public MoveNotation {
  public:
-  MeasurementNotation(bool result);
+  explicit MeasurementNotation(bool result);
 
   std::string getString() override;
+
+  std::shared_ptr<Message> getMoveMessage() override;
 
  private:
   bool result_;

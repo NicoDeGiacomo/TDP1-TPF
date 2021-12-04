@@ -19,18 +19,27 @@ void Room::addClient(Socket &socket) {
         this->playerWhite.initPlayer(socket, next_id, WHITE_CHAR, board.getSeed());
         std::cout << "white player created" << std::endl;
         this->playerWhite.startReceivingMessages();
+        for (const auto& move: board.getCurrentMoves()) {
+            this->playerWhite.send(move->getMoveMessage());
+        }
     }
     else if (this->playerBlack.isVacant()) {
         //TODO: think if passing Queue To Send is needed, right now is just for debugging
         this->playerBlack.initPlayer(socket, next_id, BLACK_CHAR, board.getSeed());
         std::cout << "black player created" << std::endl;
         this->playerBlack.startReceivingMessages();
+        for (const auto& move: board.getCurrentMoves()) {
+            this->playerBlack.send(move->getMoveMessage());
+        }
     }
     else {
         //TODO: think if passing Queue To Send is needed, right now is just for debugging
         this->_spectators.emplace_front(socket, queueOfReceived, next_id, SPECTATOR_CHAR, board.getSeed());
         std::cout << "spectator created" << std::endl;
         this->_spectators.front().startReceivingMessages();
+        for (const auto& move: board.getCurrentMoves()) {
+            this->_spectators.front().send(move->getMoveMessage());
+        }
     }
     next_id++;
 }

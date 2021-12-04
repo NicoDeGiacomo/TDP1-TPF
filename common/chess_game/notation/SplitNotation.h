@@ -7,6 +7,7 @@ class SplitNotation : public MoveNotation {
  public:
   SplitNotation(Position from, Position to1, Position to2);
   std::string getString() override;
+  std::shared_ptr<Message> getMoveMessage() override;
 
  private:
   Position from_;

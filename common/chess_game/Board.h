@@ -7,6 +7,7 @@
 #include "MoveNotation.h"
 
 class Piece;
+class MoveNotation;
 enum class PieceColor;
 
 class Board {

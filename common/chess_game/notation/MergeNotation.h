@@ -8,6 +8,7 @@ class MergeNotation : public MoveNotation {
   MergeNotation(Position from1, Position from2, Position to);
 
   std::string getString() override;
+  std::shared_ptr<Message> getMoveMessage() override;
 
  private:
   Position from1_;

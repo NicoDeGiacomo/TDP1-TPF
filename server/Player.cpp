@@ -27,6 +27,10 @@ void Player::initPlayer(Socket &connectedSocket, int id, char type, unsigned int
 }
 
 void Player::send(const std::shared_ptr<Message>& message) const {
+    if (message == nullptr) {
+        return;
+    }
+
     std::string string = Protocol::MessageToString(message);
     // double dispatch
     // message.getId() != this.id
