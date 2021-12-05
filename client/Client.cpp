@@ -26,8 +26,8 @@ void Client::run() {
 
     //LoginScene login;
     //add scene main game screen
-    /*sceneManager.loadScene(LOGIN_SCENE);
-    sceneManager.updateLoopActiveScene();*/
+    sceneManager.loadScene(LOGIN_SCENE);
+    sceneManager.updateLoopActiveScene();
     sceneManager.loadScene(LOBBY_SCENE);
     sceneManager.renderActiveScene();
     sceneManager.updateLoopActiveScene();
