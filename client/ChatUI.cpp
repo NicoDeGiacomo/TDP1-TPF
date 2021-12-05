@@ -13,7 +13,7 @@ ChatUI::ChatUI(const int x,
 
 void ChatUI::load(SDL2pp::Renderer* renderer){
     _renderer = renderer;
-    backgroundImageTexture = std::make_unique<SDL2pp::Texture>(SDL2pp::Texture((*_renderer), BACKGROUND_FILEPATH));
+    backgroundImageTexture = std::make_unique<SDL2pp::Texture>((*_renderer), CHAT_BACKGROUND_FILEPATH);
 }
 void ChatUI::drawInputMessage(std::string& inputMessage) {
     if (inputMessage.empty()) return;

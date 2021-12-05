@@ -5,7 +5,7 @@
 #include <deque>
 #include "BlockingQueue.h"
 
-#define BACKGROUND_FILEPATH "../assets/sprites/chatBackground.png"
+#define CHAT_BACKGROUND_FILEPATH "../assets/sprites/chatBackground.png"
 #define CHAT_FONT_SIZE 15
 #define CHAT_FONT_PADDING 11
 

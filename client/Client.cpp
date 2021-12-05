@@ -13,6 +13,7 @@
 #include "SendThread.h"
 #include "SceneManager.h"
 #include "LoginScene.h"
+#include "LobbyScene.h"
 
 void Client::run() {
     RecvThread recvThread(proxy, recvQueue);
@@ -25,7 +26,10 @@ void Client::run() {
 
     //LoginScene login;
     //add scene main game screen
-    sceneManager.loadScene(LOGIN_SCENE);
+    /*sceneManager.loadScene(LOGIN_SCENE);
+    sceneManager.updateLoopActiveScene();*/
+    sceneManager.loadScene(LOBBY_SCENE);
+    sceneManager.renderActiveScene();
     sceneManager.updateLoopActiveScene();
     sceneManager.loadScene(GAME_SCENE);
     
@@ -77,7 +81,9 @@ Client::Client(const char *host, const char *service)
     //proxy.connect(host, service);
     playerType = proxy.getPlayerType();
     id = -1;
+    int numberOfRooms = 50; //todo: placeholder, change this to actual number of rooms
     sceneManager.addScene(std::make_unique<LoginScene>(), LOGIN_SCENE);
+    sceneManager.addScene(std::make_unique<LobbyScene>(numberOfRooms), LOBBY_SCENE);
     //sceneManager.loadScene("LoginScene");
     sceneManager.addScene(std::make_unique<GameScene>(_board,
                                                       &sendQueue,
