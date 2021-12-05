@@ -9,16 +9,22 @@
 #include <Board.h>
 #include "Socket.h"
 #include "ServerProxy.h"
-#include "MainGameScreen.h"
+#include "GameScene.h"
+#include "SceneManager.h"
+
+#define LOGIN_SCENE "LoginScene"
+#define GAME_SCENE "Game"
 
 class Client {
 private:
+    SceneManager sceneManager;
     ServerProxy proxy;
     Board _board;
     BlockingQueue<std::shared_ptr<std::string>> chatQueue;
-    MainGameScreen mainGameScreen;
+    //GameScene mainGameScreen;
     int id;
     char playerType;
+    bool gameFinished;
     std::string name;
     BlockingQueue<std::shared_ptr<Message>> recvQueue;
     BlockingQueue<std::shared_ptr<Message>> sendQueue;

@@ -1,5 +1,5 @@
-#ifndef QUANTUM_CHESS_MAINGAMESCREEN_H
-#define QUANTUM_CHESS_MAINGAMESCREEN_H
+#ifndef QUANTUM_CHESS_GAMESCENE_H
+#define QUANTUM_CHESS_GAMESCENE_H
 
 struct PersistentInputData {
     bool chatClicked;
@@ -17,6 +17,7 @@ struct PersistentInputData {
 #include "BlockingQueue.h"
 #include "Protocol.h"
 #include "ChatUI.h"
+#include "Scene.h"
 
 struct Colors {
     SDL_Color normalMove;
@@ -68,9 +69,9 @@ struct Colors {
 #define SELECTED_KING_FILEPATH "../assets/sprites/selectedKing.png"
 #define SELECTED_QUEEN_FILEPATH "../assets/sprites/selectedQueen.png"
 
-class MainGameScreen {
+class GameScene : public Scene {
 private:
-    std::unique_ptr<SDL2pp::Renderer> renderer;
+    //std::unique_ptr<SDL2pp::Renderer> _renderer;
     std::unique_ptr<SDL2pp::Window> window;
     std::unordered_map<char,SDL2pp::Texture> texturesMap;
     std::unordered_map<char,SDL2pp::Texture> selectedTexturesMap;
@@ -96,15 +97,16 @@ private:
     Colors colors;
     std::unique_ptr<ChatUI> chatUI;
     char _playerType;
+    bool& _gameFinished;
 public:
-    MainGameScreen(Board& board,
-                   BlockingQueue<std::shared_ptr<Message>>* userInputQueue,
-                   BlockingQueue<std::shared_ptr<std::string>> &chatQueue,
-                   char playerType);
+    GameScene(Board& board,
+              BlockingQueue<std::shared_ptr<Message>>* userInputQueue,
+              BlockingQueue<std::shared_ptr<std::string>> &chatQueue,
+              char playerType, bool& gameFinished);
 
     void refreshScreen();
 
-    void processUserInput(bool& gameFinished);
+    void processUserInput();
 
     void selectPiece(const int x, const int y, const SDL_Color& color, bool merge = false);
 
@@ -135,9 +137,9 @@ public:
 
     void handleBoardClick();
 
-    void manageBoardEvent(SDL_Event &event, bool& gameFinished);
+    void manageBoardEvent(SDL_Event &event);
 
-    void manageChatEvent(SDL_Event &event, bool& gameFinished);
+    void manageChatEvent(SDL_Event &event);
 
     void whereDidMouseClicked();
 
@@ -149,8 +151,11 @@ public:
 
     bool canMovePiece();
 
-    std::string login();
+    //std::string login();
+    void updateLoop() override;
+    void render() override;
+    void load(SDL2pp::Renderer* renderer) override;
 };
 
 
-#endif //QUANTUM_CHESS_MAINGAMESCREEN_H
+#endif //QUANTUM_CHESS_GAMESCENE_H

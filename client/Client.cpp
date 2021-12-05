@@ -11,6 +11,8 @@
 #include "Client.h"
 #include "RecvThread.h"
 #include "SendThread.h"
+#include "SceneManager.h"
+#include "LoginScene.h"
 
 void Client::run() {
     RecvThread recvThread(proxy, recvQueue);
@@ -18,13 +20,18 @@ void Client::run() {
     recvThread.start();
     sendThread.start();
     // mainGameScreen()
-    bool gameFinished = false;
 
-    std::string user_name = mainGameScreen.login();
+    //std::string user_name = mainGameScreen.login();
+
+    //LoginScene login;
+    //add scene main game screen
+    sceneManager.loadScene(LOGIN_SCENE);
+    sceneManager.updateLoopActiveScene();
+    sceneManager.loadScene(GAME_SCENE);
     
     while (!gameFinished) {
-        mainGameScreen.processUserInput(gameFinished);
-        mainGameScreen.refreshScreen();
+        sceneManager.updateLoopActiveScene();
+        sceneManager.renderActiveScene();
         bool moreMessagesToProcess = true;
         
         while(moreMessagesToProcess) {
@@ -44,10 +51,11 @@ void Client::run() {
             }
         }
 
-        SDL_Delay(1000 * 1.0f/60);
+        SDL_Delay(1000/60); //todo: should ask for monitor refresh rate, this is capped at 60fps
         if (_board.isFinished()){
-            mainGameScreen.refreshScreen();
-            mainGameScreen.endMessage(SPECTATOR_CHAR);
+            sceneManager.renderActiveScene();
+            //mainGameScreen.endMessage(SPECTATOR_CHAR); cant do this anymore, need to think another way
+            std::cout << "game finished" << std::endl;
             break; 
         }
     }
@@ -62,12 +70,20 @@ BlockingQueue<std::shared_ptr<Message>>* Client::getQueue(){
 }
 
 Client::Client(const char *host, const char *service)
-            : proxy(host, service), _board(false, proxy.getSeed()), chatQueue(), mainGameScreen(_board, &sendQueue, chatQueue, proxy.getPlayerType()) {
+            : proxy(host, service), _board(false, proxy.getSeed()), chatQueue() {
+    gameFinished = false;
 
     //std::cin.ignore();
     //proxy.connect(host, service);
     playerType = proxy.getPlayerType();
     id = -1;
+    sceneManager.addScene(std::make_unique<LoginScene>(), LOGIN_SCENE);
+    //sceneManager.loadScene("LoginScene");
+    sceneManager.addScene(std::make_unique<GameScene>(_board,
+                                                      &sendQueue,
+                                                      chatQueue,
+                                                      proxy.getPlayerType(),
+                                                      gameFinished),GAME_SCENE);
     // std::cout << "Choose your name: ";
     // std::getline(std::cin, name);
     // int room_id;

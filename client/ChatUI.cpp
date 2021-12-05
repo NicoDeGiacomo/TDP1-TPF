@@ -1,16 +1,19 @@
 #include "ChatUI.h"
 
-ChatUI::ChatUI(SDL2pp::Renderer& renderer, 
-               const int x, 
+ChatUI::ChatUI(const int x,
                const int width, 
                const int height,
                BlockingQueue<std::shared_ptr<std::string>> &chatQueue) 
-               : _renderer(renderer), 
-               _x(x), 
+               : _x(x),
                _width(width), 
                _height(height), 
                chatQueue(chatQueue) {
-    backgroundImageTexture = std::make_unique<SDL2pp::Texture>(SDL2pp::Texture(_renderer, BACKGROUND_FILEPATH));
+    //backgroundImageTexture = std::make_unique<SDL2pp::Texture>(SDL2pp::Texture(_renderer, BACKGROUND_FILEPATH)); not loaded scene yet
+}
+
+void ChatUI::load(SDL2pp::Renderer* renderer){
+    _renderer = renderer;
+    backgroundImageTexture = std::make_unique<SDL2pp::Texture>(SDL2pp::Texture((*_renderer), BACKGROUND_FILEPATH));
 }
 void ChatUI::drawInputMessage(std::string& inputMessage) {
     if (inputMessage.empty()) return;
@@ -23,7 +26,7 @@ void ChatUI::drawInputMessage(std::string& inputMessage) {
     std::cout << "." << inputMessage << "." << std::endl;
     inputMessageTexture.reset();
     inputMessageTexture = std::make_unique<SDL2pp::Texture>(
-            _renderer,
+            (*_renderer),
             font.RenderText_Blended(inputMessage,SDL_Color{
                     255,
                     255,
@@ -35,9 +38,9 @@ void ChatUI::drawInputMessage(std::string& inputMessage) {
             inputMessageTexture->GetWidth(),
             inputMessageTexture->GetHeight()
     );
-    _renderer.Copy((*inputMessageTexture), SDL2pp::NullOpt, messageRect);
+    _renderer->Copy((*inputMessageTexture), SDL2pp::NullOpt, messageRect);
 }
-void ChatUI::renderMessages(__attribute__((unused)) std::string& inputMessage) {
+void ChatUI::renderMessages(std::string& inputMessage) {
     bool moreChatMessagesToProcess = true;
     while(moreChatMessagesToProcess) {
         std::shared_ptr<std::string> msg_ptr = chatQueue.popIfNotEmpty();
@@ -56,7 +59,7 @@ void ChatUI::renderMessages(__attribute__((unused)) std::string& inputMessage) {
         }
     }
 
-    _renderer.Copy((*backgroundImageTexture), SDL2pp::NullOpt, SDL2pp::Rect(_x, 0, _width, _height));
+    _renderer->Copy((*backgroundImageTexture), SDL2pp::NullOpt, SDL2pp::Rect(_x, 0, _width, _height));
     drawInputMessage(inputMessage);
 
     int i = 1;
@@ -74,7 +77,7 @@ void ChatUI::renderMessages(__attribute__((unused)) std::string& inputMessage) {
                 (*texture)->GetWidth(),
                 (*texture)->GetHeight()
         );
-        _renderer.Copy((**texture), SDL2pp::NullOpt, messageRect);
+        _renderer->Copy((**texture), SDL2pp::NullOpt, messageRect);
         ++texture;
         ++i;
     }
@@ -92,7 +95,7 @@ void ChatUI::add(const std::string &message) {
         // text into Surface, which is converted into texture on the fly
         std::cout << "." << (*firstMessage) << "." << std::endl;
         textures.push_front(std::make_unique<SDL2pp::Texture>(
-                _renderer,
+                (*_renderer),
                 font.RenderText_Blended((*firstMessage),SDL_Color{
                     255,
                     255,

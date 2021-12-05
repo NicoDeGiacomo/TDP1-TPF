@@ -1,0 +1,22 @@
+//
+// Created by ale on 4/12/21.
+//
+
+#ifndef QUANTUM_CHESS_SCENE_H
+#define QUANTUM_CHESS_SCENE_H
+#include <SDL_image.h>
+#include <SDL2pp/SDL2pp.hh>
+
+
+class Scene {
+protected:
+    SDL2pp::Renderer *_renderer;
+public:
+    virtual void updateLoop() = 0;
+    virtual void render() = 0;
+    virtual void load(SDL2pp::Renderer *renderer);
+    virtual ~Scene() = default;
+};
+
+
+#endif //QUANTUM_CHESS_SCENE_H

@@ -14,7 +14,7 @@ private:
     std::unique_ptr<SDL2pp::Texture> inputMessageTexture;
     std::unique_ptr<SDL2pp::Texture> backgroundImageTexture;
     std::deque<std::unique_ptr<SDL2pp::Texture>> textures;
-    SDL2pp::Renderer& _renderer;
+    SDL2pp::Renderer* _renderer;
     const int _x,
     _width,
     _height,
@@ -27,8 +27,7 @@ private:
                                                              const char divider) const;
     void drawInputMessage(std::string& inputMessage);
 public:
-    ChatUI(SDL2pp::Renderer& renderer, 
-           const int x, 
+    ChatUI(const int x,
            const int width, 
            const int height,
            BlockingQueue<std::shared_ptr<std::string>> &chatQueue);
@@ -38,6 +37,8 @@ public:
     void add(const std::string &message);
 
     bool clickInChat(int mouseX, int mouseY);
+
+    void load(SDL2pp::Renderer *renderer);
 };
 
 

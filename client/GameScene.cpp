@@ -4,49 +4,41 @@
 #include <SplitMoveMessage.h>
 #include <MergeMoveMessage.h>
 #include <ChatMessage.h>
-#include "MainGameScreen.h"
-#include "Login.h"
+#include "GameScene.h"
 
-MainGameScreen::MainGameScreen(Board& board, 
-                   BlockingQueue<std::shared_ptr<Message>>* userInputQueue,
-                   BlockingQueue<std::shared_ptr<std::string>> &chatQueue,
-                   char playerType)
-                   : _board(board) {
+GameScene::GameScene(Board& board,
+                     BlockingQueue<std::shared_ptr<Message>>* userInputQueue,
+                     BlockingQueue<std::shared_ptr<std::string>> &chatQueue,
+                     char playerType, bool& gameFinished)
+                   : _board(board), _gameFinished(gameFinished) {
     this->initColors();
-    this->startSDLWindow();
-    this->chatUI = std::make_unique<ChatUI>((*renderer), boardWidth, chatWidth, screenHeight, chatQueue);
+    this->chatUI = std::make_unique<ChatUI>(boardWidth, chatWidth, screenHeight, chatQueue);
     this->userInputQueue = userInputQueue;
     this->setUserInputDefaultValues();
-    this->loadBoardTextures();
-    this->loadMoveSelectedNotification(222);
-    this->paintMoveSelectedNotification(colors.normalMove);
-    this->dotTexture = std::make_unique<SDL2pp::Texture>((*renderer), DOT_FILEPATH);
-    this->dotTexture->SetAlphaMod(100);
-    this->refreshScreen();
-    _playerType = playerType;
+    this->_playerType = playerType;
 }
 
-void MainGameScreen::processUserInput(bool& gameFinished) {
+void GameScene::updateLoop() {
     SDL_Event event;
     while (SDL_PollEvent(&event)) {
         if (event.type == SDL_MOUSEBUTTONDOWN)
             whereDidMouseClicked();
-        inputData.chatClicked ? manageChatEvent(event, gameFinished) : manageBoardEvent(event, gameFinished);
+        inputData.chatClicked ? manageChatEvent(event) : manageBoardEvent(event);
     }
 }
 
-void MainGameScreen::refreshScreen() {
+void GameScene::render() {
     //todo: listen for screen resize
     //todo: all of this should be refactored
     // need a class Entity with its texture, position, color
     // and here we just render all the entities, the position of the entities should be added to the entity when
     // created or modified, it shouldnt be used in this method
-    // refreshScreen() knows all the positions of all the entities on the screen, stinks
+    // render() knows all the positions of all the entities on the screen, stinks
 
     //clear screen
-    renderer->Clear();
+    _renderer->Clear();
     //render board
-    renderer->Copy(texturesMap.at(BOARD_KEY), SDL2pp::NullOpt, SDL2pp::Rect(0,0,boardWidth,screenHeight));
+    _renderer->Copy(texturesMap.at(BOARD_KEY), SDL2pp::NullOpt, SDL2pp::Rect(0,0,boardWidth,screenHeight));
     //render the higlight of entangled pieces
     for (auto &position : entangledPiecesPosition) {
         Piece *piece = _board.getPiece(position);
@@ -55,7 +47,7 @@ void MainGameScreen::refreshScreen() {
                 (position.getY() - 1) * pieceHeight + (pieceHeight - selectedPieceHeight)/2,
                 selectedPieceWidth,
                 selectedPieceHeight);
-        renderer->Copy(entangledTexturesMap.at(toupper(piece->getDrawing())), SDL2pp::NullOpt, pieceRect);
+        _renderer->Copy(entangledTexturesMap.at(toupper(piece->getDrawing())), SDL2pp::NullOpt, pieceRect);
     }
     //render the highlight of selected pieces
     for (auto &piece : selectedPieces) {
@@ -64,7 +56,7 @@ void MainGameScreen::refreshScreen() {
                 (piece->getPosition().getY() - 1) * pieceHeight + (pieceHeight - selectedPieceHeight)/2,
                 selectedPieceWidth,
                 selectedPieceHeight);
-        renderer->Copy(selectedTexturesMap.at(toupper(piece->getDrawing())), SDL2pp::NullOpt, pieceRect);
+        _renderer->Copy(selectedTexturesMap.at(toupper(piece->getDrawing())), SDL2pp::NullOpt, pieceRect);
     }
     //render pieces
     for (const auto &piece : _board) {
@@ -75,7 +67,7 @@ void MainGameScreen::refreshScreen() {
                 y,
                 pieceWidth,
                 pieceHeight);
-        renderer->Copy(texturesMap.at(piece->getDrawing()), SDL2pp::NullOpt, pieceRect);
+        _renderer->Copy(texturesMap.at(piece->getDrawing()), SDL2pp::NullOpt, pieceRect);
         float pieceProbability = piece->getProbability();
         //dont show probability bar of normal pieces
         if (pieceProbability == 0 || pieceProbability == 1)
@@ -98,7 +90,7 @@ void MainGameScreen::refreshScreen() {
                 (position.getY() - 1) * pieceHeight, //map board position to world position
                 pieceWidth,
                 pieceHeight);
-        renderer->Copy((*dotTexture), SDL2pp::NullOpt, possibleMoveRect);
+        _renderer->Copy((*dotTexture), SDL2pp::NullOpt, possibleMoveRect);
     }
 
     chatUI->renderMessages(inputData.message);
@@ -110,19 +102,19 @@ void MainGameScreen::refreshScreen() {
             moveNotificationTexture->GetWidth(),
             moveNotificationTexture->GetHeight()
     );
-    renderer->Copy((*moveNotificationTexture), SDL2pp::NullOpt, textNotificationRect);
+    _renderer->Copy((*moveNotificationTexture), SDL2pp::NullOpt, textNotificationRect);
 
     //show rendered frame
-    renderer->Present();
+    _renderer->Present();
 }
-void MainGameScreen::renderProbabilityBar(const int x,
-                                          const int y,
-                                          const int width,
-                                          const int height,
-                                          float percent,
-                                          const SDL_Color frontColor,
-                                          const SDL_Color backgroundColor,
-                                          const SDL_Color edgeColor) {
+void GameScene::renderProbabilityBar(const int x,
+                                     const int y,
+                                     const int width,
+                                     const int height,
+                                     float percent,
+                                     const SDL_Color frontColor,
+                                     const SDL_Color backgroundColor,
+                                     const SDL_Color edgeColor) {
     //check if percent is valid, between 0 and 1
     percent = percent > 1.f ? 1.f : percent < 0.f ? 0.f : percent;
     //edge size is 1/3 of the bar height
@@ -135,22 +127,22 @@ void MainGameScreen::renderProbabilityBar(const int x,
     SDL2pp::Rect rightEdge(x + width - edgeSize, y, edgeSize, height);
     SDL2pp::Rect leftEdge(x, y, edgeSize, height);
     //blend mode so can overlap pixel colors based on alpha value
-    renderer->SetDrawBlendMode(SDL_BLENDMODE_BLEND);
-    renderer->SetDrawColor(backgroundColor);
-    renderer->FillRect(backgroundRect);
-    renderer->SetDrawColor(frontColor);
-    renderer->FillRect(frontRect);
+    _renderer->SetDrawBlendMode(SDL_BLENDMODE_BLEND);
+    _renderer->SetDrawColor(backgroundColor);
+    _renderer->FillRect(backgroundRect);
+    _renderer->SetDrawColor(frontColor);
+    _renderer->FillRect(frontRect);
     //edges
-    renderer->SetDrawColor(edgeColor);
-    renderer->FillRect(topEdge);
-    renderer->FillRect(bottomEdge);
-    renderer->FillRect(rightEdge);
-    renderer->FillRect(leftEdge);
+    _renderer->SetDrawColor(edgeColor);
+    _renderer->FillRect(topEdge);
+    _renderer->FillRect(bottomEdge);
+    _renderer->FillRect(rightEdge);
+    _renderer->FillRect(leftEdge);
     //back to none blend mode
-    renderer->SetDrawBlendMode(SDL_BLENDMODE_NONE);
+    _renderer->SetDrawBlendMode(SDL_BLENDMODE_NONE);
 }
 
-void MainGameScreen::selectPiece(const int x, const int y, const SDL_Color& color, bool merge) {
+void GameScene::selectPiece(const int x, const int y, const SDL_Color& color, bool merge) {
     Piece* piece = _board.getPiece(Position(x,y));
     if (!piece)
         return;
@@ -161,17 +153,17 @@ void MainGameScreen::selectPiece(const int x, const int y, const SDL_Color& colo
     showEntangledPieces(piece);
 }
 
-void MainGameScreen::deselectAllPieces() {
+void GameScene::deselectAllPieces() {
     selectedPieces.clear();
     entangledPiecesPosition.clear();
     possibleMoves.clear();
 }
 
-void MainGameScreen::paintMoveSelectedNotification(const SDL_Color& color) {
+void GameScene::paintMoveSelectedNotification(const SDL_Color& color) {
     moveNotificationTexture->SetColorAndAlphaMod(color);
 }
 
-void MainGameScreen::initColors() {
+void GameScene::initColors() {
     this->colors.normalMove.r = 0;
     this->colors.normalMove.g = 255;
     this->colors.normalMove.b = 255;
@@ -208,7 +200,7 @@ void MainGameScreen::initColors() {
     this->colors.entangled.a = 255;
 }
 
-void MainGameScreen::goToDefaultMovement() {
+void GameScene::goToDefaultMovement() {
     inputData.pieceSelected = false;
     inputData.firstEmptySelected = false;
     inputData.typeOfMove = 'n';
@@ -216,7 +208,7 @@ void MainGameScreen::goToDefaultMovement() {
     paintMoveSelectedNotification(colors.normalMove);
 }
 
-void MainGameScreen::loadMoveSelectedNotification(const int alpha) {
+void GameScene::loadMoveSelectedNotification(const int alpha) {
     // Initialize SDL_ttf library
     SDL2pp::SDLTTF ttf;
     // Load font, 12pt size
@@ -225,48 +217,48 @@ void MainGameScreen::loadMoveSelectedNotification(const int alpha) {
     // Render the text into new texture. Note that SDL_ttf render
     // text into Surface, which is converted into texture on the fly
     moveNotificationTexture = std::make_unique<SDL2pp::Texture>(
-            (*renderer),
+            (*_renderer),
             font.RenderText_Blended("*", SDL_Color{255, 255, 255, Uint8(alpha)}));
 
 }
 
-void MainGameScreen::loadBoardTextures() {
-    texturesMap.insert({BOARD_KEY, SDL2pp::Texture((*renderer), BOARD_FILEPATH)});
+void GameScene::loadBoardTextures() {
+    texturesMap.insert({BOARD_KEY, SDL2pp::Texture((*_renderer), BOARD_FILEPATH)});
 
-    texturesMap.insert({WHITE_PAWN_KEY, SDL2pp::Texture((*renderer), WHITE_PAWN_FILEPATH)});
-    texturesMap.insert({WHITE_ROOK_KEY, SDL2pp::Texture((*renderer), WHITE_ROOK_FILEPATH)});
-    texturesMap.insert({WHITE_KNIGHT_KEY, SDL2pp::Texture((*renderer), WHITE_KNIGHT_FILEPATH)});
-    texturesMap.insert({WHITE_BISHOP_KEY, SDL2pp::Texture((*renderer), WHITE_BISHOP_FILEPATH)});
-    texturesMap.insert({WHITE_KING_KEY, SDL2pp::Texture((*renderer), WHITE_KING_FILEPATH)});
-    texturesMap.insert({WHITE_QUEEN_KEY, SDL2pp::Texture((*renderer), WHITE_QUEEN_FILEPATH)});
+    texturesMap.insert({WHITE_PAWN_KEY, SDL2pp::Texture((*_renderer), WHITE_PAWN_FILEPATH)});
+    texturesMap.insert({WHITE_ROOK_KEY, SDL2pp::Texture((*_renderer), WHITE_ROOK_FILEPATH)});
+    texturesMap.insert({WHITE_KNIGHT_KEY, SDL2pp::Texture((*_renderer), WHITE_KNIGHT_FILEPATH)});
+    texturesMap.insert({WHITE_BISHOP_KEY, SDL2pp::Texture((*_renderer), WHITE_BISHOP_FILEPATH)});
+    texturesMap.insert({WHITE_KING_KEY, SDL2pp::Texture((*_renderer), WHITE_KING_FILEPATH)});
+    texturesMap.insert({WHITE_QUEEN_KEY, SDL2pp::Texture((*_renderer), WHITE_QUEEN_FILEPATH)});
 
-    texturesMap.insert({BLACK_PAWN_KEY, SDL2pp::Texture((*renderer), BLACK_PAWN_FILEPATH)});
-    texturesMap.insert({BLACK_ROOK_KEY, SDL2pp::Texture((*renderer), BLACK_ROOK_FILEPATH)});
-    texturesMap.insert({BLACK_KNIGHT_KEY, SDL2pp::Texture((*renderer), BLACK_KNIGHT_FILEPATH)});
-    texturesMap.insert({BLACK_BISHOP_KEY, SDL2pp::Texture((*renderer), BLACK_BISHOP_FILEPATH)});
-    texturesMap.insert({BLACK_KING_KEY, SDL2pp::Texture((*renderer), BLACK_KING_FILEPATH)});
-    texturesMap.insert({BLACK_QUEEN_KEY, SDL2pp::Texture((*renderer), BLACK_QUEEN_FILEPATH)});
+    texturesMap.insert({BLACK_PAWN_KEY, SDL2pp::Texture((*_renderer), BLACK_PAWN_FILEPATH)});
+    texturesMap.insert({BLACK_ROOK_KEY, SDL2pp::Texture((*_renderer), BLACK_ROOK_FILEPATH)});
+    texturesMap.insert({BLACK_KNIGHT_KEY, SDL2pp::Texture((*_renderer), BLACK_KNIGHT_FILEPATH)});
+    texturesMap.insert({BLACK_BISHOP_KEY, SDL2pp::Texture((*_renderer), BLACK_BISHOP_FILEPATH)});
+    texturesMap.insert({BLACK_KING_KEY, SDL2pp::Texture((*_renderer), BLACK_KING_FILEPATH)});
+    texturesMap.insert({BLACK_QUEEN_KEY, SDL2pp::Texture((*_renderer), BLACK_QUEEN_FILEPATH)});
 
-    selectedTexturesMap.insert({WHITE_PAWN_KEY, SDL2pp::Texture((*renderer), SELECTED_PAWN_FILEPATH)});
-    selectedTexturesMap.insert({WHITE_ROOK_KEY, SDL2pp::Texture((*renderer), SELECTED_ROOK_FILEPATH)});
-    selectedTexturesMap.insert({WHITE_KNIGHT_KEY, SDL2pp::Texture((*renderer), SELECTED_KNIGHT_FILEPATH)});
-    selectedTexturesMap.insert({WHITE_BISHOP_KEY, SDL2pp::Texture((*renderer), SELECTED_BISHOP_FILEPATH)});
-    selectedTexturesMap.insert({WHITE_KING_KEY, SDL2pp::Texture((*renderer), SELECTED_KING_FILEPATH)});
-    selectedTexturesMap.insert({WHITE_QUEEN_KEY, SDL2pp::Texture((*renderer), SELECTED_QUEEN_FILEPATH)});
+    selectedTexturesMap.insert({WHITE_PAWN_KEY, SDL2pp::Texture((*_renderer), SELECTED_PAWN_FILEPATH)});
+    selectedTexturesMap.insert({WHITE_ROOK_KEY, SDL2pp::Texture((*_renderer), SELECTED_ROOK_FILEPATH)});
+    selectedTexturesMap.insert({WHITE_KNIGHT_KEY, SDL2pp::Texture((*_renderer), SELECTED_KNIGHT_FILEPATH)});
+    selectedTexturesMap.insert({WHITE_BISHOP_KEY, SDL2pp::Texture((*_renderer), SELECTED_BISHOP_FILEPATH)});
+    selectedTexturesMap.insert({WHITE_KING_KEY, SDL2pp::Texture((*_renderer), SELECTED_KING_FILEPATH)});
+    selectedTexturesMap.insert({WHITE_QUEEN_KEY, SDL2pp::Texture((*_renderer), SELECTED_QUEEN_FILEPATH)});
 
-    entangledTexturesMap.insert({WHITE_PAWN_KEY, SDL2pp::Texture((*renderer), SELECTED_PAWN_FILEPATH)});
-    entangledTexturesMap.insert({WHITE_ROOK_KEY, SDL2pp::Texture((*renderer), SELECTED_ROOK_FILEPATH)});
-    entangledTexturesMap.insert({WHITE_KNIGHT_KEY, SDL2pp::Texture((*renderer), SELECTED_KNIGHT_FILEPATH)});
-    entangledTexturesMap.insert({WHITE_BISHOP_KEY, SDL2pp::Texture((*renderer), SELECTED_BISHOP_FILEPATH)});
-    entangledTexturesMap.insert({WHITE_KING_KEY, SDL2pp::Texture((*renderer), SELECTED_KING_FILEPATH)});
-    entangledTexturesMap.insert({WHITE_QUEEN_KEY, SDL2pp::Texture((*renderer), SELECTED_QUEEN_FILEPATH)});
+    entangledTexturesMap.insert({WHITE_PAWN_KEY, SDL2pp::Texture((*_renderer), SELECTED_PAWN_FILEPATH)});
+    entangledTexturesMap.insert({WHITE_ROOK_KEY, SDL2pp::Texture((*_renderer), SELECTED_ROOK_FILEPATH)});
+    entangledTexturesMap.insert({WHITE_KNIGHT_KEY, SDL2pp::Texture((*_renderer), SELECTED_KNIGHT_FILEPATH)});
+    entangledTexturesMap.insert({WHITE_BISHOP_KEY, SDL2pp::Texture((*_renderer), SELECTED_BISHOP_FILEPATH)});
+    entangledTexturesMap.insert({WHITE_KING_KEY, SDL2pp::Texture((*_renderer), SELECTED_KING_FILEPATH)});
+    entangledTexturesMap.insert({WHITE_QUEEN_KEY, SDL2pp::Texture((*_renderer), SELECTED_QUEEN_FILEPATH)});
 
     for (auto& texture : entangledTexturesMap) {
         texture.second.SetColorAndAlphaMod(colors.entangled);
     }
 }
 
-void MainGameScreen::setUserInputDefaultValues() {
+void GameScene::setUserInputDefaultValues() {
     inputData.chatClicked = false;
     inputData.message = "";
     inputData.pieceSelected = false;
@@ -278,18 +270,7 @@ void MainGameScreen::setUserInputDefaultValues() {
     inputData.secondPositionY = 0;
 }
 
-void MainGameScreen::startSDLWindow() {
-    SDL2pp::SDL(SDL_INIT_VIDEO | SDL_INIT_AUDIO);
-    this->window = std::make_unique<SDL2pp::Window>("Quantum Chess",
-                                                    SDL_WINDOWPOS_UNDEFINED,
-                                                    SDL_WINDOWPOS_UNDEFINED,
-                                                    screenWidth,
-                                                    screenHeight,
-                                                    SDL_WINDOW_RESIZABLE);
-    this->renderer = std::make_unique<SDL2pp::Renderer>((*window), -1, SDL_RENDERER_ACCELERATED);
-}
-
-void MainGameScreen::handleBoardClick() {
+void GameScene::handleBoardClick() {
     int mouseX, mouseY;
     SDL_GetMouseState(&mouseX, &mouseY);
     std::cout << "xmouse " << mouseX << " ymouse " << mouseY << std::endl;
@@ -357,17 +338,17 @@ void MainGameScreen::handleBoardClick() {
     }
 }
 
-void MainGameScreen::manageBoardEvent(SDL_Event &event, bool& gameFinished) {
+void GameScene::manageBoardEvent(SDL_Event &event) {
     switch (event.type) {
         case SDL_QUIT:
             std::cout << "GAME FINISHED" << std::endl;
-            gameFinished = true;
+            _gameFinished = true;
             return;
         case SDL_KEYDOWN:
             switch (event.key.keysym.sym) {
                 case SDLK_ESCAPE: case SDLK_q:
                     std::cout << "GAME FINISHED" << std::endl;
-                    gameFinished = true;
+                    _gameFinished = true;
                     return;
                 case SDLK_n:
                     std::cout << "NNNNNNNNNNNNNNNNNN" << std::endl;
@@ -394,7 +375,7 @@ void MainGameScreen::manageBoardEvent(SDL_Event &event, bool& gameFinished) {
     }
 }
 
-void MainGameScreen::manageChatEvent(SDL_Event &event, bool& gameFinished) {
+void GameScene::manageChatEvent(SDL_Event &event) {
     std::cout << "manage chat event" << std::endl;
     switch (event.type) {
         case SDL_KEYDOWN:
@@ -416,13 +397,13 @@ void MainGameScreen::manageChatEvent(SDL_Event &event, bool& gameFinished) {
                 inputData.message = "";
             } else if (event.key.keysym.sym == SDLK_ESCAPE) {
                 std::cout << "GAME FINISHED" << std::endl;
-                gameFinished = true;
+                _gameFinished = true;
                 return;
             }
             break;
         case SDL_QUIT:
             std::cout << "GAME FINISHED" << std::endl;
-            gameFinished = true;
+            _gameFinished = true;
             return;
         case SDL_TEXTINPUT:
             /* Add new text onto the end of our text */
@@ -431,13 +412,13 @@ void MainGameScreen::manageChatEvent(SDL_Event &event, bool& gameFinished) {
     }
 }
 
-void MainGameScreen::whereDidMouseClicked() {
+void GameScene::whereDidMouseClicked() {
     int mouseX, mouseY;
     SDL_GetMouseState(&mouseX, &mouseY);
     inputData.chatClicked = chatUI->clickInChat(mouseX, mouseY);
 }
 
-void MainGameScreen::loadPossibleMoves(const Piece* piece, const SDL_Color& color, bool merge) {
+void GameScene::loadPossibleMoves(const Piece* piece, const SDL_Color& color, bool merge) {
     if (!piece)
         return;
     if (!possibleMoves.empty()){
@@ -463,7 +444,7 @@ void MainGameScreen::loadPossibleMoves(const Piece* piece, const SDL_Color& colo
     }
 }
 
-void MainGameScreen::showEntangledPieces(Piece *piece) {
+void GameScene::showEntangledPieces(Piece *piece) {
     auto newEntangledPieces = piece->getEntanglements();
     std::cout << "entangled pieces: " << newEntangledPieces.size() << std::endl;
     if (!newEntangledPieces.empty())
@@ -477,7 +458,7 @@ void MainGameScreen::showEntangledPieces(Piece *piece) {
         entangledPiecesPosition = newEntangledPieces;
 }
 
-void MainGameScreen::endMessage(char end_state) {
+void GameScene::endMessage(char end_state) {
     //todo: fix this messages
     std::string message;
     if (end_state == BLACK_CHAR){
@@ -523,7 +504,7 @@ void MainGameScreen::endMessage(char end_state) {
     }
 }
 
-bool MainGameScreen::canMovePiece() {
+bool GameScene::canMovePiece() {
     if (_playerType == WHITE_CHAR && _board.getCurrentTurn() == PieceColor::WHITE)
         return true;
     if (_playerType == BLACK_CHAR && _board.getCurrentTurn() == PieceColor::BLACK)
@@ -531,8 +512,19 @@ bool MainGameScreen::canMovePiece() {
     return false;
 }
 
-std::string MainGameScreen::login() {
-    Login login(*renderer);
+void GameScene::load(SDL2pp::Renderer *renderer) {
+    Scene::load(renderer);
+    //load scene, but dont process input nor render textures
+    this->chatUI->load(_renderer);
+    this->loadBoardTextures();
+    this->loadMoveSelectedNotification(222);
+    this->paintMoveSelectedNotification(colors.normalMove);
+    this->dotTexture = std::make_unique<SDL2pp::Texture>((*_renderer), DOT_FILEPATH);
+    this->dotTexture->SetAlphaMod(100);
+}
+
+/*std::string GameScene::login() {
+    LoginScene login(_renderer.get());
     login.start();
     return login.get_user_name();
-}
+}*/

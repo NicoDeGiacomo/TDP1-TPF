@@ -12,9 +12,9 @@
 #include <vector>
 #include <thread>
 #include "Client.h"
-#include "Login.h"
+#include "LoginScene.h"
 #include "GameLobby.h"
-#include "MainGameScreen.h"
+#include "GameScene.h"
 
 void close_client() {
     std::cout << "closing client" << std::endl;
@@ -28,7 +28,7 @@ int main(int argc, const char *argv[]) {
     /// Testing board window, you can comment this block if you want (640x480 hardcoded)
     //Board board;
     //Client client(argv[1], argv[2], board);
-    //MainGameScreen mainGameScreen(renderer, &board, client.getQueue());
+    //GameScene mainGameScreen(renderer, &board, client.getQueue());
     // run thread
     //mainGameScreen.start();
     //std::cin.get(); //any key to continue
@@ -36,7 +36,7 @@ int main(int argc, const char *argv[]) {
     /////////////////////////////////
 
 
-    /*Login login(renderer);
+    /*LoginScene login(renderer);
     login.start();
     std::string user_name = login.get_user_name();
 
