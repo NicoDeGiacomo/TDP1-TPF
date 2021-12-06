@@ -83,7 +83,7 @@ private:
     std::list<Position> entangledPiecesPosition;
     Board &_board;
     BlockingQueue<std::shared_ptr<Message>>* userInputQueue;
-    const int boardWidth = 640;
+    const int boardWidth = 480;
     const int chatWidth = 300;
     const int screenWidth = boardWidth + chatWidth;
     const int screenHeight = 480;

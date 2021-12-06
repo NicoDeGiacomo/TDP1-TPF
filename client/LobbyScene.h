@@ -17,7 +17,7 @@ private:
     int _numberOfRooms;
     int numberOfColumns;
     bool clickedInOneRoom;
-    const int _width = 940;
+    const int _width = 780;
     const int _height = 480;
     int messageWidth;
     int messageHeight;
