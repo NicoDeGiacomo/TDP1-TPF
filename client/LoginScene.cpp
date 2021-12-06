@@ -7,42 +7,49 @@
 }*/
 
 void LoginScene::updateLoop() {
-	
-	SDL_bool done = SDL_FALSE;
-
+    done = false;
+    //Timer::start();
     while (!done) {
-        SDL_Event event;
-        if (SDL_PollEvent(&event)) {
-            switch (event.type) {
-                case SDL_KEYDOWN:
-					//Handle backspace
-					if( event.key.keysym.sym == SDLK_BACKSPACE && user_name.length() > 0 ) {
-						user_name.pop_back();
-					}
-					//Handle copy
-					else if( event.key.keysym.sym == SDLK_c && SDL_GetModState() & KMOD_CTRL ) {
-						SDL_SetClipboardText( user_name.c_str() );
-					}
-					//Handle paste
-					else if( event.key.keysym.sym == SDLK_v && SDL_GetModState() & KMOD_CTRL ) {
-						user_name += SDL_GetClipboardText();
-					}
-					else if (event.key.keysym.scancode == SDL_SCANCODE_RETURN)
-						done = SDL_TRUE;
-                    break;
-				case SDL_QUIT:
-                    /* Quit */
-                    done = SDL_TRUE;
-                    break;
-                case SDL_TEXTINPUT:
-                    /* Add new text onto the end of our text */
-					user_name += event.text.text;
-                    break;
-            }
-        }
-        render();
+        Uint32 startLoopTime = SDL_GetTicks();
+        this->handleEvents();
+        this->render();
+        //todo: im strill trying to make a global timer work
+        //Uint32 deltaTime = Timer::partial();
+        Uint32 deltaTime = SDL_GetTicks() - startLoopTime;
+        if (deltaTime < TIME_BETWEEN_FRAMES)
+            SDL_Delay(TIME_BETWEEN_FRAMES - deltaTime);
+    }
+}
 
-        SDL_Delay(1000/60); //todo: should ask for monitor refresh rate, this is capped at 60fps
+void LoginScene::handleEvents() {
+    SDL_Event event;
+    if (SDL_PollEvent(&event)) {
+        switch (event.type) {
+            case SDL_KEYDOWN:
+                //Handle backspace
+                if( event.key.keysym.sym == SDLK_BACKSPACE && user_name.length() > 0 ) {
+                    user_name.pop_back();
+                }
+                    //Handle copy
+                else if( event.key.keysym.sym == SDLK_c && SDL_GetModState() & KMOD_CTRL ) {
+                    SDL_SetClipboardText( user_name.c_str() );
+                }
+                    //Handle paste
+                else if( event.key.keysym.sym == SDLK_v && SDL_GetModState() & KMOD_CTRL ) {
+                    user_name += SDL_GetClipboardText();
+                }
+                else if (event.key.keysym.scancode == SDL_SCANCODE_RETURN)
+                    done = SDL_TRUE;
+                break;
+            case SDL_QUIT:
+                /* Quit */
+                done = SDL_TRUE;
+                break;
+            case SDL_TEXTINPUT:
+                /* Add new text onto the end of our text */
+                user_name += event.text.text;
+                break;
+        }
     }
 }
 
@@ -116,4 +123,5 @@ void LoginScene::insert_text(std::string &text,
 void LoginScene::load(SDL2pp::Renderer *renderer) {
     Scene::load(renderer);
     //load scene, but dont process input nor render textures
+    this->render();
 }

@@ -7,13 +7,15 @@
 #include <SDL_image.h>
 #include <SDL2pp/SDL2pp.hh>
 
+#define TIME_BETWEEN_FRAMES 1000 / 60
 
 class Scene {
 protected:
     SDL2pp::Renderer *_renderer;
+    virtual void render() = 0;
+    virtual void handleEvents() = 0;
 public:
     virtual void updateLoop() = 0;
-    virtual void render() = 0;
     virtual void load(SDL2pp::Renderer *renderer);
     virtual ~Scene() = default;
 };

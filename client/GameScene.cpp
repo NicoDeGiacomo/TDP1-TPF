@@ -19,6 +19,20 @@ GameScene::GameScene(Board& board,
 }
 
 void GameScene::updateLoop() {
+    /*_gameFinished = false;
+    while (!_gameFinished) {*/ //this loop is outside
+    Uint32 startLoopTime = SDL_GetTicks();
+    this->handleEvents();
+    this->render();
+    //todo: im strill trying to make a global timer work
+    //Uint32 deltaTime = Timer::partial();
+    Uint32 deltaTime = SDL_GetTicks() - startLoopTime;
+    if (deltaTime < TIME_BETWEEN_FRAMES)
+        SDL_Delay(TIME_BETWEEN_FRAMES - deltaTime);
+    //}
+}
+
+void GameScene::handleEvents() {
     SDL_Event event;
     while (SDL_PollEvent(&event)) {
         if (event.type == SDL_MOUSEBUTTONDOWN)
@@ -521,6 +535,7 @@ void GameScene::load(SDL2pp::Renderer *renderer) {
     this->paintMoveSelectedNotification(colors.normalMove);
     this->dotTexture = std::make_unique<SDL2pp::Texture>((*_renderer), DOT_FILEPATH);
     this->dotTexture->SetAlphaMod(100);
+    this->render();
 }
 
 /*std::string GameScene::login() {

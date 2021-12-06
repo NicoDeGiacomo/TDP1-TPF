@@ -98,6 +98,9 @@ private:
     std::unique_ptr<ChatUI> chatUI;
     char _playerType;
     bool& _gameFinished;
+
+    void render() override;
+    void handleEvents() override;
 public:
     GameScene(Board& board,
               BlockingQueue<std::shared_ptr<Message>>* userInputQueue,
@@ -153,7 +156,6 @@ public:
 
     //std::string login();
     void updateLoop() override;
-    void render() override;
     void load(SDL2pp::Renderer* renderer) override;
 };
 

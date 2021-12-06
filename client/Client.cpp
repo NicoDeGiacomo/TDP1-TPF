@@ -27,15 +27,16 @@ void Client::run() {
     //LoginScene login;
     //add scene main game screen
     sceneManager.loadScene(LOGIN_SCENE);
-    sceneManager.updateLoopActiveScene();
+    sceneManager.updateLoopActiveScene(); //maybe this loops should be iterated here? instead of them knowing when to break
     sceneManager.loadScene(LOBBY_SCENE);
-    sceneManager.renderActiveScene();
-    sceneManager.updateLoopActiveScene();
+//    while (!gameFinished){
+        sceneManager.updateLoopActiveScene(); //maybe this loops should be iterated here? instead of them knowing when to break, kinda like Game_Scene loop
+//        SDL_Delay(1000/60); //todo: should ask for monitor refresh rate, this is capped at 60fps
+    //}
     sceneManager.loadScene(GAME_SCENE);
     
     while (!gameFinished) {
         sceneManager.updateLoopActiveScene();
-        sceneManager.renderActiveScene();
         bool moreMessagesToProcess = true;
         
         while(moreMessagesToProcess) {
@@ -55,9 +56,9 @@ void Client::run() {
             }
         }
 
-        SDL_Delay(1000/60); //todo: should ask for monitor refresh rate, this is capped at 60fps
+        //SDL_Delay(1000/60); //todo: should ask for monitor refresh rate, this is capped at 60fps
         if (_board.isFinished()){
-            sceneManager.renderActiveScene();
+            sceneManager.updateLoopActiveScene();
             //mainGameScreen.endMessage(SPECTATOR_CHAR); cant do this anymore, need to think another way
             std::cout << "game finished" << std::endl;
             break; 

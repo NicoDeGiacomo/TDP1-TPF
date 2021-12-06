@@ -29,7 +29,7 @@ public:
 
     void updateLoopActiveScene();
 
-    void renderActiveScene();
+    //void renderActiveScene();
 };
 
 

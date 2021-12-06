@@ -15,6 +15,8 @@
 class LobbyScene : public Scene {
 private:
     int _numberOfRooms;
+    int numberOfColumns;
+    bool clickedInOneRoom;
     const int _width = 940;
     const int _height = 480;
     int messageWidth;
@@ -25,10 +27,11 @@ private:
     std::vector<std::unique_ptr<SDL2pp::Texture>> textures;
 
     void loadRoomsTextures();
+    void render() override;
+    void handleEvents() override;
 public:
     LobbyScene(int numberOfRooms);
     void updateLoop() override;
-    void render() override;
     void load(SDL2pp::Renderer* renderer) override;
 
     bool clickedInsideOneRoom();

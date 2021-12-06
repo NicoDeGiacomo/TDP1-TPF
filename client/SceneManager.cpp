@@ -19,9 +19,9 @@ void SceneManager::updateLoopActiveScene(){
     _scenes[activeScene]->updateLoop();
 }
 
-void SceneManager::renderActiveScene(){
+/*void SceneManager::renderActiveScene(){
     _scenes[activeScene]->render();
-}
+}*/
 
 void SceneManager::loadWindow() {
     SDL2pp::SDL(SDL_INIT_VIDEO | SDL_INIT_AUDIO);

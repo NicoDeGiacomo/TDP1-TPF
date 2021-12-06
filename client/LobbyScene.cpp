@@ -3,20 +3,31 @@
 //
 
 #include "LobbyScene.h"
-
 LobbyScene::LobbyScene(int numberOfRooms) {
     _numberOfRooms = numberOfRooms;
 }
 
 void LobbyScene::updateLoop() {
+    clickedInOneRoom = false;
+    while(!clickedInOneRoom) {
+        Uint32 startLoopTime = SDL_GetTicks();
+        this->handleEvents();
+        this->render();
+        //todo: im strill trying to make a global timer work
+        //Uint32 deltaTime = Timer::partial();
+        Uint32 deltaTime = SDL_GetTicks() - startLoopTime;
+        if (deltaTime < TIME_BETWEEN_FRAMES)
+            SDL_Delay(TIME_BETWEEN_FRAMES - deltaTime);
+    }
+}
+
+void LobbyScene::handleEvents() {
     SDL_Event event;
-    bool clickedInOneRoom = false;
-    while (SDL_PollEvent(&event) || !clickedInOneRoom) {
+    while (SDL_PollEvent(&event)) {
         if (event.type == SDL_MOUSEBUTTONDOWN) {
             clickedInOneRoom = clickedInsideOneRoom();
-            //break;
+            break;
         }
-        SDL_Delay(1000/60); //todo: should ask for monitor refresh rate, this is capped at 60fps
     }
 }
 
@@ -26,6 +37,7 @@ void LobbyScene::render() {
 
     _renderer->Copy((*backgroundImageTexture), SDL2pp::NullOpt, SDL2pp::Rect(0, 0, _width, _height));
     int roomsFitHorizontally = _width / (messageWidth + xOffset);
+    numberOfColumns = roomsFitHorizontally;
     int roomsFitVertically = _height / (messageHeight + yOffset);
     unsigned long int currentRoomNumber = 0;
     for(int i = 0; i < roomsFitVertically && currentRoomNumber < textures.size(); ++i) {
@@ -52,12 +64,14 @@ void LobbyScene::load(SDL2pp::Renderer *renderer) {
     Scene::load(renderer);
     backgroundImageTexture = std::make_unique<SDL2pp::Texture>((*_renderer), LOBBY_BACKGROUND_FILEPATH);
     loadRoomsTextures();
+    this->render();
 }
 
 void LobbyScene::loadRoomsTextures() {// Initialize SDL_ttf library
     SDL2pp::SDLTTF ttf;
     // Load font
     SDL2pp::Font font("../assets/fonts/Vera.ttf", ROOM_NAME_FONT_SIZE);
+    //todo: max text size would be with room 99, look into this
     TTF_SizeText(font.Get(), "Room 99", &messageWidth, &messageHeight);
     for (int i = 0; i < _numberOfRooms; ++i) {
         // add the text into new texture. Note that SDL_ttf render
@@ -80,12 +94,16 @@ bool LobbyScene::clickedInsideOneRoom() {
     float validPercentageY = (float)messageHeight / (float)(messageHeight + yOffset);
     float clampedMouseXToGrid = (float)mouseX / (float)(messageWidth + xOffset);
     float clampedMouseYToGrid = (float)mouseY / (float)(messageHeight + yOffset);
+    int xBoxGridClickPosition = floor(clampedMouseXToGrid);
+    int yBoxGridClickPosition = floor(clampedMouseYToGrid);
     //clicked outside of a room box
-    if (clampedMouseXToGrid - floor(clampedMouseXToGrid) > validPercentageX)
-        clampedMouseXToGrid = -1;
+    if (clampedMouseXToGrid - xBoxGridClickPosition > validPercentageX)
+        xBoxGridClickPosition = -1;
     //clicked outside of a room box
-    if (clampedMouseYToGrid - floor(clampedMouseYToGrid) > validPercentageY)
-        clampedMouseYToGrid = -1;
-    std::cout << "clicked in " << floor(clampedMouseXToGrid) << " and " << floor(clampedMouseYToGrid) << std::endl;
-    return clampedMouseXToGrid != -1 && clampedMouseYToGrid != -1;
+    if (clampedMouseYToGrid - yBoxGridClickPosition > validPercentageY)
+        yBoxGridClickPosition = -1;
+    std::cout << "clicked in " << xBoxGridClickPosition << " and " << yBoxGridClickPosition << std::endl;
+    return  xBoxGridClickPosition != -1 &&
+            yBoxGridClickPosition != -1 &&
+            (yBoxGridClickPosition * numberOfColumns + xBoxGridClickPosition) < _numberOfRooms;
 }
