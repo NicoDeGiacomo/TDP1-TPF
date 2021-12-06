@@ -10,14 +10,14 @@ LobbyScene::LobbyScene(int numberOfRooms) {
 void LobbyScene::updateLoop() {
     clickedInOneRoom = false;
     while(!clickedInOneRoom) {
-        Uint32 startLoopTime = SDL_GetTicks();
         this->handleEvents();
-        this->render();
-        //todo: im strill trying to make a global timer work
-        //Uint32 deltaTime = Timer::partial();
-        Uint32 deltaTime = SDL_GetTicks() - startLoopTime;
+        Uint32 deltaTime = Timer::partial();
+        //wait if not enough time has passed for it to render another frame
         if (deltaTime < TIME_BETWEEN_FRAMES)
             SDL_Delay(TIME_BETWEEN_FRAMES - deltaTime);
+        this->render();
+        //time since previous render is 0 again
+        Timer::reset();
     }
 }
 

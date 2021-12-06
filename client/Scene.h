@@ -6,6 +6,7 @@
 #define QUANTUM_CHESS_SCENE_H
 #include <SDL_image.h>
 #include <SDL2pp/SDL2pp.hh>
+#include "Timer.h"
 
 #define TIME_BETWEEN_FRAMES 1000 / 60
 

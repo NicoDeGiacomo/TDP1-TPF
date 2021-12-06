@@ -1,7 +1,7 @@
 ################ INITIAL ################
 cmake_minimum_required(VERSION 3.16)
 project(QUANTUM-CHESS)
-set(CMAKE_CXX_STANDARD 14)
+set(CMAKE_CXX_STANDARD 17)
 add_compile_options(-Wall -Wextra -pedantic -Werror)
 
 
