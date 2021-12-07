@@ -37,7 +37,7 @@ void LobbyScene::render() {
 
     _renderer->Copy((*backgroundImageTexture), SDL2pp::NullOpt, SDL2pp::Rect(0, 0, _width, _height));
     for(auto& button : buttons){
-        button.render(_renderer);
+        button.render(_renderer, 255);
     }
     //show rendered frame
     _renderer->Present();
