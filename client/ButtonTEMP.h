@@ -21,7 +21,7 @@ public:
 
     void click();
 
-    void render(SDL2pp::Renderer *renderer);
+    void render(SDL2pp::Renderer *renderer, const int alpha);
 
     bool contains(int x, int y);
 };
