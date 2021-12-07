@@ -39,26 +39,6 @@ void LobbyScene::render() {
     for(auto& button : buttons){
         button.render(_renderer);
     }
-    /*int roomsFitHorizontally = _width / (messageWidth + xOffset);
-    numberOfColumns = roomsFitHorizontally;
-    int roomsFitVertically = _height / (messageHeight + yOffset);
-    unsigned long int currentRoomNumber = 0;
-    for(int i = 0; i < roomsFitVertically && currentRoomNumber < textures.size(); ++i) {
-        for(int j = 0; j < roomsFitHorizontally && currentRoomNumber < textures.size(); ++j) {
-            SDL2pp::Rect messageRect(
-                    j * (messageWidth + xOffset),
-                    i * (messageHeight + yOffset),
-                    textures[currentRoomNumber]->GetWidth(),
-                    textures[currentRoomNumber]->GetHeight()
-            );
-            _renderer->Copy((*textures[currentRoomNumber]), SDL2pp::NullOpt, messageRect);
-            ++currentRoomNumber;
-        }
-    }*/
-    /*std::cout << "textures: " << textures.size() <<
-                " textures rendered: " << currentRoomNumber <<
-                " fitHor: " << roomsFitHorizontally <<
-                " fitVer: " << roomsFitVertically << std::endl;*/
     //show rendered frame
     _renderer->Present();
 }
@@ -86,7 +66,7 @@ void LobbyScene::loadRoomsTextures() {// Initialize SDL_ttf library
             SDL2pp::Texture texture((*_renderer),
                             font.RenderText_Blended(
                                     "Room " + std::to_string(currentRoomNumber),
-                                    SDL_Color{255,255,255,255}));
+                                    SDL_Color{22,22,22,255}));
             SDL2pp::Rect buttonRect(
                     j * (messageWidth + xOffset),
                     i * (messageHeight + yOffset),

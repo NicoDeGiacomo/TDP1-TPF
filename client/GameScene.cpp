@@ -110,13 +110,23 @@ void GameScene::render() {
     chatUI->renderMessages(inputData.message);
 
     //render move notification text
-    SDL2pp::Rect textNotificationRect(
+    SDL2pp::Rect moveNotificationRect(
             boardWidth,
-            -moveNotificationTexture->GetHeight() / 8, //place the '*' on the top
+            -moveNotificationTexture->GetHeight() / 8, //place the '*' on the top left of chat
             moveNotificationTexture->GetWidth(),
             moveNotificationTexture->GetHeight()
     );
-    _renderer->Copy((*moveNotificationTexture), SDL2pp::NullOpt, textNotificationRect);
+    _renderer->Copy((*moveNotificationTexture), SDL2pp::NullOpt, moveNotificationRect);
+
+    //render turn notification text
+    paintTurnNotification((_board.getCurrentTurn() == PieceColor::WHITE) ? colors.white : colors.black);
+    SDL2pp::Rect turnNotificationRect(
+            boardWidth + chatWidth - turnNotificationTexture->GetWidth(),
+            -turnNotificationTexture->GetHeight() / 8, //place the '*' on the top right of chat
+            turnNotificationTexture->GetWidth(),
+            turnNotificationTexture->GetHeight()
+    );
+    _renderer->Copy((*turnNotificationTexture), SDL2pp::NullOpt, turnNotificationRect);
 
     //show rendered frame
     _renderer->Present();
@@ -212,6 +222,16 @@ void GameScene::initColors() {
     this->colors.entangled.g = 0;
     this->colors.entangled.b = 255;
     this->colors.entangled.a = 255;
+
+    this->colors.white.r = 255;
+    this->colors.white.g = 255;
+    this->colors.white.b = 255;
+    this->colors.white.a = 255;
+
+    this->colors.black.r = 0;
+    this->colors.black.g = 0;
+    this->colors.black.b = 0;
+    this->colors.black.a = 255;
 }
 
 void GameScene::goToDefaultMovement() {
@@ -222,7 +242,7 @@ void GameScene::goToDefaultMovement() {
     paintMoveSelectedNotification(colors.normalMove);
 }
 
-void GameScene::loadMoveSelectedNotification(const int alpha) {
+void GameScene::loadNotifications() {
     // Initialize SDL_ttf library
     SDL2pp::SDLTTF ttf;
     // Load font, 12pt size
@@ -232,8 +252,10 @@ void GameScene::loadMoveSelectedNotification(const int alpha) {
     // text into Surface, which is converted into texture on the fly
     moveNotificationTexture = std::make_unique<SDL2pp::Texture>(
             (*_renderer),
-            font.RenderText_Blended("*", SDL_Color{255, 255, 255, Uint8(alpha)}));
-
+            font.RenderText_Blended("*", SDL_Color{255, 255, 255, 255}));
+    turnNotificationTexture = std::make_unique<SDL2pp::Texture>(
+            (*_renderer),
+            font.RenderText_Blended("*", SDL_Color{255, 255, 255, 255}));
 }
 
 void GameScene::loadBoardTextures() {
@@ -531,15 +553,13 @@ void GameScene::load(SDL2pp::Renderer *renderer) {
     //load scene, but dont process input nor render textures
     this->chatUI->load(_renderer);
     this->loadBoardTextures();
-    this->loadMoveSelectedNotification(222);
+    this->loadNotifications();
     this->paintMoveSelectedNotification(colors.normalMove);
     this->dotTexture = std::make_unique<SDL2pp::Texture>((*_renderer), DOT_FILEPATH);
     this->dotTexture->SetAlphaMod(100);
     this->render();
 }
 
-/*std::string GameScene::login() {
-    LoginScene login(_renderer.get());
-    login.start();
-    return login.get_user_name();
-}*/
+void GameScene::paintTurnNotification(SDL_Color &color) {
+    turnNotificationTexture->SetColorAndAlphaMod(color);
+}

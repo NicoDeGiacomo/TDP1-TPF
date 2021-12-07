@@ -30,6 +30,7 @@ void SceneManager::loadWindow() {
                                                SDL_WINDOWPOS_UNDEFINED,
                                                screenWidth,
                                                screenHeight,
-                                               SDL_WINDOW_RESIZABLE);
+                                               SDL_WINDOW_ALWAYS_ON_TOP);
+    std::cout << "drawable height: " << _window->GetDrawableHeight() << " height " << _window->GetHeight() << " size " << _window->GetSize() << std::endl;
     _renderer = std::make_unique<SDL2pp::Renderer>((*_window), -1, SDL_RENDERER_ACCELERATED);
 }

@@ -23,10 +23,12 @@ struct Colors {
     SDL_Color normalMove;
     SDL_Color splitMove;
     SDL_Color mergeMove;
+    SDL_Color entangled;
     SDL_Color grey;
     SDL_Color darkRed;
     SDL_Color darkGreen;
-    SDL_Color entangled;
+    SDL_Color white;
+    SDL_Color black;
 };
 #define BOARD_KEY 'Z'
 
@@ -77,6 +79,7 @@ private:
     std::unordered_map<char,SDL2pp::Texture> selectedTexturesMap;
     std::unordered_map<char,SDL2pp::Texture> entangledTexturesMap;
     std::unique_ptr<SDL2pp::Texture> moveNotificationTexture;
+    std::unique_ptr<SDL2pp::Texture> turnNotificationTexture;
     std::unique_ptr<SDL2pp::Texture> dotTexture;
     std::list<Piece*> selectedPieces;
     std::list<Position> possibleMoves;
@@ -121,7 +124,7 @@ public:
 
     void goToDefaultMovement();
 
-    void loadMoveSelectedNotification(const int alpha);
+    void loadNotifications();
 
     void loadBoardTextures();
 
@@ -157,6 +160,8 @@ public:
     //std::string login();
     void updateLoop() override;
     void load(SDL2pp::Renderer* renderer) override;
+
+    void paintTurnNotification(SDL_Color &color);
 };
 
 
