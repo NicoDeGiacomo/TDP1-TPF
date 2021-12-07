@@ -36,7 +36,10 @@ void LobbyScene::render() {
     _renderer->Clear();
 
     _renderer->Copy((*backgroundImageTexture), SDL2pp::NullOpt, SDL2pp::Rect(0, 0, _width, _height));
-    int roomsFitHorizontally = _width / (messageWidth + xOffset);
+    for(auto& button : buttons){
+        button.render(_renderer);
+    }
+    /*int roomsFitHorizontally = _width / (messageWidth + xOffset);
     numberOfColumns = roomsFitHorizontally;
     int roomsFitVertically = _height / (messageHeight + yOffset);
     unsigned long int currentRoomNumber = 0;
@@ -51,7 +54,7 @@ void LobbyScene::render() {
             _renderer->Copy((*textures[currentRoomNumber]), SDL2pp::NullOpt, messageRect);
             ++currentRoomNumber;
         }
-    }
+    }*/
     /*std::cout << "textures: " << textures.size() <<
                 " textures rendered: " << currentRoomNumber <<
                 " fitHor: " << roomsFitHorizontally <<
@@ -71,39 +74,49 @@ void LobbyScene::loadRoomsTextures() {// Initialize SDL_ttf library
     SDL2pp::SDLTTF ttf;
     // Load font
     SDL2pp::Font font("../assets/fonts/Vera.ttf", ROOM_NAME_FONT_SIZE);
+    int messageWidth, messageHeight;
     //todo: max text size would be with room 99, look into this
     TTF_SizeText(font.Get(), "Room 99", &messageWidth, &messageHeight);
-    for (int i = 0; i < _numberOfRooms; ++i) {
-        // add the text into new texture. Note that SDL_ttf render
-        // text into Surface, which is converted into texture on the fly
-        //std::cout << "." << (*firstMessage) << "." << std::endl;
-        textures.push_back(std::make_unique<SDL2pp::Texture>(
-                (*_renderer),
-                font.RenderText_Blended("Room " + std::to_string(i),SDL_Color{
-                        255,
-                        255,
-                        255,
-                        255})));
+
+    int roomsFitHorizontally = _width / (messageWidth + xOffset);
+    int roomsFitVertically = _height / (messageHeight + yOffset);
+    int currentRoomNumber = 0;
+    for(int i = 0; i < roomsFitVertically && currentRoomNumber < _numberOfRooms; ++i) {
+        for(int j = 0; j < roomsFitHorizontally && currentRoomNumber < _numberOfRooms; ++j) {
+            SDL2pp::Texture texture((*_renderer),
+                            font.RenderText_Blended(
+                                    "Room " + std::to_string(currentRoomNumber),
+                                    SDL_Color{255,255,255,255}));
+            SDL2pp::Rect buttonRect(
+                    j * (messageWidth + xOffset),
+                    i * (messageHeight + yOffset),
+                    messageWidth,
+                    messageHeight
+            );
+            addButton(currentRoomNumber, std::move(texture), buttonRect);
+            ++currentRoomNumber;
+        }
     }
+    //todo: if (currentRoomNumber < _numberOfRooms) add logic to add rooms beyond the screen size, like scrolling or something
 }
 
-bool LobbyScene::clickedInsideOneRoom() {
-    int mouseX, mouseY;
-    SDL_GetMouseState(&mouseX, &mouseY);
-    float validPercentageX = (float)messageWidth / (float)(messageWidth + xOffset);
-    float validPercentageY = (float)messageHeight / (float)(messageHeight + yOffset);
-    float clampedMouseXToGrid = (float)mouseX / (float)(messageWidth + xOffset);
-    float clampedMouseYToGrid = (float)mouseY / (float)(messageHeight + yOffset);
-    int xBoxGridClickPosition = floor(clampedMouseXToGrid);
-    int yBoxGridClickPosition = floor(clampedMouseYToGrid);
-    //clicked outside of a room box
-    if (clampedMouseXToGrid - xBoxGridClickPosition > validPercentageX)
-        xBoxGridClickPosition = -1;
-    //clicked outside of a room box
-    if (clampedMouseYToGrid - yBoxGridClickPosition > validPercentageY)
-        yBoxGridClickPosition = -1;
-    std::cout << "clicked in " << xBoxGridClickPosition << " and " << yBoxGridClickPosition << std::endl;
-    return  xBoxGridClickPosition != -1 &&
-            yBoxGridClickPosition != -1 &&
-            (yBoxGridClickPosition * numberOfColumns + xBoxGridClickPosition) < _numberOfRooms;
+bool LobbyScene::clickedInsideOneRoom(){
+    for (auto& button : buttons){
+        int mouseX, mouseY;
+        SDL_GetMouseState(&mouseX, &mouseY);
+        //ask button if contains mouse position
+        if (button.contains(mouseX, mouseY)) {
+            button.click();
+            return true;
+        }
+    }
+    return false;
+}
+
+void LobbyScene::addButton(const int number, SDL2pp::Texture &&texture, const SDL2pp::Rect &rect) {
+    std::cout << "added button " + std::to_string(number) << std::endl;
+    ButtonTEMP button(std::move(texture), rect);
+    button.onClick([number]{ std::cout << "You clicked room number " + std::to_string(number) << std::endl; });
+    buttons.push_back(std::move(button));
+
 }

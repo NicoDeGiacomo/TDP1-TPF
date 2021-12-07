@@ -15,6 +15,9 @@ public:
 		   int pos_x, 
 		   int pos_y,
            int flags);
+
+    Button(SDL2pp::Texture &&texture, SDL2pp::Rect &rect);
+
     void redraw();
     void click(SDL_MouseButtonEvent& b);
 

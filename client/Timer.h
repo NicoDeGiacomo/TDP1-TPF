@@ -9,9 +9,10 @@
 #include <SDL_image.h>
 #include <SDL2pp/SDL2pp.hh>
 
-struct Timer {
+class Timer {
 private:
     static void start();
+    Timer() = default;
 public:
     inline static Uint32 startTime = 0;
     static Uint32 partial() ;

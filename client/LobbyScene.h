@@ -8,6 +8,8 @@
 
 #include <vector>
 #include "Scene.h"
+#include "Button.h"
+#include "ButtonTEMP.h"
 
 #define LOBBY_BACKGROUND_FILEPATH "../assets/sprites/lobbyBackground.png"
 #define ROOM_NAME_FONT_SIZE 22
@@ -15,26 +17,25 @@
 class LobbyScene : public Scene {
 private:
     int _numberOfRooms;
-    int numberOfColumns;
     bool clickedInOneRoom;
     const int _width = 780;
     const int _height = 480;
-    int messageWidth;
-    int messageHeight;
     const int xOffset = _width / 20;
     const int yOffset = _height / 20;
     std::unique_ptr<SDL2pp::Texture> backgroundImageTexture;
-    std::vector<std::unique_ptr<SDL2pp::Texture>> textures;
+    std::vector<ButtonTEMP> buttons;
 
     void loadRoomsTextures();
     void render() override;
     void handleEvents() override;
 public:
-    LobbyScene(int numberOfRooms);
+    explicit LobbyScene(int numberOfRooms);
     void updateLoop() override;
     void load(SDL2pp::Renderer* renderer) override;
 
     bool clickedInsideOneRoom();
+
+    void addButton(const int number, SDL2pp::Texture &&texture, const SDL2pp::Rect &rect);
 };
 
 
