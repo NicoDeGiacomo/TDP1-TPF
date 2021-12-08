@@ -15,9 +15,7 @@ RoomManager::RoomManager(){
 void RoomManager::start() {
     //std::list<std::reference_wrapper<Room>> listOfRooms;
     //TODO: need to look for dead threads and shutdown everything after finish chat.
-    //placeholder to only accept i clients, then go join the threads
-    int i = 0;
-    while (true && i != 3){
+    while (true){
         Socket peer = acceptor.accept();
         if (peer.isNotActive())
             //proceed to clean and shutdown threads
@@ -37,8 +35,6 @@ void RoomManager::start() {
         }
         
         //TODO: process where the new client wants to go, which room spectator or player
-        //placeholder, added new client to first room
-        i++;//keep this until other method of closing it is implemented
     }
     //TODO: this is bad, roomManager is never throwing new thread, how does he know that
     //he needs to join the rooms, join should be in the destructor of rooms in this case
