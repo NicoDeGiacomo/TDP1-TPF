@@ -1,6 +1,7 @@
 ## Quantum Chess
 
-Quantum Chess is a variant of the chess game, which uses properties of quantum physics.
+Quantum Chess is a variant of the chess game, which uses properties of quantum physics. It uses all of the same pieces, in the same starting positions, as classical chess.
+Quantum Chess allows (almost) all pieces to exist in superposition, where they can occupy more than one square at a time. This is shown by a bar indicating the probability that the piece will be found in a given square by a measurement.
 
 ### Content
 
