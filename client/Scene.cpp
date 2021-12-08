@@ -4,6 +4,7 @@
 
 #include "Scene.h"
 
-void Scene::load(SDL2pp::Renderer *renderer) {
+void Scene::load(SDL2pp::Renderer *renderer, SDL2pp::Window *window) {
     _renderer = renderer;
+    _window = window;
 }

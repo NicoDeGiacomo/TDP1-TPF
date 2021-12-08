@@ -14,6 +14,7 @@
 #include "SceneManager.h"
 #include "LoginScene.h"
 #include "LobbyScene.h"
+#include "ConfigScene.h"
 
 void Client::run() {
     RecvThread recvThread(proxy, recvQueue);
@@ -83,8 +84,10 @@ Client::Client(const char *host, const char *service)
     playerType = proxy.getPlayerType();
     id = -1;
     int numberOfRooms = 50; //todo: placeholder, change this to actual number of rooms
-    sceneManager.addScene(std::make_unique<LoginScene>(), LOGIN_SCENE);
-    sceneManager.addScene(std::make_unique<LobbyScene>(numberOfRooms), LOBBY_SCENE);
+    std::unique_ptr<Scene> configScene = std::make_unique<ConfigScene>();
+    sceneManager.addScene(std::make_unique<LoginScene>(configScene.get()), LOGIN_SCENE);
+    sceneManager.addScene(std::make_unique<LobbyScene>(numberOfRooms, configScene.get()), LOBBY_SCENE);
+    sceneManager.addScene(std::move(configScene), CONFIG_SCENE);
     //sceneManager.loadScene("LoginScene");
     sceneManager.addScene(std::make_unique<GameScene>(_board,
                                                       &sendQueue,

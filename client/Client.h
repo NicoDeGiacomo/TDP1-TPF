@@ -15,6 +15,7 @@
 #define LOGIN_SCENE "Login"
 #define LOBBY_SCENE "Lobby"
 #define GAME_SCENE "Game"
+#define CONFIG_SCENE "Config"
 
 class Client {
 private:

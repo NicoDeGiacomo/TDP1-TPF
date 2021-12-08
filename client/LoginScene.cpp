@@ -48,6 +48,9 @@ void LoginScene::handleEvents() {
                 /* Add new text onto the end of our text */
                 user_name += event.text.text;
                 break;
+            case SDL_MOUSEBUTTONDOWN:
+                handleMouseClick();
+                break;
         }
     }
 }
@@ -61,17 +64,13 @@ void LoginScene::render() {
 	std::string choose_text("Please choose a username:");
 	this->insert_text(choose_text, 20, 50, 40, A_CENTER);
 	this->insert_text(this->user_name, 20, 50, 50, A_CENTER);
-
+    configButton->render(_renderer, 0);
 	// Show rendered frame
 	_renderer->Present();
 }
 
 std::string LoginScene::get_user_name() {
 	return this->user_name;
-}
-
-LoginScene::LoginScene() {
-
 }
 
 void LoginScene::insert_text(std::string &text,
@@ -119,8 +118,46 @@ void LoginScene::insert_text(std::string &text,
 							   text_sprite.GetWidth(), text_sprite.GetHeight()));
 }
 
-void LoginScene::load(SDL2pp::Renderer *renderer) {
-    Scene::load(renderer);
+void LoginScene::load(SDL2pp::Renderer *renderer, SDL2pp::Window *window) {
+    Scene::load(renderer, window);
     //load scene, but dont process input nor render textures
+    this->loadConfigButton();
     this->render();
+}
+
+LoginScene::LoginScene(Scene* configScene) {
+    _configScene = configScene;
+}
+
+void LoginScene::loadConfigButton() {
+    SDL2pp::Texture texture((*_renderer), CONFIG_BUTTON_PNG);
+    int configButtonSize = _window->GetHeight() * CONFIG_BUTTON_SIZE_MULTIPLIER;
+    SDL2pp::Rect buttonRect(
+            _window->GetWidth() - configButtonSize,
+            0,
+            configButtonSize,
+            configButtonSize
+    );
+    addButton([&configScene = _configScene,
+                      &renderer = _renderer,
+                      &window = _window]{
+        std::cout << "You clicked config" << std::endl;
+        configScene->load(renderer, window);
+        configScene->updateLoop();
+    },std::move(texture), buttonRect);
+}
+
+void LoginScene::addButton(std::function<void()>&& onClickHandler, SDL2pp::Texture &&texture, const SDL2pp::Rect &rect) {
+    configButton = std::make_unique<ButtonTEMP>(std::move(texture), rect);
+    configButton->onClick(std::move(onClickHandler));
+}
+
+void LoginScene::handleMouseClick() {
+    int mouseX, mouseY;
+    SDL_GetMouseState(&mouseX, &mouseY);
+    if (configButton->contains(mouseX,mouseY)) {
+        configButton->click();
+        //reload scene
+        load(_renderer, _window);
+    }
 }

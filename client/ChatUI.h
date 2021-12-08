@@ -5,7 +5,7 @@
 #include <deque>
 #include "BlockingQueue.h"
 
-#define CHAT_BACKGROUND_FILEPATH "../assets/sprites/chatBackground.png"
+#define CHAT_BACKGROUND_PNG "../assets/sprites/chatBackground.png"
 #define CHAT_FONT_SIZE 15
 #define CHAT_FONT_PADDING 11
 
@@ -15,10 +15,8 @@ private:
     std::unique_ptr<SDL2pp::Texture> backgroundImageTexture;
     std::deque<std::unique_ptr<SDL2pp::Texture>> textures;
     SDL2pp::Renderer* _renderer;
-    const int _x,
-    _width,
-    _height,
-    yOffset = CHAT_FONT_SIZE + CHAT_FONT_PADDING * 2,
+    SDL2pp::Window* _window;
+    const int yOffset = CHAT_FONT_SIZE + CHAT_FONT_PADDING * 2,
     xOffset = CHAT_FONT_SIZE + CHAT_FONT_PADDING;
     BlockingQueue<std::shared_ptr<std::string>> &chatQueue;
 
@@ -27,10 +25,7 @@ private:
                                                              const char divider) const;
     void drawInputMessage(std::string& inputMessage);
 public:
-    ChatUI(const int x,
-           const int width, 
-           const int height,
-           BlockingQueue<std::shared_ptr<std::string>> &chatQueue);
+    ChatUI(BlockingQueue<std::shared_ptr<std::string>> &chatQueue);
 
     void renderMessages(std::string& inputMessage);
 
@@ -38,7 +33,7 @@ public:
 
     bool clickInChat(int mouseX, int mouseY);
 
-    void load(SDL2pp::Renderer *renderer);
+    void load(SDL2pp::Renderer *renderer, SDL2pp::Window *window);
 };
 
 

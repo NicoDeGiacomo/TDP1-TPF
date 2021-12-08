@@ -9,7 +9,7 @@ GameLobby::GameLobby(SDL2pp::Renderer &renderer, std::string user_name)
     // this->insert_text(room2, 20, 50, 50, A_CENTER);
 	Button b1(renderer, room1, 30, 50, 40, A_CENTER);
 	Button b2(renderer, room2, 30, 50, 50, A_CENTER);
-    //TODO: give buttons listener methods onClick(method)
+    //TODO: give roomButtons listener methods onClick(method)
     //TODO: create event handler, needed to launch events
     // so
     // button.onClick ([](){ EventHandler::OnStartGamePressed() });
@@ -25,7 +25,7 @@ int GameLobby::start() {
     while (!done) {
         
         // Event processing:
-		// - If window is closed, or Q or Escape buttons are pressed,
+		// - If window is closed, or Q or Escape roomButtons are pressed,
 		//   quit the application
 		SDL_Event event;
 		while (SDL_PollEvent(&event)) {

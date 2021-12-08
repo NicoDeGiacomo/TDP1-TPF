@@ -16,10 +16,12 @@ void ButtonTEMP::click() {
 }
 
 void ButtonTEMP::render(SDL2pp::Renderer *renderer, const int alpha) {
+    renderer->SetDrawBlendMode(SDL_BLENDMODE_BLEND);
     auto originalColor = renderer->GetDrawColor();
     renderer->SetDrawColor(195,195,195,alpha);
     renderer->FillRect(_rect);
     renderer->SetDrawColor(originalColor);
+    renderer->SetDrawBlendMode(SDL_BLENDMODE_NONE);
     renderer->Copy(_texture, SDL2pp::NullOpt, _rect);
 }
 

@@ -9,7 +9,7 @@
     Metodos publicos
 ************************/
 
-MoveMessage::MoveMessage(int id) : Message(id) {};
+MoveMessage::MoveMessage(int id) : Message(id) {}
 
 MoveMessage::MoveMessage(const std::string &message, int id) : Message(message, id) {
     this->movement.reset();

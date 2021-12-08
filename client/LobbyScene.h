@@ -11,31 +11,37 @@
 #include "Button.h"
 #include "ButtonTEMP.h"
 
+#define CONFIG_BUTTON_PNG "../assets/sprites/configButton.png"
+#define CONFIG_BUTTON_SIZE_MULTIPLIER .1f
 #define LOBBY_BACKGROUND_FILEPATH "../assets/sprites/lobbyBackground.png"
 #define ROOM_NAME_FONT_SIZE 22
+#define X_OFFSET_BETWEEN_ROOMS 20
+#define Y_OFFSET_BETWEEN_ROOMS 20
 
 class LobbyScene : public Scene {
 private:
     int _numberOfRooms;
     bool clickedInOneRoom;
-    const int _width = 780;
-    const int _height = 480;
-    const int xOffset = _width / 20;
-    const int yOffset = _height / 20;
+    Scene* _configScene;
     std::unique_ptr<SDL2pp::Texture> backgroundImageTexture;
-    std::vector<ButtonTEMP> buttons;
+    std::unique_ptr<ButtonTEMP> configButton;
+    std::vector<ButtonTEMP> roomButtons;
 
     void loadRoomsTextures();
     void render() override;
     void handleEvents() override;
+    void createConfigButton(SDL2pp::Texture &&texture, const SDL2pp::Rect &rect);
+    void addButton(std::function<void()>&& onClickHandler, SDL2pp::Texture &&texture, const SDL2pp::Rect &rect);
 public:
-    explicit LobbyScene(int numberOfRooms);
+    explicit LobbyScene(int numberOfRooms, Scene* configScene);
     void updateLoop() override;
-    void load(SDL2pp::Renderer* renderer) override;
+    void load(SDL2pp::Renderer* renderer, SDL2pp::Window *window) override;
 
     bool clickedInsideOneRoom();
 
-    void addButton(const int number, SDL2pp::Texture &&texture, const SDL2pp::Rect &rect);
+    void loadRoomsButtons(SDL2pp::Font& font);
+
+    void loadConfigButton();
 };
 
 

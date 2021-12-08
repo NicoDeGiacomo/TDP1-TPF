@@ -1,19 +1,12 @@
 #include "ChatUI.h"
 
-ChatUI::ChatUI(const int x,
-               const int width, 
-               const int height,
-               BlockingQueue<std::shared_ptr<std::string>> &chatQueue) 
-               : _x(x),
-               _width(width), 
-               _height(height), 
-               chatQueue(chatQueue) {
-    //backgroundImageTexture = std::make_unique<SDL2pp::Texture>(SDL2pp::Texture(_renderer, BACKGROUND_FILEPATH)); not loaded scene yet
-}
+ChatUI::ChatUI(BlockingQueue<std::shared_ptr<std::string>> &chatQueue)
+               : chatQueue(chatQueue) {}
 
-void ChatUI::load(SDL2pp::Renderer* renderer){
+void ChatUI::load(SDL2pp::Renderer* renderer, SDL2pp::Window* window){
     _renderer = renderer;
-    backgroundImageTexture = std::make_unique<SDL2pp::Texture>((*_renderer), CHAT_BACKGROUND_FILEPATH);
+    _window = window;
+    backgroundImageTexture = std::make_unique<SDL2pp::Texture>((*_renderer), CHAT_BACKGROUND_PNG);
 }
 void ChatUI::drawInputMessage(std::string& inputMessage) {
     if (inputMessage.empty()) return;
@@ -33,8 +26,8 @@ void ChatUI::drawInputMessage(std::string& inputMessage) {
                     255,
                     255}));
     SDL2pp::Rect messageRect(
-            _x + xOffset,
-            _height - yOffset,
+            _window->GetHeight() + xOffset,
+            _window->GetHeight() - yOffset,
             inputMessageTexture->GetWidth(),
             inputMessageTexture->GetHeight()
     );
@@ -58,21 +51,24 @@ void ChatUI::renderMessages(std::string& inputMessage) {
             std::cerr << "Unknown error caught in ChatUI.\n";
         }
     }
-
-    _renderer->Copy((*backgroundImageTexture), SDL2pp::NullOpt, SDL2pp::Rect(_x, 0, _width, _height));
+    _renderer->Copy((*backgroundImageTexture), SDL2pp::NullOpt,
+                    SDL2pp::Rect(_window->GetHeight(),
+                                 0,
+                                 _window->GetWidth() - _window->GetHeight(),
+                                 _window->GetHeight()));
     drawInputMessage(inputMessage);
 
     int i = 1;
     auto texture = textures.begin();
     while (texture != textures.end()) {
-        int y = _height - yOffset - i * (CHAT_FONT_SIZE + CHAT_FONT_PADDING);
+        int y = _window->GetHeight() - yOffset - i * (CHAT_FONT_SIZE + CHAT_FONT_PADDING);
         //if i cant render it, delete it from the queue
         if (y < 0) {
             texture = textures.erase(texture);
             continue;
         }
         SDL2pp::Rect messageRect(
-                _x + xOffset,
+                _window->GetHeight() + xOffset,
                 y,
                 (*texture)->GetWidth(),
                 (*texture)->GetHeight()
@@ -84,6 +80,7 @@ void ChatUI::renderMessages(std::string& inputMessage) {
 }
 
 void ChatUI::add(const std::string &message) {
+    if (message.empty()) return;
     // Initialize SDL_ttf library
     SDL2pp::SDLTTF ttf;
     // Load font
@@ -112,7 +109,7 @@ std::deque<std::string> ChatUI::splitMessageIntoRenderableChunks(const std::stri
     int messageWidth, messageHeight;
     std::deque<std::string> chunks;
     TTF_SizeText(font.Get(), bufferMessage.c_str(), &messageWidth, &messageHeight);
-    while (messageWidth >= _width) {
+    while (messageWidth >= _window->GetWidth() - _window->GetHeight()) {
         //split to last backspace, add to chunks
         size_t length = bufferMessage.length();
         size_t pos = bufferMessage.find_last_of(divider);
@@ -129,5 +126,5 @@ std::deque<std::string> ChatUI::splitMessageIntoRenderableChunks(const std::stri
 }
 
 bool ChatUI::clickInChat(int mouseX, int mouseY) {
-    return mouseX > _x && mouseY > 0 && mouseY <  _height;
+    return mouseX > _window->GetHeight() && mouseY > 0 && mouseY <  _window->GetHeight();
 }
