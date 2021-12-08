@@ -1,7 +1,3 @@
-//
-// Created by ale on 16/11/21.
-//
-
 #include "MergeMoveMessage.h"
 #include "movements/MovementCommand.h"
 #include <iostream>
@@ -10,19 +6,29 @@
 #include <MergeMove.h>
 #include "Protocol.h"
 
-MergeMoveMessage::MergeMoveMessage(const std::string &message, int id) : MoveMessage(message, id) {
-    std::cout << "constructor of MergeMoveMessage class" << std::endl;
-    
-    Position from1(this->charToInt(message.at(0)),
-                    this->charToInt(message.at(1)));
-    Position from2(this->charToInt(message.at(2)),
-                this->charToInt(message.at(3)));
-    Position to(this->charToInt(message.at(4)),
-                    this->charToInt(message.at(5)));
-    this->movement = std::make_unique<MergeMove>(std::move(from1),
-                                                    std::move(from2),
-                                                    std::move(to));
+/***********************
+    Metodos privados
+************************/
+
+std::unique_ptr<MovementCommand> MergeMoveMessage::makeMovement(const char *buf) {
+    Position from1(this->charToInt(buf[0]),
+                    this->charToInt(buf[1]));
+    Position from2(this->charToInt(buf[2]),
+                this->charToInt(buf[3]));
+    Position to(this->charToInt(buf[4]),
+                    this->charToInt(buf[5]));
+    return std::make_unique<MergeMove>(std::move(from1),
+                                       std::move(from2),
+                                       std::move(to));
+}
+
+/***********************
+    Metodos publicos
+************************/
+
+MergeMoveMessage::MergeMoveMessage(int id) : MoveMessage(id) {
     this->type = MERGE_MOVE_CHAR;
+    this->_msg_len = 6;
 }
 
 MergeMoveMessage::MergeMoveMessage(Position& from_1, Position& from_2, Position& to) {
@@ -35,5 +41,10 @@ MergeMoveMessage::MergeMoveMessage(Position& from_1, Position& from_2, Position&
                                                  std::move(from_2),
                                                  std::move(to));
     this->type = MERGE_MOVE_CHAR;
+    this->_msg_len = 6;
 }
 
+void MergeMoveMessage::decode(std::vector<char> &buf) {
+    this->movement = makeMovement(buf.data());
+    this->_message = std::string(buf.data(), _msg_len);
+}

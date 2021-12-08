@@ -1,7 +1,3 @@
-//
-// Created by ale on 16/11/21.
-//
-
 #ifndef QUANTUM_CHESS_MERGE_MOVE_MESSAGE_H
 #define QUANTUM_CHESS_MERGE_MOVE_MESSAGE_H
 
@@ -10,8 +6,10 @@
 
 class MergeMoveMessage : public MoveMessage {
 public:
-    MergeMoveMessage(const std::string &message, int id);
+    MergeMoveMessage(int id = -1);
     MergeMoveMessage(Position& from_1, Position& from_2, Position& to);
+    std::unique_ptr<MovementCommand> makeMovement(const char *buf);
+    void decode(std::vector<char> &buf);
 };
 
 

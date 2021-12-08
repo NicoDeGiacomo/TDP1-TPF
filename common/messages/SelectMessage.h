@@ -9,7 +9,7 @@
 
 class SelectMessage : public Message {
 public:
-    SelectMessage(const std::string &message, int id);
+    SelectMessage(int id = -1);
     const std::string getMessage() const override;
     virtual void apply(Board& board, 
                     BlockingQueue<std::shared_ptr<std::string>>&) const override;

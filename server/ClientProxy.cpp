@@ -12,10 +12,10 @@
 #include <string.h>
 
 
-#define CHAT_CHAR 'c'
-#define NORMAL_MOVE_CHAR 'n'
-#define SPLIT_MOVE_CHAR 's'
-#define MERGE_MOVE_CHAR 'm'
+// #define CHAT_CHAR 'c'
+// #define NORMAL_MOVE_CHAR 'n'
+// #define SPLIT_MOVE_CHAR 's'
+// #define MERGE_MOVE_CHAR 'm'
 
 /***********************
     Metodos privados
@@ -87,20 +87,33 @@ void ClientProxy::send(const std::shared_ptr<Message> message) const {
     char msg_owner_id = message->getId();
     socket.send(&msg_owner_id, 1);
     
-    std::string msg_str = Protocol::MessageToString(message);
-    unsigned short int msg_len = msg_str.length();
-    if (type == CHAT_CHAR) {
-        unsigned short int msg_len_be = htons(msg_len);
-        socket.send((char *) &msg_len_be, 2);
-    }
+    std::string msg_str = message->getEncodedMessage();
+    // unsigned short int msg_len = msg_str.length();
+    // if (type == CHAT_CHAR) {
+    //     unsigned short int msg_len_be = htons(msg_len);
+    //     socket.send((char *) &msg_len_be, 2);
+    // }
     
-    socket.send(msg_str.c_str(), msg_len);
+    socket.send(msg_str.c_str(), msg_str.size());
 }
 
 std::shared_ptr<Message> ClientProxy::recv() {
-    char type;
+    std::shared_ptr<Message> msg_ptr;
+    
     try {
+        char type;
         socket.receive(&type, 1);
+        msg_ptr = Protocol::CharToMessage(type, id);
+        int bytesToRead = msg_ptr->getBytesToRead();
+        while (bytesToRead > 0) {
+            std::cout << "CLIENT PROXY READING BYTES" << bytesToRead << std::endl;
+            std::vector<char> buf;
+            buf.reserve(bytesToRead);
+            this->socket.receive(buf.data(), bytesToRead);
+            msg_ptr->decode(buf);
+            bytesToRead = msg_ptr->getBytesToRead();
+        }
+        std::cout << "CLIENT PROXY READING BYTES" << bytesToRead << std::endl;
     } catch(const std::exception &e) {
         std::cerr << "ERROR: '"
                   << e.what() << "'" << std::endl;
@@ -108,32 +121,6 @@ std::shared_ptr<Message> ClientProxy::recv() {
         std::cerr << "Error recv command type" << std::endl;
     }
 
-    std::shared_ptr<Message> msg_ptr;
-    std::string msg_str;
-    unsigned short int msg_len;
-    switch (type) {
-    case CHAT_CHAR:
-        std::cout << "about to decode chat message" << std::endl;
-        msg_len = decodeChatMessageLen();
-        msg_str = recvMessage(msg_len);
-        msg_ptr = std::make_shared<ChatMessage>(msg_str, id);
-        break;
-    case NORMAL_MOVE_CHAR:
-        msg_str = recvMessage(4);
-        msg_ptr = std::make_shared<NormalMoveMessage>(msg_str, id);
-        break;
-    case SPLIT_MOVE_CHAR:
-        msg_str = recvMessage(6);
-        msg_ptr = std::make_shared<SplitMoveMessage>(msg_str, id);
-        break;
-    case MERGE_MOVE_CHAR:
-        msg_str = recvMessage(6);
-        msg_ptr = std::make_shared<MergeMoveMessage>(msg_str, id);
-        break;
-    default:
-        throw std::runtime_error("Unknown command");
-        break;
-    }
     return msg_ptr;
 }
 

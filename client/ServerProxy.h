@@ -14,9 +14,7 @@ private:
     int id;
     char playerType;
     unsigned int seed;
-    std::shared_ptr<Message> decodeChatMessage();
-    std::string recvMessage(unsigned short int msg_len);
-    unsigned short int decodeChatMessageLen();
+    
 public:
     ServerProxy(const char *host, const char *service);
 

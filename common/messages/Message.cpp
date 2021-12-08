@@ -1,17 +1,23 @@
-//
-// Created by ale on 13/11/21.
-//
-
 #include <iostream>
 #include "Message.h"
 
+/***********************
+    Metodos publicos
+************************/
+
+Message::Message(int id) : id(id) {}
+
+Message::Message(const std::string& message, int id) : _message(message), id(id) {}
+
 const std::string Message::getMessage() const {
-    // std::cout << "get message from Message class" << std::endl;
-    return this->_message; //n1213 //c05n1213
+    return this->_message;
+}
+
+const std::string Message::getEncodedMessage() const {
+    return this->_message;
 }
 
 int Message::getId() const {
-    // std::cout << "get id from Message class" << std::endl;
     return this->id;
 }
 
@@ -19,10 +25,13 @@ char Message::getType() const {
     return this->type;
 }
 
-Message::Message(const std::string& message, int id) : _message(message), id(id) {
-    // std::cout << "constructor of Message class" << std::endl;
+int Message::getBytesToRead() {
+    if (_message.size() == 0)
+        return _msg_len;
+    return 0;
 }
 
-Message::Message(const std::string& message) : _message(message), id(-1) {}
+void Message::decode(std::vector<char> &buf) {
+    this->_message = std::string(buf.data(), _msg_len);
+}
 
-Message::Message() : id(-1) {}

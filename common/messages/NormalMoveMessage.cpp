@@ -1,7 +1,3 @@
-//
-// Created by ale on 16/11/21.
-//
-
 #include "NormalMoveMessage.h"
 #include "movements/MovementCommand.h"
 #include <iostream>
@@ -10,17 +6,27 @@
 #include <MergeMove.h>
 #include "Protocol.h"
 
-NormalMoveMessage::NormalMoveMessage(const std::string &message, int id) : MoveMessage(message, id) {
-    std::cout << "constructor of NormalMoveMessage class" << std::endl;
-    
-    Position from(this->charToInt(message.at(0)),
-                    this->charToInt(message.at(1)));
-    Position to(this->charToInt(message.at(2)),
-                this->charToInt(message.at(3)));
+/***********************
+    Metodos privados
+************************/
+
+std::unique_ptr<MovementCommand> NormalMoveMessage::makeMovement(const char *buf) {
+    Position from(this->charToInt(buf[0]),
+                    this->charToInt(buf[1]));
+    Position to(this->charToInt(buf[2]),
+                this->charToInt(buf[3]));
     std::cout << "finish constructor" << std::endl;
-    this->movement = std::make_unique<NormalMove>(std::move(from),
-                                                    std::move(to));
+    return std::make_unique<NormalMove>(std::move(from),
+                                        std::move(to));
+}
+
+/***********************
+    Metodos publicos
+************************/
+
+NormalMoveMessage::NormalMoveMessage(int id) : MoveMessage(id) {
     this->type = NORMAL_MOVE_CHAR;
+    this->_msg_len = 4;
 }
 
 NormalMoveMessage::NormalMoveMessage(Position& from, Position& to) {
@@ -31,11 +37,10 @@ NormalMoveMessage::NormalMoveMessage(Position& from, Position& to) {
     this->movement = std::make_unique<NormalMove>(std::move(from),
                                                     std::move(to));
     this->type = NORMAL_MOVE_CHAR;
+    this->_msg_len = 4;
 }
 
-/*NormalMoveMessage::NormalMoveMessage(const std::string &message) : MoveMessage() {
-    this->movement = std::make_unique<NormalMove>(std::move(from),
-                                                  std::move(to));*/
-//}
-
-
+void NormalMoveMessage::decode(std::vector<char> &buf) {
+    this->movement = makeMovement(buf.data());
+    this->_message = std::string(buf.data(), _msg_len);
+}
