@@ -14,10 +14,10 @@ private:
     // BlockingQueue<std::shared_ptr<Message>> &queue;
     ServerProxy &proxy;
     Board &board;
+    Chat &chat;
     int id;
     std::atomic<bool> keep_talking;
     BlockingQueue<std::shared_ptr<Message>> &sendQueue;
-    BlockingQueue<std::shared_ptr<std::string>> &chatQueue;
 
 protected:
     /*
@@ -30,9 +30,8 @@ public:
     /*
      *  Constructor
      */
-    SendThread(ServerProxy &proxy, Board &board, int id, 
-                BlockingQueue<std::shared_ptr<Message>> &sendQueue,
-                BlockingQueue<std::shared_ptr<std::string>> &chatQueue);
+    SendThread(ServerProxy &proxy, Board &board, Chat &chat, int id, 
+                BlockingQueue<std::shared_ptr<Message>> &sendQueue);
     /*
      *  Constructor por copia
      */

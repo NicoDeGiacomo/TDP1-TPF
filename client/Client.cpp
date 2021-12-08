@@ -7,6 +7,7 @@
 #include <Socket.h>
 #include <thread>
 #include <Message.h>
+#include <PlayerNameMessage.h>
 #include <Protocol.h>
 #include "Client.h"
 #include "RecvThread.h"
@@ -18,7 +19,7 @@
 
 void Client::run() {
     RecvThread recvThread(proxy, recvQueue);
-    SendThread sendThread(proxy, _board, id, sendQueue, chatQueue);
+    SendThread sendThread(proxy, _board, chat, id, sendQueue);
     recvThread.start();
     sendThread.start();
     // mainGameScreen()
@@ -29,11 +30,13 @@ void Client::run() {
     //add scene main game screen
     sceneManager.loadScene(LOGIN_SCENE);
     sceneManager.updateLoopActiveScene(); //maybe this loops should be iterated here? instead of them knowing when to break
+    
+    sendQueue.produce(std::make_shared<PlayerNameMessage>(name));
     sceneManager.loadScene(LOBBY_SCENE);
-//    while (!gameFinished){
-        sceneManager.updateLoopActiveScene(); //maybe this loops should be iterated here? instead of them knowing when to break, kinda like Game_Scene loop
-//        SDL_Delay(1000/60); //todo: should ask for monitor refresh rate, this is capped at 60fps
-    //}
+
+    sceneManager.updateLoopActiveScene();
+    // send room_id
+
     sceneManager.loadScene(GAME_SCENE);
     
     while (!gameFinished) {
@@ -48,7 +51,7 @@ void Client::run() {
                 continue;
             }
             try {
-                msg_ptr->apply(_board, chatQueue);
+                msg_ptr->apply(_board, chat);
             } catch (const std::exception &e) {
                 std::cerr << "Exception caught in client: '"
                           << e.what() << "'" << std::endl;
@@ -76,7 +79,7 @@ BlockingQueue<std::shared_ptr<Message>>* Client::getQueue(){
 }
 
 Client::Client(const char *host, const char *service)
-            : proxy(host, service), _board(false, proxy.getSeed()), chatQueue() {
+            : proxy(host, service), _board(false, proxy.getSeed()) {
     gameFinished = false;
 
     //std::cin.ignore();
@@ -85,19 +88,16 @@ Client::Client(const char *host, const char *service)
     id = -1;
     int numberOfRooms = 50; //todo: placeholder, change this to actual number of rooms
     std::unique_ptr<Scene> configScene = std::make_unique<ConfigScene>();
-    sceneManager.addScene(std::make_unique<LoginScene>(configScene.get()), LOGIN_SCENE);
+    sceneManager.addScene(std::make_unique<LoginScene>(configScene.get(), name), LOGIN_SCENE);
     sceneManager.addScene(std::make_unique<LobbyScene>(numberOfRooms, configScene.get()), LOBBY_SCENE);
     sceneManager.addScene(std::move(configScene), CONFIG_SCENE);
     //sceneManager.loadScene("LoginScene");
     sceneManager.addScene(std::make_unique<GameScene>(_board,
                                                       &sendQueue,
-                                                      chatQueue,
+                                                      chat.getQueue(),
                                                       proxy.getPlayerType(),
                                                       gameFinished),GAME_SCENE);
-    // std::cout << "Choose your name: ";
-    // std::getline(std::cin, name);
-    // int room_id;
-    // std::cout << "Choose a room: ";
-    // std::cin >> room_id;
+    
+    // proxy.send(std::make_shared<PlayerInfoMessage>());
 }
 

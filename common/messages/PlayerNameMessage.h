@@ -1,14 +1,14 @@
-#ifndef QUANTUM_CHESS_CHATMESSAGE_H
-#define QUANTUM_CHESS_CHATMESSAGE_H
+#ifndef PLAYER_NAME_MESSAGE_H
+#define PLAYER_NAME_MESSAGE_H
 
 #include "Message.h"
 
-class ChatMessage : public Message {
+class PlayerNameMessage : public Message {
 private:
     unsigned short int msg_len;
 public:
-    ChatMessage(int id = -1);
-    ChatMessage(const std::string &message, int id = -1);
+    PlayerNameMessage(int id = -1);
+    PlayerNameMessage(const std::string &message, int id = -1);
     const std::string getMessage() const override;
     const std::string getEncodedMessage() const override;
     virtual void apply(Board&) const override;
@@ -18,4 +18,4 @@ public:
 };
 
 
-#endif //QUANTUM_CHESS_CHATMESSAGE_H
+#endif // PLAYER_NAME_MESSAGE_H

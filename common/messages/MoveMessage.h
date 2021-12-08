@@ -12,8 +12,7 @@ public:
     MoveMessage(const std::string &message, int id = -1);
     const std::string getMessage() const override;
     virtual void apply(Board& board) const override;
-    virtual void apply(Board& board, 
-                    BlockingQueue<std::shared_ptr<std::string>>&) const override;
+    virtual void apply(Board& board, Chat&) const override;
     int charToInt(const char &i);
 };
 

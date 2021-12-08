@@ -69,10 +69,6 @@ void LoginScene::render() {
 	_renderer->Present();
 }
 
-std::string LoginScene::get_user_name() {
-	return this->user_name;
-}
-
 void LoginScene::insert_text(std::string &text,
                              int font_size,
                              int pos_x,
@@ -125,7 +121,7 @@ void LoginScene::load(SDL2pp::Renderer *renderer, SDL2pp::Window *window) {
     this->render();
 }
 
-LoginScene::LoginScene(Scene* configScene) {
+LoginScene::LoginScene(Scene* configScene, std::string &user_name) : user_name(user_name) {
     _configScene = configScene;
 }
 

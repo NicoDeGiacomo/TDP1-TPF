@@ -41,15 +41,8 @@ void ChatMessage::apply(Board&) const {
                     << _message << std::endl;
 }
 
-void ChatMessage::apply(Board&, 
-                        BlockingQueue<std::shared_ptr<std::string>> &chatQueue) const {
-    std::string msg;
-    if (this->id == -1) msg = "You: ";
-    else msg = "User " + std::to_string(this->id) + ": ";
-
-    msg += this->_message;
-
-    chatQueue.produce(std::make_shared<std::string>(msg));
+void ChatMessage::apply(Board&, Chat &chat) const {
+    chat.addMessage(this->id, this->_message);
 }
 
 int ChatMessage::getBytesToRead() {

@@ -5,6 +5,7 @@
 #include <iostream>
 #include "Room.h"
 #include "Protocol.h"
+#include <PlayerNameMessage.h>
 
 bool Room::isRoom(int number) const{
     return number == roomNumber;
@@ -31,6 +32,8 @@ void Room::addClient(Socket &socket) {
         for (const auto& move: board.getCurrentMoves()) {
             this->playerBlack.send(move->getMoveMessage());
         }
+        int white_id = this->playerWhite.getId();
+        this->playerBlack.send(std::make_shared<PlayerNameMessage>(chat.getName(white_id), white_id));
     }
     else {
         //TODO: think if passing Queue To Send is needed, right now is just for debugging
@@ -39,6 +42,14 @@ void Room::addClient(Socket &socket) {
         this->_spectators.front().startReceivingMessages();
         for (const auto& move: board.getCurrentMoves()) {
             this->_spectators.front().send(move->getMoveMessage());
+        }
+        int white_id = this->playerWhite.getId();
+        _spectators.front().send(std::make_shared<PlayerNameMessage>(chat.getName(white_id), white_id));
+        int black_id = this->playerBlack.getId();
+        _spectators.front().send(std::make_shared<PlayerNameMessage>(chat.getName(black_id), black_id));
+        for (auto &s : _spectators) {
+            int id = s.getId();
+            _spectators.front().send(std::make_shared<PlayerNameMessage>(chat.getName(id), id));
         }
     }
     next_id++;
@@ -67,7 +78,7 @@ Room::Room(int number, Socket &socket)
                 : roomNumber(number),
                   playerBlack(queueOfReceived),
                   playerWhite(queueOfReceived),
-                  sendThread(queueOfReceived, playerWhite, playerBlack, _spectators, board),
+                  sendThread(queueOfReceived, playerWhite, playerBlack, _spectators, board,  chat),
                   next_id(0) {
     sendThread.start();
     this->addClient(socket);

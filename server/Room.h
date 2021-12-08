@@ -21,6 +21,7 @@ private:
     Player playerBlack;
     Player playerWhite;
     Board board;
+    Chat chat;
     SendThread sendThread;
     int next_id;
 public:
@@ -31,11 +32,6 @@ public:
     bool isRoom(int number) const;
 
     void addClient(Socket &socket);
-
-    // void runSenderThread(std::list<Player> *spectators,
-    //                      Player* white,
-    //                      Player* black,
-    //                      BlockingQueue<std::shared_ptr<Message>>* queue);
 
     void joinAllThreads();
 

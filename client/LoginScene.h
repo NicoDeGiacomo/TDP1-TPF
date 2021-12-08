@@ -10,7 +10,7 @@
 
 class LoginScene: public Scene {
 private:
-    std::string user_name;
+    std::string &user_name;
     bool done;
     std::unique_ptr<ButtonTEMP> configButton;
     Scene* _configScene;
@@ -23,10 +23,9 @@ private:
     void handleEvents() override;
     void addButton(std::function<void()>&& onClickHandler, SDL2pp::Texture &&texture, const SDL2pp::Rect &rect);
 public:
-    LoginScene(Scene* configScene);
+    LoginScene(Scene* configScene, std::string &user_name);
     /*LoginScene(SDL2pp::Renderer* renderer);
     int start();*/
-    std::string get_user_name();
     void updateLoop() override;
     void load(SDL2pp::Renderer* renderer, SDL2pp::Window *window) override;
 

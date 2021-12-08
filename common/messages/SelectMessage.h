@@ -11,8 +11,7 @@ class SelectMessage : public Message {
 public:
     SelectMessage(int id = -1);
     const std::string getMessage() const override;
-    virtual void apply(Board& board, 
-                    BlockingQueue<std::shared_ptr<std::string>>&) const override;
+    virtual void apply(Board& board, Chat&) const override;
     // const std::string& getId() const override;
 };
 

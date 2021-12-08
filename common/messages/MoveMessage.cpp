@@ -28,7 +28,6 @@ void MoveMessage::apply(Board &board) const {
     this->movement->move(board);
 }
 
-void MoveMessage::apply(Board& board,
-                    BlockingQueue<std::shared_ptr<std::string>>&) const {
+void MoveMessage::apply(Board& board, Chat&) const {
     this->apply(board);
 }

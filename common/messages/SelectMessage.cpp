@@ -15,5 +15,4 @@ const std::string SelectMessage::getMessage() const {
     return this->_message;
 }
 
-void SelectMessage::apply(Board&, 
-                        BlockingQueue<std::shared_ptr<std::string>>&) const {}
+void SelectMessage::apply(Board&, Chat&) const {}

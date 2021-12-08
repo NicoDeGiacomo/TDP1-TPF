@@ -11,7 +11,7 @@ void SendThread::run() {
         std::shared_ptr<Message> message = queueOfReceived.top();
         queueOfReceived.pop();
         try {
-            message->apply(board);
+            message->apply(board, chat);
             for (auto &spectator : spectators) {
                 spectator.send(message);
             }
@@ -43,12 +43,14 @@ SendThread::SendThread(BlockingQueue <std::shared_ptr<Message>> &queueOfReceived
                        Player &playerWhite,
                        Player &playerBlack,
                        std::list<Player> &spectators,
-                       Board &board)
+                       Board &board,
+                       Chat &chat)
                        : queueOfReceived(queueOfReceived),
                        playerWhite(playerWhite),
                        playerBlack(playerBlack),
                        spectators(spectators),
                        board(board),
+                       chat(chat),
                        keep_talking(true) {}
 
 void SendThread::stop() {

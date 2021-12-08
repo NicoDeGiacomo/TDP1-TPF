@@ -4,6 +4,7 @@
 #include "messages/MergeMoveMessage.h"
 #include "messages/SplitMoveMessage.h"
 #include "messages/SelectMessage.h"
+#include "messages/PlayerNameMessage.h"
 #include <stdexcept>
 #include <iostream>
 
@@ -59,6 +60,8 @@ namespace Protocol {
             return std::make_shared<SplitMoveMessage>();
         } else if (type == SELECT_CHAR) {
             return std::make_shared<SelectMessage>();
+        } else if (type == PLAYER_NAME_CHAR) {
+            return std::make_shared<PlayerNameMessage>();
         }
         throw std::runtime_error("Unknown command in Protocol::CharToMessage");
     }
@@ -73,6 +76,8 @@ namespace Protocol {
             return std::make_shared<SplitMoveMessage>(id);
         } else if (type == SELECT_CHAR) {
             return std::make_shared<SelectMessage>(id);
+        } else if (type == PLAYER_NAME_CHAR) {
+            return std::make_shared<PlayerNameMessage>(id);
         }
         throw std::runtime_error("Unknown command in Protocol::CharToMessage");
     }

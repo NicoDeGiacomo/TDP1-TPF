@@ -52,6 +52,9 @@ void Player::join() {
     //     this->receiverThread.join();
 }
 
+int Player::getId() {
+    return id;
+}
 
 Player::~Player() {
     //could join by force here, and make join private

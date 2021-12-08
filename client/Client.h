@@ -11,6 +11,7 @@
 #include "ServerProxy.h"
 #include "GameScene.h"
 #include "SceneManager.h"
+#include "Chat.h"
 
 #define LOGIN_SCENE "Login"
 #define LOBBY_SCENE "Lobby"
@@ -22,7 +23,8 @@ private:
     SceneManager sceneManager;
     ServerProxy proxy;
     Board _board;
-    BlockingQueue<std::shared_ptr<std::string>> chatQueue;
+    // BlockingQueue<std::shared_ptr<std::string>> chatQueue;
+    Chat chat;
     //GameScene mainGameScreen;
     int id;
     char playerType;

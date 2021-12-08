@@ -3,7 +3,7 @@
 
 #include <string>
 #include <Board.h>
-#include <BlockingQueue.h>
+#include <Chat.h>
 
 class Board;
 
@@ -24,7 +24,7 @@ public:
     int getId() const;
     char getType() const;
     virtual void apply(Board&) const {}
-    virtual void apply(Board&, BlockingQueue<std::shared_ptr<std::string>>&) const {}
+    virtual void apply(Board&, Chat&) const {}
     virtual int getBytesToRead();
     virtual void decode(std::vector<char> &);
     // virtual apply(Board, Chat)

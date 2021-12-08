@@ -13,7 +13,7 @@
 #define WHITE_CHAR 'W'
 #define BLACK_CHAR 'B'
 #define SPECTATOR_CHAR 'O'
-
+#define PLAYER_NAME_CHAR 'p'
 
 namespace Protocol {
     std::string MessageToString(const std::shared_ptr<Message>& message);

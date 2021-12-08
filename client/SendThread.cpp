@@ -22,7 +22,7 @@ void SendThread::run() {
             this->sendQueue.pop();
             //std::cout << "Sending: " << input << "\n";
             //std::shared_ptr<Message> msg = Protocol::StringToMessage(input, this->id);
-            msg->apply(board, chatQueue);
+            msg->apply(board, chat);
             proxy.send(msg);
             std::cout << "sent " << "\n";
         } catch (ClosedSocketException& e){
@@ -44,15 +44,14 @@ void SendThread::run() {
     Metodos publicos
 ************************/
 
-SendThread::SendThread(ServerProxy &proxy, Board &board, int id, 
-                BlockingQueue<std::shared_ptr<Message>> &sendQueue,
-                BlockingQueue<std::shared_ptr<std::string>> &chatQueue)
+SendThread::SendThread(ServerProxy &proxy, Board &board, Chat &chat, int id, 
+                BlockingQueue<std::shared_ptr<Message>> &sendQueue)
                 : proxy(proxy),
                   board(board),
+                  chat(chat),
                   id(id),
                   keep_talking(true),
-                  sendQueue(sendQueue),
-                  chatQueue(chatQueue) {}
+                  sendQueue(sendQueue) {}
 
 void SendThread::stop() {
     this->keep_talking = false;

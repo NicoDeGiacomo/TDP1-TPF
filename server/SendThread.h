@@ -16,6 +16,7 @@ private:
     Player &playerBlack;
     std::list<Player> &spectators;
     Board &board;
+    Chat &chat;
     std::atomic<bool> keep_talking;
 
 protected:
@@ -33,7 +34,8 @@ public:
                Player &playerWhite,
                Player &playerBlack,
                std::list<Player> &spectators,
-               Board &board);
+               Board &board,
+               Chat &chat);
     /*
      *  Constructor por copia
      */

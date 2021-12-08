@@ -20,7 +20,6 @@ private:
     BlockingQueue <std::shared_ptr<Message>> &queueOfReceived;
     // std::thread receiverThread;
     RecvThread recvThread;
-    std::string name;
     int id;
 public:
     Player(BlockingQueue <std::shared_ptr<Message>> &queueOfReceived);
@@ -39,7 +38,7 @@ public:
 
     void startReceivingMessages();
 
-    // void runReceiverThread();
+    int getId();
 
     void join();
 
