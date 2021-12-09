@@ -59,12 +59,10 @@ void Client::run() {
                 std::cerr << "Unknown error caught in client.\n";
             }
         }
-
-        //SDL_Delay(1000/60); //todo: should ask for monitor refresh rate, this is capped at 60fps
         if (_board.isFinished()){
-            sceneManager.updateLoopActiveScene();
+            //sceneManager.updateLoopActiveScene();
             //mainGameScreen.endMessage(SPECTATOR_CHAR); cant do this anymore, need to think another way
-            std::cout << "game finished" << std::endl;
+            std::cout << "game finished with checkmate" << std::endl;
             break; 
         }
     }

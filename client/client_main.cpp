@@ -13,7 +13,6 @@
 #include <thread>
 #include "Client.h"
 #include "LoginScene.h"
-#include "GameLobby.h"
 #include "GameScene.h"
 
 void close_client() {

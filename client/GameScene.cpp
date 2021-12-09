@@ -19,9 +19,11 @@ GameScene::GameScene(Board& board,
 }
 
 void GameScene::updateLoop() {
-    /*_gameFinished = false;
-    while (!_gameFinished) {*/ //this loop is outside
     this->handleEvents();
+    if (_gameFinished) {
+        endMessage(SPECTATOR_CHAR);
+        return;
+    }
     Uint32 deltaTime = Timer::partial();
     //wait if not enough time has passed for it to render another frame
     if (deltaTime < TIME_BETWEEN_FRAMES)
@@ -29,7 +31,6 @@ void GameScene::updateLoop() {
     this->render();
     //time since previous render is 0 again
     Timer::reset();
-    //}
 }
 
 void GameScene::handleEvents() {
