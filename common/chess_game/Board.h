@@ -36,6 +36,8 @@ class Board {
 
   unsigned int getSeed() const;
 
+  void setSeed(unsigned int seed);
+
   std::vector<std::shared_ptr<MoveNotation>> getCurrentMoves();
 
   void generateDump();

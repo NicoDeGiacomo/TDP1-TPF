@@ -77,18 +77,20 @@ BlockingQueue<std::shared_ptr<Message>>* Client::getQueue(){
 }
 
 Client::Client(const char *host, const char *service)
-            : proxy(host, service), _board(false, proxy.getSeed()) {
+            : proxy(host, service), _board(false) {
     gameFinished = false;
 
     //std::cin.ignore();
     //proxy.connect(host, service);
-    playerType = proxy.getPlayerType();
     id = -1;
     int numberOfRooms = 50; //todo: placeholder, change this to actual number of rooms
     std::unique_ptr<Scene> configScene = std::make_unique<ConfigScene>();
     sceneManager.addScene(std::make_unique<LoginScene>(configScene.get(), name), LOGIN_SCENE);
     sceneManager.addScene(std::make_unique<LobbyScene>(numberOfRooms, configScene.get()), LOBBY_SCENE);
     sceneManager.addScene(std::move(configScene), CONFIG_SCENE);
+
+    _board.setSeed(proxy.getSeed());
+    playerType = proxy.getPlayerType();
     //sceneManager.loadScene("LoginScene");
     sceneManager.addScene(std::make_unique<GameScene>(_board,
                                                       &sendQueue,

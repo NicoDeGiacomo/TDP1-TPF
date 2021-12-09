@@ -209,3 +209,8 @@ void Board::generateDump() {
 unsigned int Board::getSeed() const {
     return seed_;
 }
+
+void Board::setSeed(unsigned int seed) {
+    this->engine_ = std::mt19937(seed);
+    this->seed_ = seed;
+}
