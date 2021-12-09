@@ -15,10 +15,6 @@ MoveMessage::MoveMessage(const std::string &message, int id) : Message(message, 
     this->movement.reset();
 }
 
-const std::string MoveMessage::getMessage() const {
-    return this->_message;
-}
-
 int MoveMessage::charToInt(const char &i) {
     return i - '0';
 }

@@ -11,8 +11,4 @@ SelectMessage::SelectMessage(int id) : Message(id) {
     this->_msg_len = 2;
 }
 
-const std::string SelectMessage::getMessage() const {
-    return this->_message;
-}
-
 void SelectMessage::apply(Board&, Chat&) const {}

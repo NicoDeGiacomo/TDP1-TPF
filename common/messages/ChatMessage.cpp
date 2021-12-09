@@ -8,28 +8,12 @@
     Metodos publicos
 ************************/
 
-ChatMessage::ChatMessage(int id) : Message(id), msg_len(0) {
+ChatMessage::ChatMessage(int id) : VariableLenghtMessage(id) {
     this->type = CHAT_CHAR;
 }
 
-ChatMessage::ChatMessage(const std::string &message, int id) : Message(message, id){
+ChatMessage::ChatMessage(const std::string &message, int id) : VariableLenghtMessage(message, id) {
     this->type = CHAT_CHAR;
-}
-
-const std::string ChatMessage::getMessage() const {
-    return _message;
-}
-
-const std::string ChatMessage::getEncodedMessage() const {
-    unsigned short int len = htons(_message.size());
-    char len_arr[2];
-    memcpy(len_arr, &len, 2);
-    std::string encoded_message;
-    encoded_message.push_back(len_arr[0]);
-    encoded_message.push_back(len_arr[1]);
-    encoded_message += _message;
-
-    return encoded_message;
 }
 
 void ChatMessage::apply(Board&) const {
@@ -43,22 +27,4 @@ void ChatMessage::apply(Board&) const {
 
 void ChatMessage::apply(Board&, Chat &chat) const {
     chat.addMessage(this->id, this->_message);
-}
-
-int ChatMessage::getBytesToRead() {
-    if (msg_len == 0)
-        return sizeof(unsigned short int);
-    if (this->_message.size() > 0)
-        return 0;
-    return msg_len;
-}
-
-void ChatMessage::decode(std::vector<char> &buf) {
-    if (msg_len == 0) {
-        unsigned short int name_len_be;
-        memcpy(&name_len_be, buf.data(), sizeof(unsigned short int));
-        msg_len = ntohs(name_len_be);
-    } else {
-        this->_message = std::string(buf.data(), msg_len);
-    }
 }

@@ -5,9 +5,12 @@
     Metodos publicos
 ************************/
 
-Message::Message(int id) : id(id) {}
+Message::Message(int id) : _msg_len(0), id(id) {}
 
-Message::Message(const std::string& message, int id) : _message(message), id(id) {}
+Message::Message(const std::string& message, int id)
+                    : _message(message), 
+                      _msg_len(message.size()),
+                      id(id) {}
 
 const std::string Message::getMessage() const {
     return this->_message;
