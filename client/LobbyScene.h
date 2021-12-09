@@ -14,13 +14,13 @@
 #define CONFIG_BUTTON_PNG "../assets/sprites/configButton.png"
 #define CONFIG_BUTTON_SIZE_MULTIPLIER .1f
 #define LOBBY_BACKGROUND_FILEPATH "../assets/sprites/lobbyBackground.png"
-#define ROOM_NAME_FONT_SIZE 22
 #define X_OFFSET_BETWEEN_ROOMS 20
 #define Y_OFFSET_BETWEEN_ROOMS 20
+#define FONT_SIZE_MULTIPLIER .045f
 
 class LobbyScene : public Scene {
 private:
-    int _numberOfRooms;
+    int _numberOfRooms, fontSize;
     bool clickedInOneRoom;
     Scene* _configScene;
     std::unique_ptr<SDL2pp::Texture> backgroundImageTexture;

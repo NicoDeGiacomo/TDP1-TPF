@@ -7,13 +7,16 @@ void ChatUI::load(SDL2pp::Renderer* renderer, SDL2pp::Window* window){
     _renderer = renderer;
     _window = window;
     backgroundImageTexture = std::make_unique<SDL2pp::Texture>((*_renderer), CHAT_BACKGROUND_PNG);
+    fontSize = _window->GetHeight() * FONT_SIZE_MULTIPLIER;
+    paddingX = fontSize;
+    paddingY = fontSize * 2;
 }
 void ChatUI::drawInputMessage(std::string& inputMessage) {
     if (inputMessage.empty()) return;
     // Initialize SDL_ttf library
     SDL2pp::SDLTTF ttf;
     // Load font
-    SDL2pp::Font font("../assets/fonts/Vera.ttf", CHAT_FONT_SIZE);
+    SDL2pp::Font font("../assets/fonts/Vera.ttf", fontSize);
     // add the text into new texture. Note that SDL_ttf render
     // text into Surface, which is converted into texture on the fly
     std::cout << "." << inputMessage << "." << std::endl;
@@ -26,8 +29,8 @@ void ChatUI::drawInputMessage(std::string& inputMessage) {
                     255,
                     255}));
     SDL2pp::Rect messageRect(
-            _window->GetHeight() + xOffset,
-            _window->GetHeight() - yOffset,
+            _window->GetHeight() + paddingX,
+            _window->GetHeight() - paddingY,
             inputMessageTexture->GetWidth(),
             inputMessageTexture->GetHeight()
     );
@@ -61,14 +64,14 @@ void ChatUI::renderMessages(std::string& inputMessage) {
     int i = 1;
     auto texture = textures.begin();
     while (texture != textures.end()) {
-        int y = _window->GetHeight() - yOffset - i * (CHAT_FONT_SIZE + CHAT_FONT_PADDING);
+        int y = _window->GetHeight() - paddingY - i * fontSize;
         //if i cant render it, delete it from the queue
         if (y < 0) {
             texture = textures.erase(texture);
             continue;
         }
         SDL2pp::Rect messageRect(
-                _window->GetHeight() + xOffset,
+                _window->GetHeight() + paddingX,
                 y,
                 (*texture)->GetWidth(),
                 (*texture)->GetHeight()
@@ -84,7 +87,7 @@ void ChatUI::add(const std::string &message) {
     // Initialize SDL_ttf library
     SDL2pp::SDLTTF ttf;
     // Load font
-    SDL2pp::Font font("../assets/fonts/Vera.ttf", CHAT_FONT_SIZE);
+    SDL2pp::Font font("../assets/fonts/Vera.ttf", fontSize);
     std::deque<std::string> tinyMessages = splitMessageIntoRenderableChunks(message, font, ' ');
     auto firstMessage = tinyMessages.begin();
     while (firstMessage != tinyMessages.end()) {

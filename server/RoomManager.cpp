@@ -8,6 +8,7 @@
 #include "RoomManager.h"
 
 RoomManager::RoomManager(){
+    //todo: dont hardcode this
     this->acceptor.bind("7777");
     this->acceptor.listen(6);
 }

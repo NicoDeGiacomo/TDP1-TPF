@@ -53,10 +53,12 @@ void LobbyScene::load(SDL2pp::Renderer *renderer, SDL2pp::Window *window) {
     this->render();
 }
 
-void LobbyScene::loadRoomsTextures() {// Initialize SDL_ttf library
+void LobbyScene::loadRoomsTextures() {
+    // Initialize SDL_ttf library
     SDL2pp::SDLTTF ttf;
     // Load font
-    SDL2pp::Font font("../assets/fonts/Vera.ttf", ROOM_NAME_FONT_SIZE);
+    fontSize = _window->GetHeight() * FONT_SIZE_MULTIPLIER;
+    SDL2pp::Font font("../assets/fonts/Vera.ttf", fontSize);
     loadRoomsButtons(font);
     loadConfigButton();
 }
