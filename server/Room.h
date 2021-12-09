@@ -15,7 +15,7 @@
 
 class Room {
 private:
-    int roomNumber;
+    // int roomNumber;
     BlockingQueue<std::shared_ptr<Message>> queueOfReceived;
     std::list<Player> _spectators;
     Player playerBlack;
@@ -27,9 +27,9 @@ private:
 public:
     Room() = delete;
     
-    Room(int number, Socket &socket);
+    Room(Socket &socket);
 
-    bool isRoom(int number) const;
+    // bool isRoom(int number) const;
 
     void addClient(Socket &socket);
 

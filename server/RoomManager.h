@@ -6,13 +6,13 @@
 #define QUANTUM_CHESS_ROOMMANAGER_H
 #include "Socket.h"
 #include "Room.h"
-#include <list>
+#include <map>
 #include <thread>
 
 class RoomManager {
 private:
     Socket acceptor;
-    std::list<Room> listOfRooms;
+    std::map<int,Room> rooms;
 public:
     RoomManager();
     void start();

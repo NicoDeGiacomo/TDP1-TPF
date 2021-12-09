@@ -24,23 +24,19 @@ void RoomManager::start() {
         // std::cout << "valid socket accepted" << std::endl;
         //TODO: protocol for reciving from the client the room number and position wanted
         int roomNumber = 1;
-        bool roomExists = false;
-        for (Room& room : listOfRooms){
-            if (!room.isRoom(roomNumber)) continue;
-            room.addClient(peer);
-            roomExists = true;
-            break;
-        }
-        if (!roomExists){
-            listOfRooms.emplace_back(roomNumber, peer);
+
+        try {
+            rooms.at(roomNumber).addClient(peer);
+        } catch (...) {
+           rooms.emplace(roomNumber, peer); 
         }
         
         //TODO: process where the new client wants to go, which room spectator or player
     }
     //TODO: this is bad, roomManager is never throwing new thread, how does he know that
     //he needs to join the rooms, join should be in the destructor of rooms in this case
-    for (auto& room : listOfRooms) {
-        room.joinAllThreads();
-    }
+    // for (auto& room : listOfRooms) {
+    //     room.joinAllThreads();
+    // }
     //listOfRooms.clear();
 }

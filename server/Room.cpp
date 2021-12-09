@@ -7,9 +7,9 @@
 #include "Protocol.h"
 #include <PlayerNameMessage.h>
 
-bool Room::isRoom(int number) const{
-    return number == roomNumber;
-}
+// bool Room::isRoom(int number) const{
+//     return number == roomNumber;
+// }
 
 void Room::addClient(Socket &socket) {
     //TODO: this list of peers should be protected, can add client while sending messages
@@ -74,12 +74,11 @@ void Room::joinAllThreads() {
     std::cout << "all threads joined" << std::endl;
 }
 
-Room::Room(int number, Socket &socket) 
-                : roomNumber(number),
-                  playerBlack(queueOfReceived),
-                  playerWhite(queueOfReceived),
-                  sendThread(queueOfReceived, playerWhite, playerBlack, _spectators, board,  chat),
-                  next_id(0) {
+Room::Room(Socket &socket) : playerBlack(queueOfReceived), 
+                             playerWhite(queueOfReceived), 
+                             sendThread(queueOfReceived, playerWhite, 
+                                        playerBlack, _spectators, board, chat), 
+                             next_id(0) {
     sendThread.start();
     this->addClient(socket);
 }
