@@ -34,15 +34,20 @@ void Client::run() {
     // sceneManager.updateLoopActiveScene();
     
     proxy.connect();
+    recvThread.start();
+    sendThread.start();
 
-    proxy.send(std::make_shared<RoomIdMessage>(name.substr(0, 1)));
+    // proxy.send(std::make_shared<RoomIdMessage>(name.substr(0, 1)));
+    sendQueue.produce(std::make_shared<RoomIdMessage>(name.substr(0, 1)));
     
     // Here should send if the user wants to be a player or spectator
 
-    std::shared_ptr<Message> type_msg = proxy.recv();
+    // std::shared_ptr<Message> type_msg = proxy.recv();
+    std::shared_ptr<Message> type_msg = recvQueue.top();
     if (type_msg->getType() != PLAYER_TYPE_CHAR)
         throw std::runtime_error("First message should be the room id");
     // std::shared_ptr<Message> seed_msg = proxy.recv();
+    recvQueue.pop();
 
     char player_type = type_msg->getMessage().at(0);
 
@@ -52,8 +57,6 @@ void Client::run() {
                                                       player_type,
                                                       gameFinished), GAME_SCENE);
 
-    recvThread.start();
-    sendThread.start();
 
     sendQueue.produce(std::make_shared<PlayerNameMessage>(name));
     sceneManager.loadScene(GAME_SCENE);

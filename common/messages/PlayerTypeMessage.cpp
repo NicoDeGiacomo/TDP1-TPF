@@ -18,9 +18,9 @@ PlayerTypeMessage::PlayerTypeMessage(char type) {
 }
 
 void PlayerTypeMessage::apply(Board&) const {
-    throw std::runtime_error("This method should not be called");
+    // throw std::runtime_error("This method should not be called");
 }
 
 void PlayerTypeMessage::apply(Board&, Chat &) const {
-    throw std::runtime_error("This method should not be called");
+    // throw std::runtime_error("This method should not be called");
 }

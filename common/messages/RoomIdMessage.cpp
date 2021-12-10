@@ -17,9 +17,9 @@ RoomIdMessage::RoomIdMessage(const std::string &message, int id)
 }
 
 void RoomIdMessage::apply(Board&) const {
-    throw std::runtime_error("This method should not be called");
+    // throw std::runtime_error("This method should not be called");
 }
 
 void RoomIdMessage::apply(Board&, Chat &) const {
-    throw std::runtime_error("This method should not be called");
+    // throw std::runtime_error("This method should not be called");
 }
