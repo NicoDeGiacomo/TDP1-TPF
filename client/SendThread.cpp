@@ -25,17 +25,20 @@ void SendThread::run() {
             msg->apply(board, chat);
             proxy.send(msg);
             std::cout << "sent " << "\n";
-        } catch (ClosedSocketException& e){
+        } catch (ClosedSocketException& e) {
             //TODO: for some reason this catch isnt catching, the socket
             //is throwing the error receiving bytes exception instead
-            std::cout << e.what() << std::endl;
-            return;
+            // std::cout << e.what() << std::endl;
+            this->stop();
+        } catch (ClosedQueueException& e){
+            this->stop();
         } catch(const std::exception &e) {
+            this->stop();
             std::cerr << "Exception caught in SendThread: '" 
                     << e.what() << "'" << std::endl;
         } catch(...) {
             std::cerr << "Unknown error caught in SendThread" << std::endl;
-            return;
+            // return;
         }
     }
 }
@@ -56,4 +59,5 @@ void SendThread::stop() {
     this->keep_talking = false;
     this->sendQueue.close();
     this->proxy.close_connection();
+    std::cout << "Closing SendThread" << std::endl;
 }

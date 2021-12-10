@@ -49,6 +49,6 @@ SendThread::SendThread(BlockingQueue <std::shared_ptr<Message>> &queueOfReceived
                        keep_talking(true) {}
 
 void SendThread::stop() {
-    /*this->keep_talking = false;
-    this->proxy.close_connection();*/
+    this->keep_talking = false;
+    // this->proxy.close_connection();
 }

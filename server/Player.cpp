@@ -22,6 +22,8 @@ void Player::startReceivingMessages() {
 }
 
 void Player::join() {
+    recvThread.stop();
+    recvThread.join();
     // if (this->receiverThread.joinable())
     //     this->receiverThread.join();
 }
@@ -33,5 +35,5 @@ int Player::getId() {
 Player::~Player() {
     //could join by force here, and make join private
     //std::cout << "joining player by destructor" << std::endl;
-    //this->join();
+    // this->join();
 }

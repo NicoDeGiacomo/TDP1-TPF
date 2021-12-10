@@ -10,11 +10,20 @@
 
 void RecvThread::run() {
     while (keep_talking) {
-        std::cout << "sv received message1" << std::endl;
-        std::shared_ptr<Message> message = proxy.recv();
-        std::cout << "sv received message2" << std::endl;
-        queueOfReceived.produce(std::move(message));
-        std::cout << "sv received message3" << std::endl;
+        try {
+            std::shared_ptr<Message> message = proxy.recv();
+            queueOfReceived.produce(std::move(message));
+        } catch (ClosedSocketException& e) {
+            std::cout << "Socket closed. Closing RecvThread" << std::endl;
+            this->stop();
+        } catch(const std::exception &e) {
+            this->stop();
+            std::cerr << "Exception caught in RecvThread: '" 
+                    << e.what() << "'" << std::endl;
+        } catch (...) {
+            std::cerr << "Unknown error caught in RecvThread" << std::endl;
+            this->stop();
+        }
     }
 }
 
@@ -29,6 +38,7 @@ RecvThread::RecvThread(ClientProxy &proxy,
                        keep_talking(true) {}
 
 void RecvThread::stop() {
+    std::cout << "Closing RecvThread\n";
     this->keep_talking = false;
-    // this->proxy.close_connection();
+    this->proxy.close_connection();
 }

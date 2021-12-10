@@ -40,19 +40,6 @@ std::string ClientProxy::recvMessage(unsigned short int msg_len) {
     return msg_str;
 }
 
-
-// Message ProxyClient::decodeNormalMoveMessage() {
-    
-// }
-
-// Message ProxyClient::decodeSplitMoveMessage() {
-    
-// }
-
-// Message ProxyClient::decodeMergeMoveMessage() {
-    
-// }
-
 /***********************
     Metodos publicos
 ************************/
@@ -72,6 +59,7 @@ ClientProxy::ClientProxy(ClientProxy &&other)
 
 void ClientProxy::send(const std::shared_ptr<Message> message) const {
 
+    if (this->socket.isNotActive()) return;
     if (message->getId() == this->id) return;
 
     char type = message->getType();
@@ -87,25 +75,16 @@ void ClientProxy::send(const std::shared_ptr<Message> message) const {
 std::shared_ptr<Message> ClientProxy::recv() {
     std::shared_ptr<Message> msg_ptr;
     
-    try {
-        char type;
-        socket.receive(&type, 1);
-        msg_ptr = Protocol::CharToMessage(type, id);
-        int bytesToRead = msg_ptr->getBytesToRead();
-        while (bytesToRead > 0) {
-            std::cout << "CLIENT PROXY READING BYTES" << bytesToRead << std::endl;
-            std::vector<char> buf;
-            buf.reserve(bytesToRead);
-            this->socket.receive(buf.data(), bytesToRead);
-            msg_ptr->decode(buf);
-            bytesToRead = msg_ptr->getBytesToRead();
-        }
-        std::cout << "CLIENT PROXY READING BYTES" << bytesToRead << std::endl;
-    } catch(const std::exception &e) {
-        std::cerr << "ERROR: '"
-                  << e.what() << "'" << std::endl;
-    } catch(...) {
-        std::cerr << "Error recv command type" << std::endl;
+    char type;
+    socket.receive(&type, 1);
+    msg_ptr = Protocol::CharToMessage(type, id);
+    int bytesToRead = msg_ptr->getBytesToRead();
+    while (bytesToRead > 0) {
+        std::vector<char> buf;
+        buf.reserve(bytesToRead);
+        this->socket.receive(buf.data(), bytesToRead);
+        msg_ptr->decode(buf);
+        bytesToRead = msg_ptr->getBytesToRead();
     }
 
     return msg_ptr;
@@ -117,4 +96,8 @@ void ClientProxy::setId(int id) {
 
 int ClientProxy::getId() {
     return id;
+}
+
+void ClientProxy::close_connection() {
+    this->socket.shutdown();
 }
