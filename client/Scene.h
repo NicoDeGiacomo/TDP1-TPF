@@ -15,12 +15,15 @@ class Scene {
 protected:
     SDL2pp::Renderer *_renderer;
     SDL2pp::Window *_window;
+    SDL2pp::Mixer *_mixer;
+    std::vector<std::unique_ptr<SDL2pp::Chunk>> *_sound;
     virtual void render() = 0;
     virtual void handleEvents() = 0;
 public:
     virtual void updateLoop() = 0;
     virtual void load(SDL2pp::Renderer *renderer, SDL2pp::Window* window);
     virtual ~Scene() = default;
+    void addMixer(SDL2pp::Mixer* mixer, std::vector<std::unique_ptr<SDL2pp::Chunk>> *chunk);
 };
 
 

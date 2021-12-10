@@ -18,7 +18,9 @@ private:
     std::unique_ptr<SDL2pp::Window> _window;
     std::unordered_map<std::string,std::unique_ptr<Scene>> _scenes;
     std::string activeScene;
-
+    std::unique_ptr<SDL2pp::Mixer> _mixer;
+    std::vector<std::unique_ptr<SDL2pp::Chunk>> _sound;
+    
     void loadWindow();
 public:
     SceneManager() = default;

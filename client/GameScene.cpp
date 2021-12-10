@@ -5,6 +5,13 @@
 #include <MergeMoveMessage.h>
 #include <ChatMessage.h>
 #include "GameScene.h"
+#include <SDL.h>
+#include <SDL_mixer.h>
+
+#include <SDL2pp/SDL.hh>
+#include <SDL2pp/SDLMixer.hh>
+#include <SDL2pp/Mixer.hh>
+#include <SDL2pp/Music.hh>
 
 GameScene::GameScene(Board& board,
                      BlockingQueue<std::shared_ptr<Message>>* userInputQueue,
@@ -324,6 +331,7 @@ void GameScene::handleBoardClick() {
                     this->userInputQueue->produce(std::make_shared<NormalMoveMessage>(
                             from, to
                     ));
+                    _mixer->PlayChannel(-1, *(*_sound)[1]);
                 }
                 deselectAllPieces();
             }
@@ -357,17 +365,21 @@ void GameScene::handleBoardClick() {
                     Position pos_2(inputData.secondPositionX, inputData.secondPositionY);
                     Position pos_3(clampedMouseXToGrid, clampedMouseYToGrid);
 
-                    (inputData.typeOfMove == 's') ?
+                    if (inputData.typeOfMove == 's'){
                     this->userInputQueue->produce(
                             std::make_shared<SplitMoveMessage>(
                                     pos_1,
                                     pos_2,
-                                    pos_3)) :
+                                    pos_3));
+                        _mixer->PlayChannel(-1, *(*_sound)[1], 2);
+                    } else{  
                     this->userInputQueue->produce(
                             std::make_shared<MergeMoveMessage>(
                                     pos_1,
                                     pos_2,
                                     pos_3));
+                        _mixer->PlayChannel(-1, *(*_sound)[1]);
+                    }
                 }
                 goToDefaultMovement();
             }
@@ -553,6 +565,8 @@ bool GameScene::canMovePiece() {
 
 void GameScene::load(SDL2pp::Renderer *renderer, SDL2pp::Window *window) {
     Scene::load(renderer, window);
+    _mixer->PlayChannel(1, *(*_sound)[0], -1);
+    _mixer->SetVolume(1, 55);
     this->pieceSize = _window->GetHeight() / BOARD_SQUARES_IN_A_LINE;
     this->selectedPieceSize = _window->GetHeight() / BOARD_SQUARES_IN_A_LINE - 1; // -1 to be able to highlight it
     //load scene, but dont process input nor render textures
