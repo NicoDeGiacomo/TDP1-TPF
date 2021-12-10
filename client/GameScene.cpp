@@ -27,7 +27,8 @@ GameScene::GameScene(Board& board,
 
 void GameScene::updateLoop() {
     this->handleEvents();
-    if (_gameFinished) {
+    if (_gameFinished || _board.isFinished()) {
+        _gameFinished = true;
         endMessage(SPECTATOR_CHAR);
         return;
     }
@@ -50,13 +51,6 @@ void GameScene::handleEvents() {
 }
 
 void GameScene::render() {
-    //todo: listen for screen resize
-    //todo: all of this should be refactored
-    // need a class Entity with its texture, position, color
-    // and here we just render all the entities, the position of the entities should be added to the entity when
-    // created or modified, it shouldnt be used in this method
-    // render() knows all the positions of all the entities on the screen, stinks
-
     //clear screen
     _renderer->Clear();
     //render board

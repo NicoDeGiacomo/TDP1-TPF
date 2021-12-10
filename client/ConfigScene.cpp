@@ -57,7 +57,7 @@ void ConfigScene::loadFullScreenButton(SDL2pp::Font& font, const int yPosition) 
     );
     addButton([&window = _window]{
         std::cout << "You clicked fullscreen" << std::endl;
-        window->SetFullscreen(SDL_WINDOW_FULLSCREEN);
+        window->SetFullscreen(SDL_WINDOW_FULLSCREEN_DESKTOP);
     },std::move(texture), buttonRect);
 }
 
