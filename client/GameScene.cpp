@@ -58,26 +58,51 @@ void GameScene::render() {
     //render the higlight of entangled pieces
     for (auto &position : entangledPiecesPosition) {
         Piece *piece = _board.getPiece(position);
+        //the -1 are for the screen offset
+        int piecePositionX = piece->getPosition().getX() - 1;
+        int piecePositionY = piece->getPosition().getY() - 1;
+        if (_playerType == WHITE_CHAR){
+            piecePositionX = BOARD_SQUARES_IN_A_LINE - 1 - piecePositionX;
+            piecePositionY = BOARD_SQUARES_IN_A_LINE - 1 - piecePositionY;
+        }
+        int x = piecePositionX * pieceSize + (pieceSize - selectedPieceSize)/2;
+        int y = piecePositionY * pieceSize + (pieceSize - selectedPieceSize)/2;
         SDL2pp::Rect pieceRect(
-                (position.getX() - 1) * pieceSize + (pieceSize - selectedPieceSize)/2,
-                (position.getY() - 1) * pieceSize + (pieceSize - selectedPieceSize)/2,
+                x,
+                y,
                 selectedPieceSize,
                 selectedPieceSize);
         _renderer->Copy(entangledTexturesMap.at(toupper(piece->getDrawing())), SDL2pp::NullOpt, pieceRect);
     }
     //render the highlight of selected pieces
     for (auto &piece : selectedPieces) {
+        //the -1 are for the screen offset
+        int piecePositionX = piece->getPosition().getX() - 1;
+        int piecePositionY = piece->getPosition().getY() - 1;
+        if (_playerType == WHITE_CHAR){
+            piecePositionX = BOARD_SQUARES_IN_A_LINE - 1 - piecePositionX;
+            piecePositionY = BOARD_SQUARES_IN_A_LINE - 1 - piecePositionY;
+        }
+        int x = piecePositionX * pieceSize + (pieceSize - selectedPieceSize)/2;
+        int y = piecePositionY * pieceSize + (pieceSize - selectedPieceSize)/2;
         SDL2pp::Rect pieceRect(
-                (piece->getPosition().getX() - 1) * pieceSize + (pieceSize - selectedPieceSize)/2,
-                (piece->getPosition().getY() - 1) * pieceSize + (pieceSize - selectedPieceSize)/2,
+                x,
+                y,
                 selectedPieceSize,
                 selectedPieceSize);
         _renderer->Copy(selectedTexturesMap.at(toupper(piece->getDrawing())), SDL2pp::NullOpt, pieceRect);
     }
     //render pieces
     for (const auto &piece : _board) {
-        int x = (piece->getPosition().getX() - 1) * pieceSize;
-        int y = (piece->getPosition().getY() - 1) * pieceSize;
+        //the -1 are for the screen offset
+        int piecePositionX = piece->getPosition().getX() - 1;
+        int piecePositionY = piece->getPosition().getY() - 1;
+        if (_playerType == WHITE_CHAR){
+            piecePositionX = BOARD_SQUARES_IN_A_LINE - 1 - piecePositionX;
+            piecePositionY = BOARD_SQUARES_IN_A_LINE - 1 - piecePositionY;
+        }
+        int x = piecePositionX * pieceSize;
+        int y = piecePositionY * pieceSize;
         SDL2pp::Rect pieceRect(
                 x,
                 y,
@@ -101,9 +126,18 @@ void GameScene::render() {
                 colors.grey);
     }
     for(auto& position : possibleMoves){
+        //the -1 are for the screen offset
+        int piecePositionX = position.getX() - 1;
+        int piecePositionY = position.getY() - 1;
+        if (_playerType == WHITE_CHAR){
+            piecePositionX = BOARD_SQUARES_IN_A_LINE - 1 - piecePositionX;
+            piecePositionY = BOARD_SQUARES_IN_A_LINE - 1 - piecePositionY;
+        }
+        int x = piecePositionX * pieceSize;
+        int y = piecePositionY * pieceSize;
         SDL2pp::Rect possibleMoveRect(
-                (position.getX() - 1) * pieceSize, //map board position to world position
-                (position.getY() - 1) * pieceSize, //map board position to world position
+                x,
+                y,
                 pieceSize,
                 pieceSize);
         _renderer->Copy((*dotTexture), SDL2pp::NullOpt, possibleMoveRect);
@@ -315,6 +349,10 @@ void GameScene::handleBoardClick() {
     std::cout << "xmouse " << mouseX << " ymouse " << mouseY << std::endl;
     int clampedMouseXToGrid = ceil((float)mouseX / pieceSize);
     int clampedMouseYToGrid = ceil((float)mouseY / pieceSize);
+    if (_playerType == WHITE_CHAR){
+        clampedMouseXToGrid = BOARD_SQUARES_IN_A_LINE + 1 - clampedMouseXToGrid;
+        clampedMouseYToGrid = BOARD_SQUARES_IN_A_LINE + 1 - clampedMouseYToGrid;
+    }
     std::cout << "grid position x " << clampedMouseXToGrid << " grid position y " << clampedMouseYToGrid << std::endl;
     switch (inputData.typeOfMove) {
         case 'n':
