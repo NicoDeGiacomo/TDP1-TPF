@@ -23,11 +23,7 @@ private:
     SceneManager sceneManager;
     ServerProxy proxy;
     Board _board;
-    // BlockingQueue<std::shared_ptr<std::string>> chatQueue;
     Chat chat;
-    //GameScene mainGameScreen;
-    int id;
-    char playerType;
     bool gameFinished;
     std::string name;
     BlockingQueue<std::shared_ptr<Message>> recvQueue;

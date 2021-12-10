@@ -10,28 +10,7 @@
 
 void RecvThread::run() {
     std::cout << "Running RecvThread\n";
-    // while (keep_talking) {
-    //     //TODO: remove this 6 hardcoded, need to add protocol
-    //     char received[6];
-    //     try {
-    //         socket.receive(received, 6);
-    //     } catch (ClosedSocketException& e){
-    //         std::cout << e.what() << std::endl;
-    //         return;
-    //     }
-    //     std::cout << "--client received" << std::endl;
-    //     for (auto &c : received){
-    //         std::cout << c;
-    //     }
-
-    //     std::string buffer(received, received + 6);
-    //     std::shared_ptr<Message> message = Protocol::StringToMessage(buffer, this->id);
-    //     // std::cout << std::endl << "---" << std::endl;
-    //     // message->apply(this->board);
-    //     queue.produce(std::move(message));
-
-    // }
-
+    
     while (keep_talking) {
         try {
             std::shared_ptr<Message> message = proxy.recv();

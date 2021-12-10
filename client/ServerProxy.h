@@ -11,14 +11,14 @@
 class ServerProxy {
 private:
     Socket socket;
-    int id;
-    char playerType;
+    std::string host;
+    std::string service;
     unsigned int seed;
     
 public:
     ServerProxy(const char *host, const char *service);
 
-    void connect(const char *host, const char *service);
+    void connect();
     /*
      *  Traduce una accion a bits segun el protocolo de comunicacion 
      *  y lo envia al server.
@@ -33,8 +33,6 @@ public:
      *  Cierra la conexion con el server.
      */
     void close_connection();
-
-    char getPlayerType();
 
     unsigned int getSeed();
 };

@@ -13,15 +13,11 @@
     Metodos publicos
 ************************/
 
-ServerProxy::ServerProxy(const char *host, const char *service) : id(-1) {
-    connect(host, service);
-}
+ServerProxy::ServerProxy(const char *host, const char *service) 
+                        : host(host), service(service) {}
 
-void ServerProxy::connect(const char *host, const char *service) {
-    socket.connect(host, service);
-    // Justo despues de conectarse podria recibir el id que le corresponde
-    socket.receive(&playerType, 1);
-    seed = socket.receive();
+void ServerProxy::connect() {
+    socket.connect(host.c_str(), service.c_str());
 }
 
 void ServerProxy::send(const std::shared_ptr<Message> message) {
@@ -60,10 +56,6 @@ std::shared_ptr<Message> ServerProxy::recv() {
 
 void ServerProxy::close_connection() {
     this->socket.shutdown();
-}
-
-char ServerProxy::getPlayerType() {
-    return playerType;
 }
 
 unsigned int ServerProxy::getSeed() {

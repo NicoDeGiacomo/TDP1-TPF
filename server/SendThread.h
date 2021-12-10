@@ -12,8 +12,7 @@
 class SendThread: public Thread {
 private:
     BlockingQueue <std::shared_ptr<Message>> &queueOfReceived;
-    Player &playerWhite;
-    Player &playerBlack;
+    std::list<Player> &players;
     std::list<Player> &spectators;
     Board &board;
     Chat &chat;
@@ -31,8 +30,7 @@ public:
      *  Constructor
      */
     SendThread(BlockingQueue <std::shared_ptr<Message>> &queueOfReceived,
-               Player &playerWhite,
-               Player &playerBlack,
+               std::list <Player> &players,
                std::list<Player> &spectators,
                Board &board,
                Chat &chat);

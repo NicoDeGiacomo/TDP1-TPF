@@ -44,12 +44,11 @@ void SendThread::run() {
     Metodos publicos
 ************************/
 
-SendThread::SendThread(ServerProxy &proxy, Board &board, Chat &chat, int id, 
+SendThread::SendThread(ServerProxy &proxy, Board &board, Chat &chat, 
                 BlockingQueue<std::shared_ptr<Message>> &sendQueue)
                 : proxy(proxy),
                   board(board),
                   chat(chat),
-                  id(id),
                   keep_talking(true),
                   sendQueue(sendQueue) {}
 

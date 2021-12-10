@@ -12,15 +12,12 @@ void SendThread::run() {
         queueOfReceived.pop();
         try {
             message->apply(board, chat);
+            for (auto &player : players) {
+                player.send(message);
+            }
             for (auto &spectator : spectators) {
                 spectator.send(message);
             }
-            //this if itsVacant is just not to break things
-            //better send logic needs to be added
-            if (!playerWhite.isVacant())
-                playerWhite.send(message);
-            if (!playerBlack.isVacant())
-                playerBlack.send(message);
         } catch (ClosedSocketException& e){
             //TODO: for some reason this catch isnt catching, the socket
             //is throwing the error receiving bytes exception instead
@@ -40,14 +37,12 @@ void SendThread::run() {
 ************************/
 
 SendThread::SendThread(BlockingQueue <std::shared_ptr<Message>> &queueOfReceived, 
-                       Player &playerWhite,
-                       Player &playerBlack,
+                       std::list<Player> &players,
                        std::list<Player> &spectators,
                        Board &board,
                        Chat &chat)
                        : queueOfReceived(queueOfReceived),
-                       playerWhite(playerWhite),
-                       playerBlack(playerBlack),
+                       players(players),
                        spectators(spectators),
                        board(board),
                        chat(chat),

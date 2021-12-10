@@ -1,10 +1,5 @@
-//
-// Created by ale on 12/11/21.
-//
-
 #ifndef QUANTUM_CHESS_ROOM_H
 #define QUANTUM_CHESS_ROOM_H
-
 
 #include <Socket.h>
 #include <list>
@@ -15,23 +10,20 @@
 
 class Room {
 private:
-    // int roomNumber;
     BlockingQueue<std::shared_ptr<Message>> queueOfReceived;
+    std::list<Player> players;
     std::list<Player> _spectators;
-    Player playerBlack;
-    Player playerWhite;
     Board board;
     Chat chat;
     SendThread sendThread;
     int next_id;
+    void sendNamesToClient(ClientProxy &client);
 public:
     Room() = delete;
     
-    Room(Socket &socket);
+    Room(ClientProxy &client);
 
-    // bool isRoom(int number) const;
-
-    void addClient(Socket &socket);
+    void addClient(ClientProxy &client);
 
     void joinAllThreads();
 

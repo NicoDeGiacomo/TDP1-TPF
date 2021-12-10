@@ -8,6 +8,7 @@
 #include <thread>
 #include <Message.h>
 #include <PlayerNameMessage.h>
+#include <RoomIdMessage.h>
 #include <Protocol.h>
 #include "Client.h"
 #include "RecvThread.h"
@@ -19,9 +20,7 @@
 
 void Client::run() {
     RecvThread recvThread(proxy, recvQueue);
-    SendThread sendThread(proxy, _board, chat, id, sendQueue);
-    recvThread.start();
-    sendThread.start();
+    SendThread sendThread(proxy, _board, chat, sendQueue);
     // mainGameScreen()
 
     //std::string user_name = mainGameScreen.login();
@@ -31,12 +30,32 @@ void Client::run() {
     sceneManager.loadScene(LOGIN_SCENE);
     sceneManager.updateLoopActiveScene(); //maybe this loops should be iterated here? instead of them knowing when to break
     
+    // sceneManager.loadScene(LOBBY_SCENE);
+    // sceneManager.updateLoopActiveScene();
+    
+    proxy.connect();
+
+    proxy.send(std::make_shared<RoomIdMessage>(name.substr(0, 1)));
+    
+    // Here should send if the user wants to be a player or spectator
+
+    std::shared_ptr<Message> type_msg = proxy.recv();
+    if (type_msg->getType() != PLAYER_TYPE_CHAR)
+        throw std::runtime_error("First message should be the room id");
+    // std::shared_ptr<Message> seed_msg = proxy.recv();
+
+    char player_type = type_msg->getMessage().at(0);
+
+    sceneManager.addScene(std::make_unique<GameScene>(_board,
+                                                      &sendQueue,
+                                                      chat.getQueue(),
+                                                      player_type,
+                                                      gameFinished), GAME_SCENE);
+
+    recvThread.start();
+    sendThread.start();
+
     sendQueue.produce(std::make_shared<PlayerNameMessage>(name));
-    sceneManager.loadScene(LOBBY_SCENE);
-
-    sceneManager.updateLoopActiveScene();
-    // send room_id
-
     sceneManager.loadScene(GAME_SCENE);
     
     while (!gameFinished) {
@@ -77,27 +96,12 @@ BlockingQueue<std::shared_ptr<Message>>* Client::getQueue(){
 }
 
 Client::Client(const char *host, const char *service)
-            : proxy(host, service), _board(false) {
-    gameFinished = false;
+            : proxy(host, service), _board(false), gameFinished(false) {
 
-    //std::cin.ignore();
-    //proxy.connect(host, service);
-    id = -1;
-    int numberOfRooms = 50; //todo: placeholder, change this to actual number of rooms
+    // int numberOfRooms = 50; //todo: placeholder, change this to actual number of rooms
     std::unique_ptr<Scene> configScene = std::make_unique<ConfigScene>();
     sceneManager.addScene(std::make_unique<LoginScene>(configScene.get(), name), LOGIN_SCENE);
-    sceneManager.addScene(std::make_unique<LobbyScene>(numberOfRooms, configScene.get()), LOBBY_SCENE);
+    // sceneManager.addScene(std::make_unique<LobbyScene>(numberOfRooms, configScene.get()), LOBBY_SCENE);
     sceneManager.addScene(std::move(configScene), CONFIG_SCENE);
-
-    _board.setSeed(proxy.getSeed());
-    playerType = proxy.getPlayerType();
-    //sceneManager.loadScene("LoginScene");
-    sceneManager.addScene(std::make_unique<GameScene>(_board,
-                                                      &sendQueue,
-                                                      chat.getQueue(),
-                                                      proxy.getPlayerType(),
-                                                      gameFinished),GAME_SCENE);
-    
-    // proxy.send(std::make_shared<PlayerInfoMessage>());
 }
 

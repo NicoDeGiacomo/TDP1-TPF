@@ -10,12 +10,9 @@
 
 class SendThread: public Thread {
 private:
-    // ServerProxy proxy;
-    // BlockingQueue<std::shared_ptr<Message>> &queue;
     ServerProxy &proxy;
     Board &board;
     Chat &chat;
-    int id;
     std::atomic<bool> keep_talking;
     BlockingQueue<std::shared_ptr<Message>> &sendQueue;
 
@@ -30,7 +27,7 @@ public:
     /*
      *  Constructor
      */
-    SendThread(ServerProxy &proxy, Board &board, Chat &chat, int id, 
+    SendThread(ServerProxy &proxy, Board &board, Chat &chat, 
                 BlockingQueue<std::shared_ptr<Message>> &sendQueue);
     /*
      *  Constructor por copia

@@ -15,26 +15,23 @@
 
 class Player {
 private:
-    // Socket socket;
     ClientProxy proxy;
     BlockingQueue <std::shared_ptr<Message>> &queueOfReceived;
-    // std::thread receiverThread;
     RecvThread recvThread;
-    int id;
 public:
-    Player(BlockingQueue <std::shared_ptr<Message>> &queueOfReceived);
+    Player(ClientProxy &client,
+           BlockingQueue<std::shared_ptr<Message>> &queue);
 
-    Player(Socket &socket,
-           BlockingQueue<std::shared_ptr<Message>> &queue, 
-           int id, 
-           char type,
-           unsigned int seed);
-
-    void initPlayer(Socket &socket, int id, char type, unsigned int seed);
+    /*
+     *  Constructor por copia
+     */
+    Player(const Player&) = delete;
+    /*
+     *  Asignacion por copia
+     */
+    Player& operator=(const Player&) = delete;
 
     void send(const std::shared_ptr<Message>& message) const;
-
-    bool isVacant() const;
 
     void startReceivingMessages();
 

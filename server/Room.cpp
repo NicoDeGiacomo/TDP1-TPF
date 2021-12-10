@@ -1,71 +1,73 @@
-//
-// Created by ale on 12/11/21.
-//
-
 #include <iostream>
 #include "Room.h"
 #include "Protocol.h"
 #include <PlayerNameMessage.h>
+#include <PlayerTypeMessage.h>
 
-// bool Room::isRoom(int number) const{
-//     return number == roomNumber;
-// }
+void Room::sendNamesToClient(ClientProxy &client) {
+    for (auto &p : players) {
+        int id = p.getId();
+        client.send(std::make_shared<PlayerNameMessage>(chat.getName(id), id));
+    }
+    
+    for (auto &s : _spectators) {
+        int id = s.getId();
+        client.send(std::make_shared<PlayerNameMessage>(chat.getName(id), id));
+    }
+}
 
-void Room::addClient(Socket &socket) {
+
+void Room::addClient(ClientProxy &client) {
     //TODO: this list of peers should be protected, can add client while sending messages
     //this->listOfPeers.push_front(std::move(socket));
     //TODO: this is placeholder, it shouldnt receive a socket, rooms should receive players
-    if (this->playerWhite.isVacant()) {
-        //TODO: think if passing Queue To Send is needed, right now is just for debugging
-        this->playerWhite.initPlayer(socket, next_id, WHITE_CHAR, board.getSeed());
+
+    client.setId(next_id);
+    if (players.empty()) {
+        client.send(std::make_shared<PlayerTypeMessage>(WHITE_CHAR));
+        sendNamesToClient(client);
+        players.emplace_back(client, queueOfReceived);
         std::cout << "white player created" << std::endl;
-        this->playerWhite.startReceivingMessages();
+        players.back().startReceivingMessages();
         for (const auto& move: board.getCurrentMoves()) {
-            this->playerWhite.send(move->getMoveMessage());
+            players.back().send(move->getMoveMessage());
         }
-    }
-    else if (this->playerBlack.isVacant()) {
-        //TODO: think if passing Queue To Send is needed, right now is just for debugging
-        this->playerBlack.initPlayer(socket, next_id, BLACK_CHAR, board.getSeed());
+    } else if (players.size() == 1) {
+        client.send(std::make_shared<PlayerTypeMessage>(BLACK_CHAR));
+        sendNamesToClient(client);
+        players.emplace_back(client, queueOfReceived);
         std::cout << "black player created" << std::endl;
-        this->playerBlack.startReceivingMessages();
+        players.back().startReceivingMessages();
         for (const auto& move: board.getCurrentMoves()) {
-            this->playerBlack.send(move->getMoveMessage());
+            players.back().send(move->getMoveMessage());
         }
-        int white_id = this->playerWhite.getId();
-        this->playerBlack.send(std::make_shared<PlayerNameMessage>(chat.getName(white_id), white_id));
-    }
-    else {
-        //TODO: think if passing Queue To Send is needed, right now is just for debugging
-        this->_spectators.emplace_front(socket, queueOfReceived, next_id, SPECTATOR_CHAR, board.getSeed());
+    } else {
+        client.send(std::make_shared<PlayerTypeMessage>(SPECTATOR_CHAR));
+        sendNamesToClient(client);
+        this->_spectators.emplace_front(client, queueOfReceived);
         std::cout << "spectator created" << std::endl;
         this->_spectators.front().startReceivingMessages();
         for (const auto& move: board.getCurrentMoves()) {
             this->_spectators.front().send(move->getMoveMessage());
         }
-        int white_id = this->playerWhite.getId();
-        _spectators.front().send(std::make_shared<PlayerNameMessage>(chat.getName(white_id), white_id));
-        int black_id = this->playerBlack.getId();
-        _spectators.front().send(std::make_shared<PlayerNameMessage>(chat.getName(black_id), black_id));
-        for (auto &s : _spectators) {
-            int id = s.getId();
-            _spectators.front().send(std::make_shared<PlayerNameMessage>(chat.getName(id), id));
-        }
     }
+
     next_id++;
 }
 
 void Room::joinAllThreads() {
     //TODO: read and fix this join issue
     // its debatable if manually joining violates RAII, does
-    // . "this->playerBlack.startReceivingMessages();" .
+    // . "players[BLACK_PLAYER].startReceivingMessages();" .
     // implies that we are throwing a new thread
     // and we need to manually join it? idk,
     // each player could join its threads in their destructor
     for(auto & player : _spectators)
         player.join();
-    playerWhite.join();
-    playerBlack.join();
+    for(auto & player : players)
+        player.join();
+    // playerWhite.join();
+    // playerBlack.join();
     //now here the join of sender thread its ok because we launch it
     // if (senderThread.joinable())
     //     senderThread.join();
@@ -74,13 +76,10 @@ void Room::joinAllThreads() {
     std::cout << "all threads joined" << std::endl;
 }
 
-Room::Room(Socket &socket) : playerBlack(queueOfReceived), 
-                             playerWhite(queueOfReceived), 
-                             sendThread(queueOfReceived, playerWhite, 
-                                        playerBlack, _spectators, board, chat), 
-                             next_id(0) {
+Room::Room(ClientProxy &client) : sendThread(queueOfReceived, players, _spectators, board, chat), 
+                                            next_id(0) {
     sendThread.start();
-    this->addClient(socket);
+    this->addClient(client);
 }
 
 Room::~Room() {

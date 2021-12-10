@@ -57,25 +57,18 @@ std::string ClientProxy::recvMessage(unsigned short int msg_len) {
     Metodos publicos
 ************************/
 
-ClientProxy::ClientProxy() : id(-1) {}
+ClientProxy::ClientProxy(Socket &socket) : socket(std::move(socket)), id(-1) {}
 
 ClientProxy::ClientProxy(Socket &socket, int id, char type, unsigned int seed)
-                        : socket(std::move(socket)), is_player(false), id(id) {
-    this->socket.send(&type, 1);
-    this->socket.send(seed);
+                        : socket(std::move(socket)), id(id) {
+    // this->socket.send(&type, 1);
+    // this->socket.send(seed);
+    seed++;
+    type++;
 }
 
-void ClientProxy::initProxy(Socket &socket, int id, char type, unsigned int seed) {
-    this->socket = std::move(socket);
-    this->id = id;
-    this->socket.send(&type, 1);
-    this->socket.send(seed);
-}
-
-
-bool ClientProxy::isNotActive() const {
-    return socket.isNotActive();
-}
+ClientProxy::ClientProxy(ClientProxy &&other) 
+                : socket(std::move(other.socket)), id(other.id) {}
 
 void ClientProxy::send(const std::shared_ptr<Message> message) const {
 
@@ -88,12 +81,6 @@ void ClientProxy::send(const std::shared_ptr<Message> message) const {
     socket.send(&msg_owner_id, 1);
     
     std::string msg_str = message->getEncodedMessage();
-    // unsigned short int msg_len = msg_str.length();
-    // if (type == CHAT_CHAR) {
-    //     unsigned short int msg_len_be = htons(msg_len);
-    //     socket.send((char *) &msg_len_be, 2);
-    // }
-    
     socket.send(msg_str.c_str(), msg_str.size());
 }
 
@@ -124,14 +111,10 @@ std::shared_ptr<Message> ClientProxy::recv() {
     return msg_ptr;
 }
 
-std::string ClientProxy::getName() {
-    return name;
+void ClientProxy::setId(int id) {
+    this->id = id;
 }
 
 int ClientProxy::getId() {
     return id;
-}
-
-int ClientProxy::get_room_id() {
-    return room_id;
 }

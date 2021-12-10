@@ -8,7 +8,7 @@ public:
     PlayerNameMessage(int id = -1);
     PlayerNameMessage(const std::string &message, int id = -1);
     virtual void apply(Board&) const override;
-    void apply(Board&, Chat &chat) const override;
+    virtual void apply(Board&, Chat &chat) const override;
 };
 
 

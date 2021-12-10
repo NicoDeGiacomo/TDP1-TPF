@@ -1,11 +1,9 @@
-//
-// Created by ale on 9/11/2021.
-//
-
 #include <iostream>
 #include <thread>
 #include <list>
-#include "RoomManager.h"
+#include <Protocol.h>
+#include <RoomManager.h>
+#include <Message.h>
 
 RoomManager::RoomManager(){
     //todo: dont hardcode this
@@ -23,12 +21,27 @@ void RoomManager::start() {
             break;
         // std::cout << "valid socket accepted" << std::endl;
         //TODO: protocol for reciving from the client the room number and position wanted
-        int roomNumber = 1;
+        // int roomNumber = 1;
+
+        ClientProxy client(peer);
+        std::cout << "New Client!" << std::endl;
+
+        std::cout << "Receiving room id" << std::endl;
+        std::shared_ptr<Message> room_id_msg = client.recv();
+        // std::shared_ptr<Message> player_type_msg = client.recv();
+        if (room_id_msg->getType() != ROOM_ID_CHAR)
+            throw std::runtime_error("First message should be the room id");
+        // if (player_type_msg->getType() != PLAYER_TYPE_CHAR)
+        //     throw std::runtime_error("Second message should be the player type (Player/Spectator)");
+
+        std::string room_id = room_id_msg->getMessage();
+        std::cout << "Client wants to enter room: " << room_id << std::endl;
+        // std::string player_type = player_type_msg->getMessage();
 
         try {
-            rooms.at(roomNumber).addClient(peer);
+            rooms.at(room_id).addClient(client);
         } catch (...) {
-           rooms.emplace(roomNumber, peer); 
+           rooms.emplace(room_id, client); 
         }
         
         //TODO: process where the new client wants to go, which room spectator or player

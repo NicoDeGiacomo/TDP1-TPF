@@ -11,20 +11,27 @@
 class ClientProxy {
 private:
     Socket socket;
-    bool is_player;
-    int room_id;
-    std::string name;
     int id;
     std::string recvMessage(unsigned short int msg_len);
     unsigned short int decodeChatMessageLen();
 public:
-    ClientProxy();
+    ClientProxy(Socket &socket);
 
     ClientProxy(Socket &socket, int id, char type, unsigned int seed);
+    
+    /*
+     *  Constructor por copia
+     */
+    ClientProxy(const ClientProxy&) = delete;
+    /*
+     *  Asignacion por copia
+     */
+    ClientProxy& operator=(const ClientProxy&) = delete;
+    /*
+     *  Constructor por movimiento
+     */
+    ClientProxy(ClientProxy &&other);
 
-    void initProxy(Socket &socket, int id, char type, unsigned int seed);
-
-    bool isNotActive() const;
     /*
      *  Traduce una accion a bits segun el protocolo de comunicacion 
      *  y lo envia al cliente.
@@ -40,13 +47,9 @@ public:
      */
     void close_connection();
 
-    void initialize();
-
+    void setId(int id);
+    
     int getId();
-
-    std::string getName();
-
-    int get_room_id();
 };
 
 #endif
