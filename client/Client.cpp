@@ -82,7 +82,7 @@ void Client::run() {
             //sceneManager.updateLoopActiveScene();
             //mainGameScreen.endMessage(SPECTATOR_CHAR); cant do this anymore, need to think another way
             std::cout << "game finished with checkmate" << std::endl;
-            break; 
+            //break;
         }
     }
     recvThread.stop();
