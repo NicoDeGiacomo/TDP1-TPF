@@ -24,6 +24,7 @@ struct Colors {
     SDL_Color splitMove;
     SDL_Color mergeMove;
     SDL_Color entangled;
+    SDL_Color samePiece;
     SDL_Color grey;
     SDL_Color darkRed;
     SDL_Color darkGreen;
@@ -80,12 +81,14 @@ private:
     std::unordered_map<char,SDL2pp::Texture> texturesMap;
     std::unordered_map<char,SDL2pp::Texture> selectedTexturesMap;
     std::unordered_map<char,SDL2pp::Texture> entangledTexturesMap;
+    std::unordered_map<char,SDL2pp::Texture> samePieceSplitTextureMap;
     std::unique_ptr<SDL2pp::Texture> moveNotificationTexture;
     std::unique_ptr<SDL2pp::Texture> turnNotificationTexture;
     std::unique_ptr<SDL2pp::Texture> dotTexture;
     std::list<Piece*> selectedPieces;
     std::list<Position> possibleMoves;
     std::list<Position> entangledPiecesPosition;
+    std::list<Position> splitsOfSamePiece;
     Board &_board;
     BlockingQueue<std::shared_ptr<Message>>* userInputQueue;
     int pieceSize, selectedPieceSize;
@@ -147,6 +150,8 @@ public:
     void load(SDL2pp::Renderer* renderer, SDL2pp::Window *window) override;
 
     void paintTurnNotification(SDL_Color &color);
+
+    void showSamePieceSplits(Piece *piece);
 };
 
 
