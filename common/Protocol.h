@@ -9,7 +9,7 @@
 #define NORMAL_MOVE_CHAR 'n'
 #define SPLIT_MOVE_CHAR 's'
 #define MERGE_MOVE_CHAR 'm'
-#define SELECT_CHAR 's'
+#define SELECT_CHAR 'd'
 #define WHITE_CHAR 'W'
 #define BLACK_CHAR 'B'
 #define SPECTATOR_CHAR 'O'
@@ -17,6 +17,7 @@
 #define PLAYER_NAME_CHAR 'p'
 #define ROOM_ID_CHAR 'r'
 #define PLAYER_TYPE_CHAR 't'
+#define SEED_CHAR 'S'
 
 namespace Protocol {
     std::string MessageToString(const std::shared_ptr<Message>& message);

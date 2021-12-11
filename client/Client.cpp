@@ -3,6 +3,7 @@
 //
 
 #include <string>
+#include <string.h>
 #include <iostream>
 #include <Socket.h>
 #include <thread>
@@ -43,13 +44,26 @@ void Client::run() {
     // Here should send if the user wants to be a player or spectator
 
     // std::shared_ptr<Message> type_msg = proxy.recv();
+    std::cout << "TYPE\n";
     std::shared_ptr<Message> type_msg = recvQueue.top();
     if (type_msg->getType() != PLAYER_TYPE_CHAR)
         throw std::runtime_error("First message should be the room id");
-    // std::shared_ptr<Message> seed_msg = proxy.recv();
+    char player_type = type_msg->getMessage().at(0);
     recvQueue.pop();
 
-    char player_type = type_msg->getMessage().at(0);
+    std::cout << "SEED\n";
+    std::shared_ptr<Message> seed_msg = recvQueue.top();
+    std::cout << "SEED\n";
+    if (seed_msg->getType() != SEED_CHAR)
+        throw std::runtime_error("Second message should be the seed");
+    std::cout << "SEED\n";
+    unsigned int seed;
+    memcpy(&seed, seed_msg->getMessage().data(), sizeof(seed));
+    // unsigned int seed = atoi(seed_msg->getMessage().data());
+    std::cout << "SEED: " << seed << "\n";
+    recvQueue.pop();
+
+    _board.setSeed(seed);
 
     sceneManager.addScene(std::make_unique<GameScene>(_board,
                                                       &sendQueue,

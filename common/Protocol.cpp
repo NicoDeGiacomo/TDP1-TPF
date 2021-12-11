@@ -7,6 +7,7 @@
 #include <PlayerNameMessage.h>
 #include <RoomIdMessage.h>
 #include <PlayerTypeMessage.h>
+#include <SeedMessage.h>
 #include <stdexcept>
 #include <iostream>
 
@@ -33,6 +34,8 @@ namespace Protocol {
             return std::make_shared<RoomIdMessage>();
         } else if (type == PLAYER_TYPE_CHAR) {
             return std::make_shared<PlayerTypeMessage>();
+        } else if (type == SEED_CHAR) {
+            return std::make_shared<SeedMessage>();
         }
         throw std::runtime_error("Unknown command in Protocol::CharToMessage. Char: " + type);
     }
@@ -53,6 +56,8 @@ namespace Protocol {
             return std::make_shared<RoomIdMessage>(id);
         } else if (type == PLAYER_TYPE_CHAR) {
             return std::make_shared<PlayerTypeMessage>(id);
+        } else if (type == SEED_CHAR) {
+            return std::make_shared<SeedMessage>(id);
         }
         throw std::runtime_error("Unknown command in Protocol::CharToMessage. Char: " + type);
     }

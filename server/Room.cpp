@@ -3,6 +3,7 @@
 #include "Protocol.h"
 #include <PlayerNameMessage.h>
 #include <PlayerTypeMessage.h>
+#include <SeedMessage.h>
 
 void Room::sendNamesToClient(ClientProxy &client) {
     for (auto &p : players) {
@@ -22,9 +23,12 @@ void Room::addClient(ClientProxy &client) {
     //this->listOfPeers.push_front(std::move(socket));
     //TODO: this is placeholder, it shouldnt receive a socket, rooms should receive players
 
+    std::cout << "SEED: " << board.getSeed() << "\n";
+
     client.setId(next_id);
     if (players.empty()) {
         client.send(std::make_shared<PlayerTypeMessage>(WHITE_CHAR));
+        client.send(std::make_shared<SeedMessage>(board.getSeed()));
         sendNamesToClient(client);
         players.emplace_back(client, queueOfReceived);
         std::cout << "white player created" << std::endl;
@@ -34,6 +38,7 @@ void Room::addClient(ClientProxy &client) {
         }
     } else if (players.size() == 1) {
         client.send(std::make_shared<PlayerTypeMessage>(BLACK_CHAR));
+        client.send(std::make_shared<SeedMessage>(board.getSeed()));
         sendNamesToClient(client);
         players.emplace_back(client, queueOfReceived);
         std::cout << "black player created" << std::endl;
@@ -43,6 +48,7 @@ void Room::addClient(ClientProxy &client) {
         }
     } else {
         client.send(std::make_shared<PlayerTypeMessage>(SPECTATOR_CHAR));
+        client.send(std::make_shared<SeedMessage>(board.getSeed()));
         sendNamesToClient(client);
         this->_spectators.emplace_front(client, queueOfReceived);
         std::cout << "spectator created" << std::endl;
