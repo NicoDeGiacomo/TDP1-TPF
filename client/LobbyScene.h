@@ -20,28 +20,38 @@
 
 class LobbyScene : public Scene {
 private:
-    int _numberOfRooms, fontSize;
+    int fontSize;
     bool clickedInOneRoom;
     Scene* _configScene;
     std::unique_ptr<SDL2pp::Texture> backgroundImageTexture;
     std::unique_ptr<ButtonTEMP> configButton;
-    std::vector<ButtonTEMP> roomButtons;
+    std::vector<ButtonTEMP> buttons;
+    std::unique_ptr<ButtonTEMP> inputTextContainer;
+    std::string inputId;
+    bool done;
 
     void loadRoomsTextures();
     void render() override;
     void handleEvents() override;
     void createConfigButton(SDL2pp::Texture &&texture, const SDL2pp::Rect &rect);
-    void addButton(std::function<void()>&& onClickHandler, SDL2pp::Texture &&texture, const SDL2pp::Rect &rect);
+    void addButton(std::function<void()>&& onClickHandler, SDL2pp::Texture &&texture, const SDL2pp::Rect &rect, SDL_Color color = {255,255,255, 255});
 public:
-    explicit LobbyScene(int numberOfRooms, Scene* configScene);
+    explicit LobbyScene(Scene* configScene);
     void updateLoop() override;
     void load(SDL2pp::Renderer* renderer, SDL2pp::Window *window) override;
 
-    bool clickedInsideOneRoom();
+    //bool clickedInsideOneRoom();
+    void handleMouseClick();
 
     void loadRoomsButtons(SDL2pp::Font& font);
 
     void loadConfigButton();
+
+    void loadInputRoomId(SDL2pp::Font &font);
+
+    void updateInputText();
+
+    void loadJoinButtons(SDL2pp::Font &font);
 };
 
 

@@ -3,14 +3,13 @@
 //
 
 #include "LobbyScene.h"
-LobbyScene::LobbyScene(int numberOfRooms, Scene* configScene) {
-    _numberOfRooms = numberOfRooms;
+LobbyScene::LobbyScene(Scene* configScene) {
     _configScene = configScene;
 }
 
 void LobbyScene::updateLoop() {
-    clickedInOneRoom = false;
-    while(!clickedInOneRoom) {
+    done = false;
+    while(!done) {
         this->handleEvents();
         Uint32 deltaTime = Timer::partial();
         //wait if not enough time has passed for it to render another frame
@@ -25,9 +24,34 @@ void LobbyScene::updateLoop() {
 void LobbyScene::handleEvents() {
     SDL_Event event;
     while (SDL_PollEvent(&event)) {
-        if (event.type == SDL_MOUSEBUTTONDOWN) {
-            clickedInOneRoom = clickedInsideOneRoom();
-            break;
+        switch (event.type) {
+            case SDL_KEYDOWN:
+                //Handle backspace
+                if( event.key.keysym.sym == SDLK_BACKSPACE && inputId.length() > 0 ) {
+                    inputId.pop_back();
+                }
+                    //Handle copy
+                else if( event.key.keysym.sym == SDLK_c && SDL_GetModState() & KMOD_CTRL ) {
+                    SDL_SetClipboardText( inputId.c_str() );
+                }
+                    //Handle paste
+                else if( event.key.keysym.sym == SDLK_v && SDL_GetModState() & KMOD_CTRL ) {
+                    inputId += SDL_GetClipboardText();
+                    updateInputText();
+                }
+                break;
+            case SDL_QUIT:
+                /* Quit */
+                done = true;
+                break;
+            case SDL_TEXTINPUT:
+                /* Add new text onto the end of our text */
+                inputId += event.text.text;
+                updateInputText();
+                break;
+            case SDL_MOUSEBUTTONDOWN:
+                handleMouseClick();
+                break;
         }
     }
 }
@@ -38,10 +62,11 @@ void LobbyScene::render() {
 
     _renderer->Copy((*backgroundImageTexture), SDL2pp::NullOpt,
                     SDL2pp::Rect(0, 0, _window->GetWidth(), _window->GetHeight()));
-    for(auto& button : roomButtons){
+    for(auto& button : buttons){
         button.render(_renderer, 255);
     }
     configButton->render(_renderer, 0);
+    inputTextContainer->render(_renderer, 255);
     //show rendered frame
     _renderer->Present();
 }
@@ -59,8 +84,10 @@ void LobbyScene::loadRoomsTextures() {
     // Load font
     fontSize = _window->GetHeight() * FONT_SIZE_MULTIPLIER;
     SDL2pp::Font font("../assets/fonts/Vera.ttf", fontSize);
-    loadRoomsButtons(font);
+    //loadRoomsButtons(font);
     loadConfigButton();
+    loadInputRoomId(font);
+    loadJoinButtons(font);
 }
 
 void LobbyScene::createConfigButton(SDL2pp::Texture &&texture, const SDL2pp::Rect &rect) {
@@ -74,34 +101,40 @@ void LobbyScene::createConfigButton(SDL2pp::Texture &&texture, const SDL2pp::Rec
     });
 }
 
-bool LobbyScene::clickedInsideOneRoom(){
+void LobbyScene::handleMouseClick(){
     int mouseX, mouseY;
     SDL_GetMouseState(&mouseX, &mouseY);
     if (configButton->contains(mouseX,mouseY)){
         configButton->click();
         //reload scene
         load(_renderer, _window);
-        return false;
+        return;
+    } else if (inputTextContainer->contains(mouseX,mouseY)){
+        inputId.clear();
+        updateInputText();
+        return;
     }
 
-    for (auto& button : roomButtons){
+    for (auto& button : buttons){
         //ask button if contains mouse position
         if (button.contains(mouseX, mouseY)) {
             button.click();
-            return true;
+            return;
         }
     }
-    return false;
 }
 
-void LobbyScene::addButton(std::function<void()>&& onClickHandler, SDL2pp::Texture &&texture, const SDL2pp::Rect &rect) {
-    ButtonTEMP button(std::move(texture), rect);
+void LobbyScene::addButton(std::function<void()>&& onClickHandler,
+                           SDL2pp::Texture &&texture,
+                           const SDL2pp::Rect &rect,
+                           SDL_Color color) {
+    ButtonTEMP button(std::move(texture), rect, color);
     button.onClick(std::move(onClickHandler));
-    roomButtons.push_back(std::move(button));
+    buttons.push_back(std::move(button));
 }
 
-void LobbyScene::loadRoomsButtons(SDL2pp::Font& font) {
-    roomButtons.clear();
+/*void LobbyScene::loadRoomsButtons(SDL2pp::Font& font) {
+    buttons.clear();
     int messageWidth, messageHeight;
     //todo: max text size would be with room 99, look into this
     TTF_SizeText(font.Get(), "Room 99", &messageWidth, &messageHeight);
@@ -129,7 +162,7 @@ void LobbyScene::loadRoomsButtons(SDL2pp::Font& font) {
         }
     }
     //todo: if (currentRoomNumber < _numberOfRooms) add logic to add rooms beyond the screen size, like scrolling or something
-}
+}*/
 
 void LobbyScene::loadConfigButton() {
     SDL2pp::Texture texture((*_renderer), CONFIG_BUTTON_PNG);
@@ -141,4 +174,88 @@ void LobbyScene::loadConfigButton() {
             configButtonSize
     );
     createConfigButton(std::move(texture), buttonRect);
+}
+
+void LobbyScene::loadInputRoomId(SDL2pp::Font &font) {
+    buttons.clear();
+    SDL2pp::Texture typeRoomIdTexture(
+            (*_renderer),
+            font.RenderText_Blended("Type Room id: ",SDL_Color{22,22,22,255}));
+    inputId = "click here to clear message...";
+    SDL2pp::Texture inputRoomIdTexture(
+            (*_renderer),
+            font.RenderText_Blended(inputId,SDL_Color{22,22,22,255}));
+    //1/3 of the screen in y, center of the screen in x
+    SDL2pp::Rect typeRoomIdRect(
+            _window->GetWidth() / 2 - typeRoomIdTexture.GetWidth(),
+            _window->GetHeight() / 3,
+            typeRoomIdTexture.GetWidth(),
+            typeRoomIdTexture.GetHeight()
+    );
+    SDL2pp::Rect inputRoomIdRect(
+            _window->GetWidth() / 2,
+            _window->GetHeight() / 3,
+            inputRoomIdTexture.GetWidth(),
+            inputRoomIdTexture.GetHeight()
+    );
+    addButton(nullptr, std::move(typeRoomIdTexture), typeRoomIdRect);
+    inputTextContainer = std::make_unique<ButtonTEMP>(std::move(inputRoomIdTexture), inputRoomIdRect);
+    inputTextContainer->onClick([&inputId = inputId] { inputId = ""; std::cout << "asd" << std::endl; });
+}
+
+void LobbyScene::updateInputText() {
+    //so it doesnt crash
+    if (inputId.empty())
+        inputId = " ";
+    // Initialize SDL_ttf library
+    SDL2pp::SDLTTF ttf;
+    // Load font
+    fontSize = _window->GetHeight() * FONT_SIZE_MULTIPLIER;
+    SDL2pp::Font font("../assets/fonts/Vera.ttf", fontSize);
+    SDL2pp::Texture texture(
+            (*_renderer),
+            font.RenderText_Blended(inputId,SDL_Color{22,22,22,255}));
+    inputTextContainer->updateTexture(std::move(texture));
+}
+
+void LobbyScene::loadJoinButtons(SDL2pp::Font &font) {
+    SDL2pp::Texture blackButtonTexture(
+            (*_renderer),
+            font.RenderText_Blended("black",SDL_Color{22,22,22,255}));
+    SDL2pp::Rect blackButtonRect(
+            _window->GetWidth() / 4 - blackButtonTexture.GetWidth() / 2,
+            _window->GetHeight() * 2 / 3,
+            blackButtonTexture.GetWidth(),
+            blackButtonTexture.GetHeight()
+    );
+    SDL2pp::Texture spectatorButtonTexture(
+            (*_renderer),
+            font.RenderText_Blended("spectator",SDL_Color{22,22,22,255}));
+    SDL2pp::Rect spectatorButtonRect(
+            _window->GetWidth() * 2 / 4 - spectatorButtonTexture.GetWidth() / 2,
+            _window->GetHeight() * 2 / 3,
+            spectatorButtonTexture.GetWidth(),
+            spectatorButtonTexture.GetHeight()
+    );
+    SDL2pp::Texture whiteButtonTexture(
+            (*_renderer),
+            font.RenderText_Blended("white",SDL_Color{22,22,22,255}));
+    SDL2pp::Rect whiteButtonRect(
+            _window->GetWidth() * 3 / 4 - whiteButtonTexture.GetWidth() / 2,
+            _window->GetHeight() * 2 / 3,
+            whiteButtonTexture.GetWidth(),
+            whiteButtonTexture.GetHeight()
+    );
+    addButton([&inputId = inputId, &done = done] {
+        std::cout << "joined room id: " + inputId + " as black";
+        done = true;
+    }, std::move(blackButtonTexture), blackButtonRect, SDL_Color{255,215,0,255});
+    addButton([&inputId = inputId, &done = done] {
+        std::cout << "joined room id: " + inputId + " as spectator";
+        done = true;
+        }, std::move(spectatorButtonTexture), spectatorButtonRect, SDL_Color{255,215,0,255});
+    addButton([&inputId = inputId, &done = done] {
+        std::cout << "joined room id: " + inputId + " as white";
+        done = true;
+    }, std::move(whiteButtonTexture), whiteButtonRect, SDL_Color{255,215,0,255});
 }

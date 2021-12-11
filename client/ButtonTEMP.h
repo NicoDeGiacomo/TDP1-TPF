@@ -14,8 +14,11 @@ private:
     SDL2pp::Texture _texture;
     SDL2pp::Rect _rect;
     std::function<void()> _handler{};
+    SDL_Color _color;
 public:
-    ButtonTEMP(SDL2pp::Texture &&texture, const SDL2pp::Rect &rect);
+    ButtonTEMP(SDL2pp::Texture &&texture, const SDL2pp::Rect &rect, SDL_Color color = {255,255,255, 255});
+
+    void updateTexture(SDL2pp::Texture &&texture);
 
     void onClick(std::function<void()>&& handler);
 

@@ -577,7 +577,7 @@ void GameScene::endMessage(char end_state) {
         "Quamtum Chess", /* .title */
         message.c_str(), /* .message */
         SDL_arraysize(buttons), /* .numbuttons */
-        buttons, /* .roomButtons */
+        buttons, /* .buttons */
         &colorScheme /* .colorScheme */
     };
     int buttonid;
