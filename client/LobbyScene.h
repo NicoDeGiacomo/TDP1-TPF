@@ -9,7 +9,7 @@
 #include <vector>
 #include "Scene.h"
 #include "Button.h"
-#include "ButtonTEMP.h"
+#include "ClickableEntity.h"
 
 #define CONFIG_BUTTON_PNG "../assets/sprites/configButton.png"
 #define CONFIG_BUTTON_SIZE_MULTIPLIER .1f
@@ -24,9 +24,9 @@ private:
     bool clickedInOneRoom;
     Scene* _configScene;
     std::unique_ptr<SDL2pp::Texture> backgroundImageTexture;
-    std::unique_ptr<ButtonTEMP> configButton;
-    std::vector<ButtonTEMP> buttons;
-    std::unique_ptr<ButtonTEMP> inputTextContainer;
+    std::unique_ptr<ClickableEntity> configButton;
+    std::vector<ClickableEntity> buttons;
+    std::unique_ptr<ClickableEntity> inputTextContainer;
     std::string inputId;
     bool done;
 

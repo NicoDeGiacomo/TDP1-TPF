@@ -91,7 +91,7 @@ void LobbyScene::loadRoomsTextures() {
 }
 
 void LobbyScene::createConfigButton(SDL2pp::Texture &&texture, const SDL2pp::Rect &rect) {
-    configButton = std::make_unique<ButtonTEMP>(std::move(texture), rect);
+    configButton = std::make_unique<ClickableEntity>(std::move(texture), rect);
     configButton->onClick([&configScene = _configScene,
                                   &renderer = _renderer,
                                   &window = _window]{
@@ -128,7 +128,7 @@ void LobbyScene::addButton(std::function<void()>&& onClickHandler,
                            SDL2pp::Texture &&texture,
                            const SDL2pp::Rect &rect,
                            SDL_Color color) {
-    ButtonTEMP button(std::move(texture), rect, color);
+    ClickableEntity button(std::move(texture), rect, color);
     button.onClick(std::move(onClickHandler));
     buttons.push_back(std::move(button));
 }
@@ -199,7 +199,7 @@ void LobbyScene::loadInputRoomId(SDL2pp::Font &font) {
             inputRoomIdTexture.GetHeight()
     );
     addButton(nullptr, std::move(typeRoomIdTexture), typeRoomIdRect);
-    inputTextContainer = std::make_unique<ButtonTEMP>(std::move(inputRoomIdTexture), inputRoomIdRect);
+    inputTextContainer = std::make_unique<ClickableEntity>(std::move(inputRoomIdTexture), inputRoomIdRect);
     inputTextContainer->onClick([&inputId = inputId] { inputId = ""; std::cout << "asd" << std::endl; });
 }
 

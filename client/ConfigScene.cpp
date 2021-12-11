@@ -62,7 +62,7 @@ void ConfigScene::loadFullScreenButton(SDL2pp::Font& font, const int yPosition) 
 }
 
 void ConfigScene::addButton(std::function<void()>&& onClickHandler, SDL2pp::Texture &&texture, const SDL2pp::Rect &rect) {
-    ButtonTEMP button(std::move(texture), rect);
+    ClickableEntity button(std::move(texture), rect);
     button.onClick(std::move(onClickHandler));
     buttons.push_back(std::move(button));
 }

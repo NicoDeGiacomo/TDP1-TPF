@@ -7,13 +7,13 @@
 
 
 #include "Scene.h"
-#include "ButtonTEMP.h"
+#include "ClickableEntity.h"
 #include "ScreenResolutions.h"
 
 class ConfigScene : public Scene {
 private:
     bool done;
-    std::vector<ButtonTEMP> buttons;
+    std::vector<ClickableEntity> buttons;
     void render() override;
     void handleEvents() override;
 
