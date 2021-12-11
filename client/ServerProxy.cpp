@@ -30,25 +30,18 @@ void ServerProxy::send(const std::shared_ptr<Message> message) {
 std::shared_ptr<Message> ServerProxy::recv() {
     std::shared_ptr<Message> msg_ptr;
 
-    try {
-        char type;
-        char msg_owner_id;
-        socket.receive(&type, 1);
-        socket.receive(&msg_owner_id, 1);
-        msg_ptr = Protocol::CharToMessage(type, msg_owner_id);
-        int bytesToRead = msg_ptr->getBytesToRead();
-        while (bytesToRead > 0) {
-            std::vector<char> buf;
-            buf.reserve(bytesToRead);
-            this->socket.receive(buf.data(), bytesToRead);
-            msg_ptr->decode(buf);
-            bytesToRead = msg_ptr->getBytesToRead();
-        }
-    } catch(const std::exception &e) {
-        std::cerr << "ERROR: '"
-                  << e.what() << "'" << std::endl;
-    } catch(...) {
-        std::cerr << "Error recv command type" << std::endl;
+    char type;
+    char msg_owner_id;
+    socket.receive(&type, 1);
+    socket.receive(&msg_owner_id, 1);
+    msg_ptr = Protocol::CharToMessage(type, msg_owner_id);
+    int bytesToRead = msg_ptr->getBytesToRead();
+    while (bytesToRead > 0) {
+        std::vector<char> buf;
+        buf.reserve(bytesToRead);
+        this->socket.receive(buf.data(), bytesToRead);
+        msg_ptr->decode(buf);
+        bytesToRead = msg_ptr->getBytesToRead();
     }
     
     return msg_ptr;

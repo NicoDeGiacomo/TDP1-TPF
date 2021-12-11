@@ -16,9 +16,11 @@ void RecvThread::run() {
             std::shared_ptr<Message> message = proxy.recv();
             queue.produce(std::move(message));
         } catch(const std::exception &e) {
+            this->stop();
             std::cerr << "Exception caught in RecvThread: '" 
                     << e.what() << "'" << std::endl;
         } catch(...) {
+            this->stop();
             std::cerr << "Unknown error caught in RecvThread" << std::endl;
             return;
         }

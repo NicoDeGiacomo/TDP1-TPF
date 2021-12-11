@@ -33,7 +33,7 @@ void SendThread::run() {
         } catch (ClosedQueueException& e){
             this->stop();
         } catch(const std::exception &e) {
-            this->stop();
+            // this->stop();
             std::cerr << "Exception caught in SendThread: '" 
                     << e.what() << "'" << std::endl;
         } catch(...) {
