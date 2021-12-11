@@ -33,6 +33,7 @@ void Client::run() {
     
     sceneManager.loadScene(LOBBY_SCENE);
     sceneManager.updateLoopActiveScene();
+    std::cout << "client has room id: ." << roomId << "." << " and type ." << playerType << "." << std::endl;
     
     proxy.connect();
     recvThread.start();
@@ -118,7 +119,7 @@ Client::Client(const char *host, const char *service)
     // int numberOfRooms = 50; //todo: placeholder, change this to actual number of rooms
     std::unique_ptr<Scene> configScene = std::make_unique<ConfigScene>();
     sceneManager.addScene(std::make_unique<LoginScene>(configScene.get(), name), LOGIN_SCENE);
-    sceneManager.addScene(std::make_unique<LobbyScene>(configScene.get()), LOBBY_SCENE);
+    sceneManager.addScene(std::make_unique<LobbyScene>(configScene.get(), &playerType, &roomId), LOBBY_SCENE);
     sceneManager.addScene(std::move(configScene), CONFIG_SCENE);
 }
 

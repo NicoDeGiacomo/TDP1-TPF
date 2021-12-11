@@ -26,6 +26,8 @@ private:
     Chat chat;
     bool gameFinished;
     std::string name;
+    char playerType;
+    std::string roomId;
     BlockingQueue<std::shared_ptr<Message>> recvQueue;
     BlockingQueue<std::shared_ptr<Message>> sendQueue;
 public:

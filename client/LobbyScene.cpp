@@ -3,7 +3,10 @@
 //
 
 #include "LobbyScene.h"
-LobbyScene::LobbyScene(Scene* configScene) {
+#include "Protocol.h"
+LobbyScene::LobbyScene(Scene* configScene, char* playerType, std::string* roomId) {
+    _playerType = playerType;
+    _roomId = roomId;
     _configScene = configScene;
 }
 
@@ -27,16 +30,16 @@ void LobbyScene::handleEvents() {
         switch (event.type) {
             case SDL_KEYDOWN:
                 //Handle backspace
-                if( event.key.keysym.sym == SDLK_BACKSPACE && inputId.length() > 0 ) {
-                    inputId.pop_back();
+                if( event.key.keysym.sym == SDLK_BACKSPACE && _roomId->length() > 0 ) {
+                    _roomId->pop_back();
                 }
                     //Handle copy
                 else if( event.key.keysym.sym == SDLK_c && SDL_GetModState() & KMOD_CTRL ) {
-                    SDL_SetClipboardText( inputId.c_str() );
+                    SDL_SetClipboardText( _roomId->c_str() );
                 }
                     //Handle paste
                 else if( event.key.keysym.sym == SDLK_v && SDL_GetModState() & KMOD_CTRL ) {
-                    inputId += SDL_GetClipboardText();
+                    (*_roomId) += SDL_GetClipboardText();
                     updateInputText();
                 }
                 break;
@@ -46,7 +49,7 @@ void LobbyScene::handleEvents() {
                 break;
             case SDL_TEXTINPUT:
                 /* Add new text onto the end of our text */
-                inputId += event.text.text;
+                (*_roomId) += event.text.text;
                 updateInputText();
                 break;
             case SDL_MOUSEBUTTONDOWN:
@@ -110,7 +113,7 @@ void LobbyScene::handleMouseClick(){
         load(_renderer, _window);
         return;
     } else if (inputTextContainer->contains(mouseX,mouseY)){
-        inputId.clear();
+        _roomId->clear();
         updateInputText();
         return;
     }
@@ -181,10 +184,10 @@ void LobbyScene::loadInputRoomId(SDL2pp::Font &font) {
     SDL2pp::Texture typeRoomIdTexture(
             (*_renderer),
             font.RenderText_Blended("Type Room id: ",SDL_Color{22,22,22,255}));
-    inputId = "click here to clear message...";
+    (*_roomId) = "click here to clear message...";
     SDL2pp::Texture inputRoomIdTexture(
             (*_renderer),
-            font.RenderText_Blended(inputId,SDL_Color{22,22,22,255}));
+            font.RenderText_Blended((*_roomId),SDL_Color{22,22,22,255}));
     //1/3 of the screen in y, center of the screen in x
     SDL2pp::Rect typeRoomIdRect(
             _window->GetWidth() / 2 - typeRoomIdTexture.GetWidth(),
@@ -200,13 +203,13 @@ void LobbyScene::loadInputRoomId(SDL2pp::Font &font) {
     );
     addButton(nullptr, std::move(typeRoomIdTexture), typeRoomIdRect);
     inputTextContainer = std::make_unique<ClickableEntity>(std::move(inputRoomIdTexture), inputRoomIdRect);
-    inputTextContainer->onClick([&inputId = inputId] { inputId = ""; std::cout << "asd" << std::endl; });
+    inputTextContainer->onClick([inputId = _roomId] { (*inputId) = ""; std::cout << "asd" << std::endl; });
 }
 
 void LobbyScene::updateInputText() {
     //so it doesnt crash
-    if (inputId.empty())
-        inputId = " ";
+    if (_roomId->empty())
+        (*_roomId) = " ";
     // Initialize SDL_ttf library
     SDL2pp::SDLTTF ttf;
     // Load font
@@ -214,7 +217,7 @@ void LobbyScene::updateInputText() {
     SDL2pp::Font font("../assets/fonts/Vera.ttf", fontSize);
     SDL2pp::Texture texture(
             (*_renderer),
-            font.RenderText_Blended(inputId,SDL_Color{22,22,22,255}));
+            font.RenderText_Blended((*_roomId),SDL_Color{22,22,22,255}));
     inputTextContainer->updateTexture(std::move(texture));
 }
 
@@ -246,16 +249,19 @@ void LobbyScene::loadJoinButtons(SDL2pp::Font &font) {
             whiteButtonTexture.GetWidth(),
             whiteButtonTexture.GetHeight()
     );
-    addButton([&inputId = inputId, &done = done] {
-        std::cout << "joined room id: " + inputId + " as black";
+    addButton([inputId = _roomId, playerType = _playerType, &done = done] {
+        (*playerType) = BLACK_CHAR;
+        std::cout << "joined room id: ." + (*inputId) + ". as black, char: ." << (*playerType) << "." << std::endl;
         done = true;
     }, std::move(blackButtonTexture), blackButtonRect, SDL_Color{255,215,0,255});
-    addButton([&inputId = inputId, &done = done] {
-        std::cout << "joined room id: " + inputId + " as spectator";
+    addButton([inputId = _roomId, playerType = _playerType, &done = done] {
+        (*playerType) = SPECTATOR_CHAR;
+        std::cout << "joined room id: ." + (*inputId) + ". as spectator, char: ." << (*playerType) << "." << std::endl;
         done = true;
         }, std::move(spectatorButtonTexture), spectatorButtonRect, SDL_Color{255,215,0,255});
-    addButton([&inputId = inputId, &done = done] {
-        std::cout << "joined room id: " + inputId + " as white";
+    addButton([inputId = _roomId, playerType = _playerType, &done = done] {
+        (*playerType) = WHITE_CHAR;
+        std::cout << "joined room id: ." + (*inputId) + ". as white, char: ." << (*playerType) << "." << std::endl;
         done = true;
     }, std::move(whiteButtonTexture), whiteButtonRect, SDL_Color{255,215,0,255});
 }
