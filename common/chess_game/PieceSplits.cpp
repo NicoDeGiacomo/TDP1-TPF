@@ -253,7 +253,7 @@ std::list<Position> PieceSplits::getSplits(const Piece *piece) const {
 
 void PieceSplits::getSplits_(const std::shared_ptr<SplitNode_> &node, const Piece *piece, std::list<Position>& positions) const {
     if (node->leaf && node->piece != piece) {
-        positions.push_back(piece->position_);
+        positions.push_back(node->piece->position_);
     }
 
     if (node->left) {

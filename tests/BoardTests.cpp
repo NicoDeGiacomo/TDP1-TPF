@@ -55,6 +55,10 @@ TEST_CASE("Test big match") {
     board.split(Position("h6"), Position("f4"), Position("f6"));
     board.split(Position("b8"), Position("a6"), Position("c6"));
     board.split(Position("f6"), Position("h4"), Position("d6"));
+    board.split(Position("d8"), Position("f6"), Position("g5"));
+    board.split(Position("g1"), Position("h3"), Position("f3"));
+    board.split(Position("c6"), Position("b4"), Position("d4"));
+    board.move(Position("d2"), Position("d3"));
 }
 }
 
