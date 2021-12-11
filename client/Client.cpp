@@ -39,28 +39,21 @@ void Client::run() {
     recvThread.start();
     sendThread.start();
 
-    // proxy.send(std::make_shared<RoomIdMessage>(name.substr(0, 1)));
-    sendQueue.produce(std::make_shared<RoomIdMessage>(name.substr(0, 1)));
+    sendQueue.produce(std::make_shared<RoomIdMessage>(roomId));
     
     // Here should send if the user wants to be a player or spectator
 
-    // std::shared_ptr<Message> type_msg = proxy.recv();
-    std::cout << "TYPE\n";
     std::shared_ptr<Message> type_msg = recvQueue.top();
     if (type_msg->getType() != PLAYER_TYPE_CHAR)
-        throw std::runtime_error("First message should be the room id");
+        throw std::runtime_error("First message should be the player type");
     char player_type = type_msg->getMessage().at(0);
     recvQueue.pop();
 
-    std::cout << "SEED\n";
     std::shared_ptr<Message> seed_msg = recvQueue.top();
-    std::cout << "SEED\n";
     if (seed_msg->getType() != SEED_CHAR)
         throw std::runtime_error("Second message should be the seed");
-    std::cout << "SEED\n";
     unsigned int seed;
     memcpy(&seed, seed_msg->getMessage().data(), sizeof(seed));
-    // unsigned int seed = atoi(seed_msg->getMessage().data());
     std::cout << "SEED: " << seed << "\n";
     recvQueue.pop();
 
