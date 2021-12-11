@@ -28,8 +28,8 @@ void Client::run() {
 
     //LoginScene login;
     //add scene main game screen
-    //sceneManager.loadScene(LOGIN_SCENE);
-    //sceneManager.updateLoopActiveScene(); //maybe this loops should be iterated here? instead of them knowing when to break
+    sceneManager.loadScene(LOGIN_SCENE);
+    sceneManager.updateLoopActiveScene();
     
     sceneManager.loadScene(LOBBY_SCENE);
     sceneManager.updateLoopActiveScene();

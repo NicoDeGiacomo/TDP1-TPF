@@ -56,6 +56,23 @@ void GameScene::render() {
     //render board
     _renderer->Copy(texturesMap.at(BOARD_KEY), SDL2pp::NullOpt, SDL2pp::Rect(0,0,_window->GetHeight(),_window->GetHeight()));
     //render the higlight of entangled pieces
+    for (auto &position : splitsOfSamePiece){
+        Piece *piece = _board.getPiece(position);
+        int piecePositionX = position.getX() - 1;
+        int piecePositionY = position.getY() - 1;
+        if (_playerType == WHITE_CHAR){
+            piecePositionX = BOARD_SQUARES_IN_A_LINE - 1 - piecePositionX;
+            piecePositionY = BOARD_SQUARES_IN_A_LINE - 1 - piecePositionY;
+        }
+        int x = piecePositionX * pieceSize + (pieceSize - selectedPieceSize)/2;
+        int y = piecePositionY * pieceSize + (pieceSize - selectedPieceSize)/2;
+        SDL2pp::Rect pieceRect(
+                x,
+                y,
+                selectedPieceSize,
+                selectedPieceSize);
+        _renderer->Copy(samePieceSplitTextureMap.at(toupper(piece->getDrawing())), SDL2pp::NullOpt, pieceRect);
+    }
     for (auto &position : entangledPiecesPosition) {
         Piece *piece = _board.getPiece(position);
         //the -1 are for the screen offset
@@ -212,12 +229,14 @@ void GameScene::selectPiece(const int x, const int y, const SDL_Color& color, bo
     texture.SetColorAndAlphaMod(color);
     loadPossibleMoves(piece, color, merge);
     showEntangledPieces(piece);
+    showSamePieceSplits(piece);
 }
 
 void GameScene::deselectAllPieces() {
     selectedPieces.clear();
     entangledPiecesPosition.clear();
     possibleMoves.clear();
+    splitsOfSamePiece.clear();
 }
 
 void GameScene::paintMoveSelectedNotification(const SDL_Color& color) {
@@ -259,6 +278,11 @@ void GameScene::initColors() {
     this->colors.entangled.g = 0;
     this->colors.entangled.b = 255;
     this->colors.entangled.a = 255;
+
+    this->colors.samePiece.r = 106;
+    this->colors.samePiece.g = 13;
+    this->colors.samePiece.b = 173;
+    this->colors.samePiece.a = 255;
 
     this->colors.white.r = 255;
     this->colors.white.g = 255;
@@ -328,6 +352,17 @@ void GameScene::loadBoardTextures() {
 
     for (auto& texture : entangledTexturesMap) {
         texture.second.SetColorAndAlphaMod(colors.entangled);
+    }
+
+    samePieceSplitTextureMap.insert({WHITE_PAWN_KEY, SDL2pp::Texture((*_renderer), SELECTED_PAWN_PNG)});
+    samePieceSplitTextureMap.insert({WHITE_ROOK_KEY, SDL2pp::Texture((*_renderer), SELECTED_ROOK_PNG)});
+    samePieceSplitTextureMap.insert({WHITE_KNIGHT_KEY, SDL2pp::Texture((*_renderer), SELECTED_KNIGHT_PNG)});
+    samePieceSplitTextureMap.insert({WHITE_BISHOP_KEY, SDL2pp::Texture((*_renderer), SELECTED_BISHOP_PNG)});
+    samePieceSplitTextureMap.insert({WHITE_KING_KEY, SDL2pp::Texture((*_renderer), SELECTED_KING_PNG)});
+    samePieceSplitTextureMap.insert({WHITE_QUEEN_KEY, SDL2pp::Texture((*_renderer), SELECTED_QUEEN_PNG)});
+
+    for (auto& texture : samePieceSplitTextureMap) {
+        texture.second.SetColorAndAlphaMod(colors.samePiece);
     }
 }
 
@@ -600,7 +635,7 @@ void GameScene::load(SDL2pp::Renderer *renderer, SDL2pp::Window *window) {
     _mixer->PlayChannel(1, *(*_sound)[0], -1);
     _mixer->SetVolume(1, 55);
     this->pieceSize = _window->GetHeight() / BOARD_SQUARES_IN_A_LINE;
-    this->selectedPieceSize = _window->GetHeight() / BOARD_SQUARES_IN_A_LINE - 1; // -1 to be able to highlight it
+    this->selectedPieceSize = _window->GetHeight() / (BOARD_SQUARES_IN_A_LINE - 1); // -1 to be able to highlight it
     //load scene, but dont process input nor render textures
     this->chatUI->load(_renderer, _window);
     this->loadBoardTextures();
@@ -613,4 +648,12 @@ void GameScene::load(SDL2pp::Renderer *renderer, SDL2pp::Window *window) {
 
 void GameScene::paintTurnNotification(SDL_Color &color) {
     turnNotificationTexture->SetColorAndAlphaMod(color);
+}
+
+void GameScene::showSamePieceSplits(Piece *piece) {
+    splitsOfSamePiece = piece->getSplits();
+    std::cout << "same split pieces: " << splitsOfSamePiece.size() << std::endl;
+    for(auto& pos : splitsOfSamePiece){
+        std::cout << "same split piece in: " << pos.getX() << "." << pos.getY() << std::endl;
+    }
 }
