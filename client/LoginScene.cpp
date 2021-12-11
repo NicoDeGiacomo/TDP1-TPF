@@ -144,7 +144,7 @@ void LoginScene::loadConfigButton() {
 }
 
 void LoginScene::addButton(std::function<void()>&& onClickHandler, SDL2pp::Texture &&texture, const SDL2pp::Rect &rect) {
-    configButton = std::make_unique<ButtonTEMP>(std::move(texture), rect);
+    configButton = std::make_unique<ClickableEntity>(std::move(texture), rect);
     configButton->onClick(std::move(onClickHandler));
 }
 

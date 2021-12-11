@@ -4,7 +4,7 @@
 #include <SDL2pp/SDL2pp.hh>
 #include "Screen.h"
 #include "Scene.h"
-#include "ButtonTEMP.h"
+#include "ClickableEntity.h"
 #define CONFIG_BUTTON_PNG "../assets/sprites/configButton.png"
 #define CONFIG_BUTTON_SIZE_MULTIPLIER .1f
 
@@ -12,7 +12,7 @@ class LoginScene: public Scene {
 private:
     std::string &user_name;
     bool done;
-    std::unique_ptr<ButtonTEMP> configButton;
+    std::unique_ptr<ClickableEntity> configButton;
     Scene* _configScene;
     void insert_text(std::string &text,
                      int font_size,
