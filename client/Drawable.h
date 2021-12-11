@@ -3,7 +3,6 @@
 
 class Drawable {
  public:
-  // todo: Temporal, hasta poder dibujar con imágenes
   virtual char getDrawing() const = 0;
 };
 

@@ -245,6 +245,26 @@ std::list<Position> PieceSplits::getEntanglements(const Piece *piece) const {
     return positions;
 }
 
+std::list<Position> PieceSplits::getSplits(const Piece *piece) const {
+    std::list<Position> positions;
+    getSplits_(root_, piece, positions);
+    return positions;
+}
+
+void PieceSplits::getSplits_(const std::shared_ptr<SplitNode_> &node, const Piece *piece, std::list<Position>& positions) const {
+    if (node->leaf && node->piece != piece) {
+        positions.push_back(piece->position_);
+    }
+
+    if (node->left) {
+        getSplits_(node->left, piece, positions);
+    }
+
+    if (node->right) {
+        getSplits_(node->right, piece, positions);
+    }
+}
+
 bool PieceSplits::hasEntanglements(const Piece *piece) const {
     std::shared_ptr<SplitNode_> node = findNode_(piece);
     // find ANY entanglement in all the splits

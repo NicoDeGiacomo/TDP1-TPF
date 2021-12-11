@@ -9,7 +9,7 @@ TEST_CASE("Create Chess Board") {
 
     int total = 0, rooks = 0, pawns = 0, knights = 0, bishops = 0, queens = 0,
         kings = 0;
-    for (auto piece : board) {
+    for (auto piece: board) {
         total++;
         switch (piece->getDrawing()) {
             case 'P':
@@ -41,6 +41,21 @@ TEST_CASE("Create Chess Board") {
     CHECK_EQ(2, kings);
 
     CHECK_EQ(board.getCurrentTurn(), PieceColor::WHITE);
+}
+
+TEST_CASE("Test big match") {
+    Board board(false, 1);
+
+    board.move(Position("e2"), Position("e4"));
+    board.move(Position("e7"), Position("e5"));
+    board.split(Position("d1"), Position("g4"), Position("h5"));
+    board.split(Position("g8"), Position("f6"), Position("h6"));
+    board.move(Position("h5"), Position("h6"));
+    board.split(Position("f6"), Position("g4"), Position("h5"));
+    board.split(Position("h6"), Position("f4"), Position("f6"));
+    board.split(Position("b8"), Position("a6"), Position("c6"));
+    board.split(Position("f6"), Position("h4"), Position("d6"));
+}
 }
 
 TEST_SUITE("Move pieces") {
@@ -300,7 +315,6 @@ TEST_CASE("Finish quantum game - deny") {
     CHECK_EQ(board.getPiece(Position("g3")), queen);
 }
 }
-}
 
 TEST_SUITE("Split") {
 TEST_CASE("Invalid split") {
@@ -368,6 +382,8 @@ TEST_CASE("Valid split") {
     CHECK_EQ(board.getPiece(Position(4, 1)), nullptr);
     CHECK_EQ(board.getPiece(Position(3, 2))->getProbability(), 0.5);
     CHECK_EQ(board.getPiece(Position(2, 3))->getProbability(), 0.5);
+    CHECK_EQ(board.getPiece(Position(3, 2))->getSplits().size(), 1);
+    CHECK_EQ(board.getPiece(Position(2, 3))->getSplits().size(), 1);
 }
 
 TEST_CASE("Double split") {
@@ -391,6 +407,9 @@ TEST_CASE("Double split") {
     CHECK_EQ(board.getPiece(Position(2, 4))->getProbability(), 0.25f);
     CHECK_EQ(board.getPiece(Position(2, 5))->getProbability(), 0.25f);
     CHECK_EQ(board.getPiece(Position(3, 2))->getProbability(), 0.5f);
+    CHECK_EQ(board.getPiece(Position(2, 4))->getSplits().size(), 2);
+    CHECK_EQ(board.getPiece(Position(2, 5))->getSplits().size(), 2);
+    CHECK_EQ(board.getPiece(Position(3, 2))->getSplits().size(), 2);
 }
 
 TEST_CASE("Two double splits") {

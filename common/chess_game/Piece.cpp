@@ -177,7 +177,7 @@ std::list<Position> Piece::getPossibleBeamPositions_(bool merge) const {
     return possiblePositions;
 }
 
-Piece *Piece::getPieceFromBoard_(Position &position) const {
+Piece *Piece::getPieceFromBoard_(const Position &position) const {
     return board_->getPiece(position);
 }
 
@@ -337,6 +337,10 @@ void Piece::resetSplits_() {
 
 std::list<Position> Piece::getEntanglements() const {
     return splits_->getEntanglements(this);
+}
+
+std::list<Position> Piece::getSplits() const {
+    return splits_->getSplits(this);
 }
 
 bool Piece::hasEntanglements_() const {

@@ -29,6 +29,8 @@ class Piece : public Drawable {
 
   std::list<Position> getEntanglements() const;
 
+  std::list<Position> getSplits() const;
+
   float getProbability() const;
 
   Position getPosition() const;
@@ -58,7 +60,7 @@ class Piece : public Drawable {
   virtual Piece * createSplit_(Position to) = 0;
   virtual void validateMerge_();
   virtual void validateSplit_(Position position);
-  Piece* getPieceFromBoard_(Position &position) const;
+  Piece* getPieceFromBoard_(const Position &position) const;
 
  private:
   virtual void move_(Position position, bool merge = false);
