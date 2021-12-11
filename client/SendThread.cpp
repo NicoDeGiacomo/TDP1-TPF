@@ -17,8 +17,8 @@ void SendThread::run() {
             break;
         }*/
         try {
-            std::cout << "Sending " << "\n";
             std::shared_ptr<Message> msg = this->sendQueue.top();
+            std::cout << "Sending " << msg->getType() << "\n";
             this->sendQueue.pop();
             //std::cout << "Sending: " << input << "\n";
             //std::shared_ptr<Message> msg = Protocol::StringToMessage(input, this->id);

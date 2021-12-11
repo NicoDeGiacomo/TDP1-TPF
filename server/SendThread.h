@@ -13,7 +13,6 @@ class SendThread: public Thread {
 private:
     BlockingQueue <std::shared_ptr<Message>> &queueOfReceived;
     std::list<Player> &players;
-    std::list<Player> &spectators;
     Board &board;
     Chat &chat;
     std::atomic<bool> keep_talking;
@@ -31,7 +30,6 @@ public:
      */
     SendThread(BlockingQueue <std::shared_ptr<Message>> &queueOfReceived,
                std::list <Player> &players,
-               std::list<Player> &spectators,
                Board &board,
                Chat &chat);
     /*

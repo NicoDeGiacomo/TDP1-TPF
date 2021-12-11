@@ -12,12 +12,14 @@ class Room {
 private:
     BlockingQueue<std::shared_ptr<Message>> queueOfReceived;
     std::list<Player> players;
-    std::list<Player> _spectators;
     Board board;
     Chat chat;
     SendThread sendThread;
+    bool white;
+    bool black;
     int next_id;
     void sendNamesToClient(ClientProxy &client);
+    void assignPlayerType(ClientProxy &client);
 public:
     Room() = delete;
     

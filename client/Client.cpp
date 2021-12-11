@@ -10,6 +10,7 @@
 #include <Message.h>
 #include <PlayerNameMessage.h>
 #include <RoomIdMessage.h>
+#include <PlayerTypeMessage.h>
 #include <Protocol.h>
 #include "Client.h"
 #include "RecvThread.h"
@@ -41,14 +42,17 @@ void Client::run() {
 
     sendQueue.produce(std::make_shared<RoomIdMessage>(roomId));
     
-    // Here should send if the user wants to be a player or spectator
+    sendQueue.produce(std::make_shared<PlayerTypeMessage>(playerType));
 
+    std::cout << "AAAAAAAAA\n";
     std::shared_ptr<Message> type_msg = recvQueue.top();
+    std::cout << "AAAAAAAAA\n";
     if (type_msg->getType() != PLAYER_TYPE_CHAR)
         throw std::runtime_error("First message should be the player type");
     char player_type = type_msg->getMessage().at(0);
     recvQueue.pop();
 
+    std::cout << "AAAAAAAAA\n";
     std::shared_ptr<Message> seed_msg = recvQueue.top();
     if (seed_msg->getType() != SEED_CHAR)
         throw std::runtime_error("Second message should be the seed");
@@ -65,9 +69,10 @@ void Client::run() {
                                                       player_type,
                                                       gameFinished), GAME_SCENE);
 
-
     sendQueue.produce(std::make_shared<PlayerNameMessage>(name));
     sceneManager.loadScene(GAME_SCENE);
+
+    std::cout << "AAAAAAAAA\n";
     
     while (!gameFinished) {
         sceneManager.updateLoopActiveScene();

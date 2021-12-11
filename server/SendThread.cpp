@@ -15,9 +15,6 @@ void SendThread::run() {
             for (auto &player : players) {
                 player.send(message);
             }
-            for (auto &spectator : spectators) {
-                spectator.send(message);
-            }
         } catch (ClosedSocketException& e){
             //TODO: for some reason this catch isnt catching, the socket
             //is throwing the error receiving bytes exception instead
@@ -38,12 +35,10 @@ void SendThread::run() {
 
 SendThread::SendThread(BlockingQueue <std::shared_ptr<Message>> &queueOfReceived, 
                        std::list<Player> &players,
-                       std::list<Player> &spectators,
                        Board &board,
                        Chat &chat)
                        : queueOfReceived(queueOfReceived),
                        players(players),
-                       spectators(spectators),
                        board(board),
                        chat(chat),
                        keep_talking(true) {}
