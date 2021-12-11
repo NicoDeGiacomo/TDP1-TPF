@@ -61,8 +61,9 @@ void GameScene::render() {
         int piecePositionX = position.getX() - 1;
         int piecePositionY = position.getY() - 1;
         if (_playerType == WHITE_CHAR){
-            piecePositionX = BOARD_SQUARES_IN_A_LINE - 1 - piecePositionX;
             piecePositionY = BOARD_SQUARES_IN_A_LINE - 1 - piecePositionY;
+        } else {
+            piecePositionX = BOARD_SQUARES_IN_A_LINE - 1 - piecePositionX;
         }
         int x = piecePositionX * pieceSize + (pieceSize - selectedPieceSize)/2;
         int y = piecePositionY * pieceSize + (pieceSize - selectedPieceSize)/2;
@@ -79,8 +80,9 @@ void GameScene::render() {
         int piecePositionX = piece->getPosition().getX() - 1;
         int piecePositionY = piece->getPosition().getY() - 1;
         if (_playerType == WHITE_CHAR){
-            piecePositionX = BOARD_SQUARES_IN_A_LINE - 1 - piecePositionX;
             piecePositionY = BOARD_SQUARES_IN_A_LINE - 1 - piecePositionY;
+        } else {
+            piecePositionX = BOARD_SQUARES_IN_A_LINE - 1 - piecePositionX;
         }
         int x = piecePositionX * pieceSize + (pieceSize - selectedPieceSize)/2;
         int y = piecePositionY * pieceSize + (pieceSize - selectedPieceSize)/2;
@@ -97,8 +99,9 @@ void GameScene::render() {
         int piecePositionX = piece->getPosition().getX() - 1;
         int piecePositionY = piece->getPosition().getY() - 1;
         if (_playerType == WHITE_CHAR){
-            piecePositionX = BOARD_SQUARES_IN_A_LINE - 1 - piecePositionX;
             piecePositionY = BOARD_SQUARES_IN_A_LINE - 1 - piecePositionY;
+        } else {
+            piecePositionX = BOARD_SQUARES_IN_A_LINE - 1 - piecePositionX;
         }
         int x = piecePositionX * pieceSize + (pieceSize - selectedPieceSize)/2;
         int y = piecePositionY * pieceSize + (pieceSize - selectedPieceSize)/2;
@@ -115,8 +118,9 @@ void GameScene::render() {
         int piecePositionX = piece->getPosition().getX() - 1;
         int piecePositionY = piece->getPosition().getY() - 1;
         if (_playerType == WHITE_CHAR){
-            piecePositionX = BOARD_SQUARES_IN_A_LINE - 1 - piecePositionX;
             piecePositionY = BOARD_SQUARES_IN_A_LINE - 1 - piecePositionY;
+        } else {
+            piecePositionX = BOARD_SQUARES_IN_A_LINE - 1 - piecePositionX;
         }
         int x = piecePositionX * pieceSize;
         int y = piecePositionY * pieceSize;
@@ -147,8 +151,9 @@ void GameScene::render() {
         int piecePositionX = position.getX() - 1;
         int piecePositionY = position.getY() - 1;
         if (_playerType == WHITE_CHAR){
-            piecePositionX = BOARD_SQUARES_IN_A_LINE - 1 - piecePositionX;
             piecePositionY = BOARD_SQUARES_IN_A_LINE - 1 - piecePositionY;
+        } else {
+            piecePositionX = BOARD_SQUARES_IN_A_LINE - 1 - piecePositionX;
         }
         int x = piecePositionX * pieceSize;
         int y = piecePositionY * pieceSize;
@@ -385,8 +390,9 @@ void GameScene::handleBoardClick() {
     int clampedMouseXToGrid = ceil((float)mouseX / pieceSize);
     int clampedMouseYToGrid = ceil((float)mouseY / pieceSize);
     if (_playerType == WHITE_CHAR){
-        clampedMouseXToGrid = BOARD_SQUARES_IN_A_LINE + 1 - clampedMouseXToGrid;
         clampedMouseYToGrid = BOARD_SQUARES_IN_A_LINE + 1 - clampedMouseYToGrid;
+    } else {
+        clampedMouseXToGrid = BOARD_SQUARES_IN_A_LINE + 1 - clampedMouseXToGrid;
     }
     std::cout << "grid position x " << clampedMouseXToGrid << " grid position y " << clampedMouseYToGrid << std::endl;
     switch (inputData.typeOfMove) {
