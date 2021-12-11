@@ -8,7 +8,6 @@
 
 #include <vector>
 #include "Scene.h"
-#include "Button.h"
 #include "ClickableEntity.h"
 
 #define CONFIG_BUTTON_PNG "../assets/sprites/configButton.png"
