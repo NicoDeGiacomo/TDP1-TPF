@@ -1,6 +1,7 @@
 #include "SendThread.h"
 #include "Socket.h"
 #include "Protocol.h"
+#include "StageMode.h"
 #include <iostream>
 
 /***********************
@@ -9,7 +10,7 @@
 
 void SendThread::run() {
     std::string input;
-    std::cout << "Running SendThread\n";
+    StageMode::log("Running SendThread");
     while (keep_talking) {
         /*input = "";
         std::getline(std::cin, input);

@@ -1,6 +1,7 @@
 #include "RecvThread.h"
 #include "Message.h"
 #include "Protocol.h"
+#include "StageMode.h"
 #include <iostream>
 
 
@@ -9,7 +10,7 @@
 ************************/
 
 void RecvThread::run() {
-    std::cout << "Running RecvThread\n";
+    StageMode::log("Running RecvThread");
     
     while (keep_talking) {
         try {
@@ -17,11 +18,12 @@ void RecvThread::run() {
             queue.produce(std::move(message));
         } catch(const std::exception &e) {
             this->stop();
-            std::cerr << "Exception caught in RecvThread: '" 
-                    << e.what() << "'" << std::endl;
+            StageMode::log(
+                std::string("Exception caught in RecvThread: '") + e.what()
+                    + "'");
         } catch(...) {
             this->stop();
-            std::cerr << "Unknown error caught in RecvThread" << std::endl;
+            StageMode::log("Unknown error caught in RecvThread:\n");
             return;
         }
     }

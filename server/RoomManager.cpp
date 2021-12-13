@@ -4,6 +4,7 @@
 #include <Protocol.h>
 #include <RoomManager.h>
 #include <Message.h>
+#include "StageMode.h"
 
 RoomManager::RoomManager(){
     //todo: dont hardcode this
@@ -24,9 +25,8 @@ void RoomManager::start() {
         // int roomNumber = 1;
 
         ClientProxy client(peer);
-        std::cout << "New Client!" << std::endl;
-
-        std::cout << "Receiving room id" << std::endl;
+        StageMode::log("New Client!");
+        StageMode::log("Receiving room id");
         std::shared_ptr<Message> room_id_msg = client.recv();
         // std::shared_ptr<Message> player_type_msg = client.recv();
         if (room_id_msg->getType() != ROOM_ID_CHAR)
@@ -35,7 +35,7 @@ void RoomManager::start() {
         //     throw std::runtime_error("Second message should be the player type (Player/Spectator)");
 
         std::string room_id = room_id_msg->getMessage();
-        std::cout << "Client wants to enter room: " << room_id << std::endl;
+        StageMode::log(std::string("Client wants to enter room: ") + room_id);
         // std::string player_type = player_type_msg->getMessage();
 
         try {

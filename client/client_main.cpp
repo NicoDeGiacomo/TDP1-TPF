@@ -14,14 +14,15 @@
 #include "Client.h"
 #include "LoginScene.h"
 #include "GameScene.h"
+#include "StageMode.h"
 
 void close_client() {
-    std::cout << "closing client" << std::endl;
+    StageMode::log("closing client");
 }
 
 
 int main(int argc, const char *argv[]) {
-    printf("STARTING CLIENT\n");
+    StageMode::log("STARTING CLIENT");
 
     /////////////////////////////////
     /// Testing board window, you can comment this block if you want (640x480 hardcoded)

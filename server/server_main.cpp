@@ -4,9 +4,10 @@
 
 #include "Board.h"
 #include "RoomManager.h"
+#include "StageMode.h"
 
 int main() {
-    printf("STARTING SERVER\n");
+    StageMode::log("STARTING SERVER");
 
     // if (argc != 3) {
     //     std::cerr << "Error en la cantidad de argumentos\n"

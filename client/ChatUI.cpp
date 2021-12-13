@@ -1,4 +1,5 @@
 #include "ChatUI.h"
+#include "StageMode.h"
 
 ChatUI::ChatUI(BlockingQueue<std::shared_ptr<std::string>> &chatQueue)
                : chatQueue(chatQueue) {}
@@ -19,7 +20,7 @@ void ChatUI::drawInputMessage(std::string& inputMessage) {
     SDL2pp::Font font("../assets/fonts/Vera.ttf", fontSize);
     // add the text into new texture. Note that SDL_ttf render
     // text into Surface, which is converted into texture on the fly
-    std::cout << "." << inputMessage << "." << std::endl;
+    StageMode::log(std::string(".") + inputMessage);
     inputMessageTexture.reset();
     inputMessageTexture = std::make_unique<SDL2pp::Texture>(
             (*_renderer),
@@ -48,10 +49,11 @@ void ChatUI::renderMessages(std::string& inputMessage) {
         try {
             this->add(*msg_ptr);
         } catch (const std::exception &e) {
-            std::cerr << "Exception caught in ChatUI: '"
-                        << e.what() << "'" << std::endl;
+            StageMode::log(
+                std::string("Exception caught in ChatUI: '") + e.what()
+                    + "'");
         } catch (...) {
-            std::cerr << "Unknown error caught in ChatUI.\n";
+            StageMode::log("Unknown error caught in ChatUI:");
         }
     }
     _renderer->Copy((*backgroundImageTexture), SDL2pp::NullOpt,
@@ -93,7 +95,7 @@ void ChatUI::add(const std::string &message) {
     while (firstMessage != tinyMessages.end()) {
         // add the text into new texture. Note that SDL_ttf render
         // text into Surface, which is converted into texture on the fly
-        std::cout << "." << (*firstMessage) << "." << std::endl;
+        StageMode::log(std::string(".") + *firstMessage + ".");
         textures.push_front(std::make_unique<SDL2pp::Texture>(
                 (*_renderer),
                 font.RenderText_Blended((*firstMessage),SDL_Color{

@@ -19,6 +19,7 @@
 #include "LoginScene.h"
 #include "LobbyScene.h"
 #include "ConfigScene.h"
+#include "StageMode.h"
 
 void Client::run() {
     RecvThread recvThread(proxy, recvQueue);
@@ -34,7 +35,7 @@ void Client::run() {
     
     sceneManager.loadScene(LOBBY_SCENE);
     sceneManager.updateLoopActiveScene();
-    std::cout << "client has room id: ." << roomId << "." << " and type ." << playerType << "." << std::endl;
+    StageMode::log(std::string("client has room id: .") + roomId + ". and type ." + playerType + ".");
     
     proxy.connect();
     recvThread.start();
@@ -43,22 +44,18 @@ void Client::run() {
     sendQueue.produce(std::make_shared<RoomIdMessage>(roomId));
     
     sendQueue.produce(std::make_shared<PlayerTypeMessage>(playerType));
-
-    std::cout << "AAAAAAAAA\n";
     std::shared_ptr<Message> type_msg = recvQueue.top();
-    std::cout << "AAAAAAAAA\n";
     if (type_msg->getType() != PLAYER_TYPE_CHAR)
         throw std::runtime_error("First message should be the player type");
     char player_type = type_msg->getMessage().at(0);
     recvQueue.pop();
 
-    std::cout << "AAAAAAAAA\n";
     std::shared_ptr<Message> seed_msg = recvQueue.top();
     if (seed_msg->getType() != SEED_CHAR)
         throw std::runtime_error("Second message should be the seed");
     unsigned int seed;
     memcpy(&seed, seed_msg->getMessage().data(), sizeof(seed));
-    std::cout << "SEED: " << seed << "\n";
+    StageMode::log(std::string("SEED") + std::to_string(seed));
     recvQueue.pop();
 
     _board.setSeed(seed);
@@ -72,8 +69,6 @@ void Client::run() {
     sendQueue.produce(std::make_shared<PlayerNameMessage>(name));
     sceneManager.loadScene(GAME_SCENE);
 
-    std::cout << "AAAAAAAAA\n";
-    
     while (!gameFinished) {
         sceneManager.updateLoopActiveScene();
         bool moreMessagesToProcess = true;
@@ -88,16 +83,17 @@ void Client::run() {
             try {
                 msg_ptr->apply(_board, chat);
             } catch (const std::exception &e) {
-                std::cerr << "Exception caught in client: '"
-                          << e.what() << "'" << std::endl;
+                StageMode::log(
+                    std::string("Exception caught in client: '") + e.what()
+                        + "'");
             } catch (...) {
-                std::cerr << "Unknown error caught in client.\n";
+                StageMode::log("Unknown error caught in client.");
             }
         }
         if (_board.isFinished()){
             //sceneManager.updateLoopActiveScene();
             //mainGameScreen.endMessage(SPECTATOR_CHAR); cant do this anymore, need to think another way
-            std::cout << "game finished with checkmate" << std::endl;
+            StageMode::log("game finished with checkmate");
             //break;
         }
     }

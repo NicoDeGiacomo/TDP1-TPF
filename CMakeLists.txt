@@ -4,6 +4,10 @@ project(QUANTUM-CHESS)
 set(CMAKE_CXX_STANDARD 17)
 add_compile_options(-Wall -Wextra -pedantic -Werror)
 
+################ PRODUCTION/DEVELOPMENT MODE ################
+if (NOT DEFINED _PRODUCTION_MODE)
+    add_compile_definitions(DEVELOPMENT_MODE_)
+endif ()
 
 ################ WILDCARDS ################
 file(GLOB_RECURSE client_files "client/*.cpp")

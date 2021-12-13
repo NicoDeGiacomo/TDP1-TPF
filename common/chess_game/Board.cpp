@@ -1,5 +1,6 @@
 #include "Board.h"
 
+#include "StageMode.h"
 #include <Pawn.h>
 #include <Rook.h>
 #include <Knight.h>
@@ -42,7 +43,6 @@ void Board::move(Position from, Position to) {
     changeTurn_();
     moves_.push_back(std::make_shared<NormalNotation>(from, to));
 
-    //for debugging
     printBoard();
 }
 
@@ -63,7 +63,6 @@ void Board::split(Position from, Position to1, Position to2) {
     changeTurn_();
     moves_.push_back(std::make_shared<SplitNotation>(from, to1, to2));
 
-    //for debugging
     printBoard();
 }
 
@@ -85,7 +84,6 @@ void Board::merge(Position from1, Position from2, Position to) {
     changeTurn_();
     moves_.push_back(std::make_shared<MergeNotation>(from1, from2, to));
 
-    //for debugging
     printBoard();
 }
 
@@ -150,13 +148,16 @@ Board::~Board() {
 }
 
 void Board::printBoard() {
+    if (!StageMode::isDevelopmentMode()) {
+        return;
+    }
+
     char chessBoard[8][8]{};
     for (const auto &piece : (*this)) {
         chessBoard[piece->getPosition().getY() - 1][piece->getPosition().getX() - 1] = piece->getDrawing();
     }
 
     for (auto &file : chessBoard) {
-        // printf("--------\n");
         for (char square : file) {
             printf("|");
             if (square) {
