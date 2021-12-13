@@ -19,6 +19,7 @@ Run the installer.
 $ sh install.sh
 $ cd build
 $ ./CLIENT [SERVER_IP] 7777
+```
 
 ### 2. How to Play
 #### 2.1. Connect to a Game
