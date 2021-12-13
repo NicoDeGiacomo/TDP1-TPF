@@ -10,7 +10,6 @@
 class SelectMessage : public Message {
 public:
     SelectMessage(int id = -1);
-    virtual void apply(Board&) const override;
     virtual void apply(Board&, Chat&) const override;
 };
 

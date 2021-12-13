@@ -23,7 +23,6 @@ public:
     virtual const std::string getEncodedMessage() const;
     virtual int getBytesToRead();
     virtual void decode(std::vector<char> &);
-    virtual void apply(Board&) const {}
     virtual void apply(Board&, Chat&) const {}
     virtual ~Message() = default;
 };

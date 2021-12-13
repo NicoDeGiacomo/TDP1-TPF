@@ -7,7 +7,6 @@ class RoomIdMessage : public VariableLenghtMessage {
 public:
     RoomIdMessage(int id = -1);
     RoomIdMessage(const std::string &message, int id = -1);
-    virtual void apply(Board&) const override;
     virtual void apply(Board&, Chat &) const override;
 };
 

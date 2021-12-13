@@ -16,8 +16,6 @@ PlayerNameMessage::PlayerNameMessage(const std::string &message, int id)
     this->type = PLAYER_NAME_CHAR;
 }
 
-void PlayerNameMessage::apply(Board&) const {}
-
 void PlayerNameMessage::apply(Board&, Chat &chat) const {
     chat.addUser(this->id, this->_message);
 }

@@ -7,7 +7,6 @@ class PlayerTypeMessage : public Message {
 public:
     PlayerTypeMessage(int id = -1);
     PlayerTypeMessage(char type);
-    virtual void apply(Board&) const override;
     virtual void apply(Board&, Chat&) const override;
 };
 

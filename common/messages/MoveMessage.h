@@ -11,9 +11,7 @@ protected:
 public:
     MoveMessage(int id = -1);
     MoveMessage(const std::string &message, int id = -1);
-    virtual void apply(Board& board) const override;
     virtual void apply(Board& board, Chat&) const override;
 };
-
 
 #endif //QUANTUM_CHESS_MOVEMESSAGE_H
