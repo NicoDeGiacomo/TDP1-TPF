@@ -91,7 +91,7 @@ The game is won by capturing your opponent’s king. This means your opponent ha
 ##### Exit
 You can exit the game at any time by pressing 'N'.
 
-##### 2.3. Notation
+#### 2.3. Notation
 The notation of each individual move consists of four parts.
 
 The first part consists of a character to indicate the type of move:
