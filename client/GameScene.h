@@ -97,6 +97,7 @@ private:
     std::unique_ptr<ChatUI> chatUI;
     char _playerType;
     bool& _gameFinished;
+    bool mute;
 
     void render() override;
     void handleEvents() override;
@@ -104,7 +105,7 @@ public:
     GameScene(Board& board,
               BlockingQueue<std::shared_ptr<Message>>* userInputQueue,
               BlockingQueue<std::shared_ptr<std::string>> &chatQueue,
-              char playerType, bool& gameFinished);
+              char playerType, bool& gameFinished, bool mute = false);
 
     void selectPiece(const int x, const int y, const SDL_Color& color, bool merge = false);
 

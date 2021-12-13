@@ -64,7 +64,8 @@ void Client::run() {
                                                       &sendQueue,
                                                       chat.getQueue(),
                                                       player_type,
-                                                      gameFinished), GAME_SCENE);
+                                                      gameFinished,
+                                                      mute), GAME_SCENE);
 
     sendQueue.produce(std::make_shared<PlayerNameMessage>(name));
     sceneManager.loadScene(GAME_SCENE);
@@ -107,8 +108,8 @@ BlockingQueue<std::shared_ptr<Message>>* Client::getQueue(){
     return &sendQueue;
 }
 
-Client::Client(const char *host, const char *service)
-            : proxy(host, service), _board(false), gameFinished(false) {
+Client::Client(const char *host, const char *service, bool mute)
+            : proxy(host, service), _board(false), gameFinished(false), mute(mute) {
 
     // int numberOfRooms = 50; //todo: placeholder, change this to actual number of rooms
     std::unique_ptr<Scene> configScene = std::make_unique<ConfigScene>();

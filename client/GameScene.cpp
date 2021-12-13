@@ -16,8 +16,8 @@
 GameScene::GameScene(Board& board,
                      BlockingQueue<std::shared_ptr<Message>>* userInputQueue,
                      BlockingQueue<std::shared_ptr<std::string>> &chatQueue,
-                     char playerType, bool& gameFinished)
-                   : _board(board), _gameFinished(gameFinished) {
+                     char playerType, bool& gameFinished, bool mute)
+                   : _board(board), _gameFinished(gameFinished), mute(mute) {
     this->initColors();
     this->chatUI = std::make_unique<ChatUI>(chatQueue);
     this->userInputQueue = userInputQueue;
@@ -638,7 +638,8 @@ bool GameScene::canMovePiece() {
 
 void GameScene::load(SDL2pp::Renderer *renderer, SDL2pp::Window *window) {
     Scene::load(renderer, window);
-    _mixer->PlayChannel(1, *(*_sound)[0], -1);
+    if (!this->mute)
+        _mixer->PlayChannel(1, *(*_sound)[0], -1);
     _mixer->SetVolume(1, 55);
     this->pieceSize = _window->GetHeight() / BOARD_SQUARES_IN_A_LINE;
     this->selectedPieceSize = _window->GetHeight() / (BOARD_SQUARES_IN_A_LINE - 1); // -1 to be able to highlight it

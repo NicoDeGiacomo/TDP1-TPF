@@ -25,13 +25,14 @@ private:
     Board _board;
     Chat chat;
     bool gameFinished;
+    bool mute;
     std::string name;
     char playerType;
     std::string roomId;
     BlockingQueue<std::shared_ptr<Message>> recvQueue;
     BlockingQueue<std::shared_ptr<Message>> sendQueue;
 public:
-    Client(const char *host, const char *service);
+    Client(const char *host, const char *service, bool mute=false);
 
     void run();
 

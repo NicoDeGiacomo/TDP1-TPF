@@ -61,15 +61,17 @@ int main(int argc, const char *argv[]) {
     // click -> move -> .......
     // refreshScreen
 
-    if (argc != 3) {
+    if (argc < 3) {
         std::cerr << "Error en la cantidad de argumentos\n"
         << "El cliente se ejecuta de la siguiente manera:\n"
         << "./client <host> <service>\n";
         return 1;
     }
+    bool mute = false;
+    if (argc > 3 && !strcmp(argv[3], "-m")) mute = true;
 
     try {
-        Client client(argv[1], argv[2]);
+        Client client(argv[1], argv[2], mute);
         client.run();
         close_client();
     } catch(const std::exception &e) {
