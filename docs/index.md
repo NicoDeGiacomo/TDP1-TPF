@@ -90,7 +90,7 @@ As a consequence of that measurement, the white queen is also repositioned, as i
 The game is won by capturing your opponent’s king. This means your opponent has no king left anywhere on the board. It is possible for any piece, king included, to exist in a superposition of being captured and not captured. The game will continue until you can say, with certainty, that one player has no king.
 
 ##### Exit
-You can exit the game at any time by pressing 'N'.
+You can exit the game at any time by pressing 'Q'.
 
 #### 2.3. Notation
 The notation of each individual move consists of four parts.
