@@ -20,7 +20,6 @@ int MoveMessage::charToInt(const char &i) {
 }
 
 void MoveMessage::apply(Board &board) const {
-    std::cout << "apply move message" << std::endl;
     this->movement->move(board);
 }
 

@@ -12,20 +12,11 @@ void SendThread::run() {
     std::string input;
     StageMode::log("Running SendThread");
     while (keep_talking) {
-        /*input = "";
-        std::getline(std::cin, input);
-        if (input.empty()) {
-            break;
-        }*/
         try {
             std::shared_ptr<Message> msg = this->sendQueue.top();
-            std::cout << "Sending " << msg->getType() << "\n";
             this->sendQueue.pop();
-            //std::cout << "Sending: " << input << "\n";
-            //std::shared_ptr<Message> msg = Protocol::StringToMessage(input, this->id);
             msg->apply(board, chat);
             proxy.send(msg);
-            std::cout << "sent " << "\n";
         } catch (ClosedSocketException& e) {
             //TODO: for some reason this catch isnt catching, the socket
             //is throwing the error receiving bytes exception instead

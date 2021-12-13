@@ -4,6 +4,8 @@
 
 #include "LobbyScene.h"
 #include "Protocol.h"
+#include <StageMode.h>
+
 LobbyScene::LobbyScene(Scene* configScene, char* playerType, std::string* roomId) {
     _playerType = playerType;
     _roomId = roomId;
@@ -98,7 +100,7 @@ void LobbyScene::createConfigButton(SDL2pp::Texture &&texture, const SDL2pp::Rec
     configButton->onClick([&configScene = _configScene,
                                   &renderer = _renderer,
                                   &window = _window]{
-        std::cout << "You clicked config" << std::endl;
+        StageMode::log("You clicked config");
         configScene->load(renderer, window);
         configScene->updateLoop();
     });
@@ -251,17 +253,17 @@ void LobbyScene::loadJoinButtons(SDL2pp::Font &font) {
     );
     addButton([inputId = _roomId, playerType = _playerType, &done = done] {
         (*playerType) = BLACK_CHAR;
-        std::cout << "joined room id: ." + (*inputId) + ". as black, char: ." << (*playerType) << "." << std::endl;
+        StageMode::log("joined room id: ." + (*inputId) + ". as black, char: ." + (*playerType) + ".");
         done = true;
     }, std::move(blackButtonTexture), blackButtonRect, SDL_Color{255,215,0,255});
     addButton([inputId = _roomId, playerType = _playerType, &done = done] {
         (*playerType) = SPECTATOR_CHAR;
-        std::cout << "joined room id: ." + (*inputId) + ". as spectator, char: ." << (*playerType) << "." << std::endl;
+        StageMode::log("joined room id: ." + (*inputId) + ". as spectator, char: ." + (*playerType) + ".");
         done = true;
         }, std::move(spectatorButtonTexture), spectatorButtonRect, SDL_Color{255,215,0,255});
     addButton([inputId = _roomId, playerType = _playerType, &done = done] {
         (*playerType) = WHITE_CHAR;
-        std::cout << "joined room id: ." + (*inputId) + ". as white, char: ." << (*playerType) << "." << std::endl;
+        StageMode::log("joined room id: ." + (*inputId) + ". as white, char: ." + (*playerType) + ".");
         done = true;
     }, std::move(whiteButtonTexture), whiteButtonRect, SDL_Color{255,215,0,255});
 }

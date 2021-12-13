@@ -15,7 +15,6 @@ std::unique_ptr<MovementCommand> NormalMoveMessage::makeMovement(const char *buf
                     this->charToInt(buf[1]));
     Position to(this->charToInt(buf[2]),
                 this->charToInt(buf[3]));
-    std::cout << "finish constructor" << std::endl;
     return std::make_unique<NormalMove>(std::move(from),
                                         std::move(to));
 }

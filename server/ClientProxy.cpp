@@ -12,17 +12,11 @@
 #include <string.h>
 
 
-// #define CHAT_CHAR 'c'
-// #define NORMAL_MOVE_CHAR 'n'
-// #define SPLIT_MOVE_CHAR 's'
-// #define MERGE_MOVE_CHAR 'm'
-
 /***********************
     Metodos privados
 ************************/
 
 unsigned short int ClientProxy::decodeChatMessageLen() {
-    std::cout << "start decoding chat message" << std::endl;
     char _msg_len[2];
     socket.receive(_msg_len, 2);
     unsigned short int name_len_be;

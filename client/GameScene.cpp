@@ -4,6 +4,7 @@
 #include <SplitMoveMessage.h>
 #include <MergeMoveMessage.h>
 #include <ChatMessage.h>
+#include <StageMode.h>
 #include "GameScene.h"
 #include <SDL.h>
 #include <SDL_mixer.h>
@@ -386,7 +387,6 @@ void GameScene::setUserInputDefaultValues() {
 void GameScene::handleBoardClick() {
     int mouseX, mouseY;
     SDL_GetMouseState(&mouseX, &mouseY);
-    std::cout << "xmouse " << mouseX << " ymouse " << mouseY << std::endl;
     int clampedMouseXToGrid = ceil((float)mouseX / pieceSize);
     int clampedMouseYToGrid = ceil((float)mouseY / pieceSize);
     if (_playerType == WHITE_CHAR){
@@ -394,7 +394,6 @@ void GameScene::handleBoardClick() {
     } else {
         clampedMouseXToGrid = BOARD_SQUARES_IN_A_LINE + 1 - clampedMouseXToGrid;
     }
-    std::cout << "grid position x " << clampedMouseXToGrid << " grid position y " << clampedMouseYToGrid << std::endl;
     switch (inputData.typeOfMove) {
         case 'n':
             if (inputData.pieceSelected) {
@@ -464,29 +463,29 @@ void GameScene::handleBoardClick() {
 void GameScene::manageBoardEvent(SDL_Event &event) {
     switch (event.type) {
         case SDL_QUIT:
-            std::cout << "GAME FINISHED" << std::endl;
+            StageMode::log("GAME FINISHED");
             _gameFinished = true;
             return;
         case SDL_KEYDOWN:
             switch (event.key.keysym.sym) {
                 case SDLK_ESCAPE: case SDLK_q:
-                    std::cout << "GAME FINISHED" << std::endl;
+                    StageMode::log("GAME FINISHED");
                     _gameFinished = true;
                     return;
                 case SDLK_n:
-                    std::cout << "NNNNNNNNNNNNNNNNNN" << std::endl;
+                    StageMode::log("You pressed the Normal Move key");
                     inputData.typeOfMove = 'n';
                     //normalMove move selection color
                     paintMoveSelectedNotification(colors.normalMove);
                     break;
                 case SDLK_s:
-                    std::cout << "SSSSSSSSSSSSSSSSSSSSSSSSS" << std::endl;
+                    StageMode::log("You pressed the Split Move key");
                     inputData.typeOfMove = 's';
                     //split move selection color
                     paintMoveSelectedNotification(colors.splitMove);
                     break;
                 case SDLK_m:
-                    std::cout << "MMMMMMMMMMMMMMMMMMMMM" << std::endl;
+                    StageMode::log("You pressed the Merge Move key");
                     inputData.typeOfMove = 'm';
                     //merge move selection color
                     paintMoveSelectedNotification(colors.mergeMove);
@@ -499,7 +498,6 @@ void GameScene::manageBoardEvent(SDL_Event &event) {
 }
 
 void GameScene::manageChatEvent(SDL_Event &event) {
-    std::cout << "manage chat event" << std::endl;
     switch (event.type) {
         case SDL_KEYDOWN:
             //Handle backspace
@@ -520,13 +518,13 @@ void GameScene::manageChatEvent(SDL_Event &event) {
                         std::make_shared<ChatMessage>(inputData.message));
                 inputData.message = "";
             } else if (event.key.keysym.sym == SDLK_ESCAPE) {
-                std::cout << "GAME FINISHED" << std::endl;
+                StageMode::log("GAME FINISHED");
                 _gameFinished = true;
                 return;
             }
             break;
         case SDL_QUIT:
-            std::cout << "GAME FINISHED" << std::endl;
+            StageMode::log("GAME FINISHED");
             _gameFinished = true;
             return;
         case SDL_TEXTINPUT:
@@ -560,7 +558,6 @@ void GameScene::loadPossibleMoves(const Piece* piece, const SDL_Color& color, bo
             }
             possibleMove = possibleMoves.erase(possibleMove);
         }
-        std::cout << ": " << possibleMoves.size() << std::endl;
 
     } else {
         possibleMoves = piece->getPossibleMoves(merge);
@@ -570,9 +567,6 @@ void GameScene::loadPossibleMoves(const Piece* piece, const SDL_Color& color, bo
 
 void GameScene::showEntangledPieces(Piece *piece) {
     auto newEntangledPieces = piece->getEntanglements();
-    std::cout << "entangled pieces: " << newEntangledPieces.size() << std::endl;
-    if (!newEntangledPieces.empty())
-        std::cout << "entangled piece: " << newEntangledPieces.front().getX() << "." << newEntangledPieces.front().getY() << std::endl;
     if (!entangledPiecesPosition.empty())
         copy(
             newEntangledPieces.rbegin(),
@@ -659,8 +653,4 @@ void GameScene::paintTurnNotification(SDL_Color &color) {
 
 void GameScene::showSamePieceSplits(Piece *piece) {
     splitsOfSamePiece = piece->getSplits();
-    std::cout << "same split pieces: " << splitsOfSamePiece.size() << std::endl;
-    for(auto& pos : splitsOfSamePiece){
-        std::cout << "same split piece in: " << pos.getX() << "." << pos.getY() << std::endl;
-    }
 }

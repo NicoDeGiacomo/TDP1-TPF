@@ -5,12 +5,10 @@
 #include <iostream>
 #include "NormalMove.h"
 
-NormalMove::NormalMove(Position &&from, Position &&to) : MovementCommand({std::move(from), std::move(to)}) {
-    std::cout << "constructor of normal move" << std::endl;
-}
+NormalMove::NormalMove(Position &&from, Position &&to) 
+                    : MovementCommand({std::move(from), std::move(to)}) {}
 
 void NormalMove::move(Board &board) {
-    std::cout << "do normal move" << std::endl;
     board.move(this->_positions[0], this->_positions[1]);
 }
 

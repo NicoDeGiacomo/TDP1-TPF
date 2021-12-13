@@ -1,5 +1,6 @@
 #include "LoginScene.h"
 #include "Screen.h"
+#include <StageMode.h>
 #include <SDL2pp/SDL2pp.hh>
 
 /*LoginScene::LoginScene(SDL2pp::Renderer* renderer) {
@@ -137,7 +138,7 @@ void LoginScene::loadConfigButton() {
     addButton([&configScene = _configScene,
                       &renderer = _renderer,
                       &window = _window]{
-        std::cout << "You clicked config" << std::endl;
+        StageMode::log("You clicked config");
         configScene->load(renderer, window);
         configScene->updateLoop();
     },std::move(texture), buttonRect);

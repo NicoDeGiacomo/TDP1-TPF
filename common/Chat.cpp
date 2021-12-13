@@ -1,4 +1,5 @@
 #include <Chat.h>
+#include <StageMode.h>
 
 Chat::Chat() {}
 
@@ -14,6 +15,7 @@ void Chat::addMessage(int user_id, const std::string &message) {
 
     msg += message;
 
+    StageMode::log(std::string("[CHAT] ") + msg);
     queue.produce(std::make_shared<std::string>(msg));
 }
 

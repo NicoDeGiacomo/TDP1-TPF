@@ -4,6 +4,7 @@
 
 #include "ConfigScene.h"
 #include "ScreenResolutions.h"
+#include <StageMode.h>
 
 void ConfigScene::render() {
     // Clear screen
@@ -25,7 +26,6 @@ void ConfigScene::handleEvents() {
 }
 
 void ConfigScene::updateLoop() {
-    std::cout << "looping config scene" << std::endl;
     done = false;
     while(!done) {
         this->handleEvents();
@@ -56,7 +56,7 @@ void ConfigScene::loadFullScreenButton(SDL2pp::Font& font, const int yPosition) 
             texture.GetHeight()
     );
     addButton([&window = _window]{
-        std::cout << "You clicked fullscreen" << std::endl;
+        StageMode::log("You clicked fullscreen");
         window->SetFullscreen(SDL_WINDOW_FULLSCREEN_DESKTOP);
     },std::move(texture), buttonRect);
 }
@@ -106,7 +106,7 @@ void ConfigScene::loadResizeButton(const ScreenResolutions::Resolution &resoluti
             texture.GetHeight()
     );
     addButton([&window = _window,&resolution = resolution]{
-        std::cout << "You clicked resize button" << std::endl;
+        StageMode::log("You clicked resize button");
         window->SetFullscreen(false);
         window->SetSize(resolution.width, resolution.height);
     },std::move(texture), buttonRect);

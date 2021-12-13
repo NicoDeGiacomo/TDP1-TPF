@@ -20,7 +20,6 @@ void ChatUI::drawInputMessage(std::string& inputMessage) {
     SDL2pp::Font font("../assets/fonts/Vera.ttf", fontSize);
     // add the text into new texture. Note that SDL_ttf render
     // text into Surface, which is converted into texture on the fly
-    StageMode::log(std::string(".") + inputMessage);
     inputMessageTexture.reset();
     inputMessageTexture = std::make_unique<SDL2pp::Texture>(
             (*_renderer),
@@ -95,7 +94,7 @@ void ChatUI::add(const std::string &message) {
     while (firstMessage != tinyMessages.end()) {
         // add the text into new texture. Note that SDL_ttf render
         // text into Surface, which is converted into texture on the fly
-        StageMode::log(std::string(".") + *firstMessage + ".");
+        // StageMode::log(std::string("[CHAT] ") + *firstMessage);
         textures.push_front(std::make_unique<SDL2pp::Texture>(
                 (*_renderer),
                 font.RenderText_Blended((*firstMessage),SDL_Color{

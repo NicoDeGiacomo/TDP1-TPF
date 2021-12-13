@@ -55,7 +55,7 @@ void Client::run() {
         throw std::runtime_error("Second message should be the seed");
     unsigned int seed;
     memcpy(&seed, seed_msg->getMessage().data(), sizeof(seed));
-    StageMode::log(std::string("SEED") + std::to_string(seed));
+    StageMode::log(std::string("SEED ") + std::to_string(seed));
     recvQueue.pop();
 
     _board.setSeed(seed);
