@@ -35,6 +35,8 @@ public:
 
     void startReceivingMessages();
 
+    bool isDead() const;
+
     int getId();
 
     void join();

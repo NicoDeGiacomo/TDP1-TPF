@@ -27,7 +27,11 @@ public:
 
     void addClient(ClientProxy &client);
 
-    void joinAllThreads();
+    void cleanInactivePlayers();
+
+    void interruptAllConnections();
+
+    bool isEmpty() const;
 
     ~Room();
 };

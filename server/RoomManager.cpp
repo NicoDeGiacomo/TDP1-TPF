@@ -43,13 +43,26 @@ void RoomManager::start() {
         } catch (...) {
            rooms.emplace(room_id, client); 
         }
+
+        StageMode::log("Client added with no errors");
         
+        for (auto it = rooms.begin(); it != rooms.end(); ) {
+            it->second.cleanInactivePlayers();
+            if (it->second.isEmpty()) {
+                it->second.interruptAllConnections();
+                it = rooms.erase(it);
+            } else {
+                ++it;
+            }
+        }
+
+        StageMode::log("Number of rooms: " + std::to_string(rooms.size()));
         //TODO: process where the new client wants to go, which room spectator or player
     }
     //TODO: this is bad, roomManager is never throwing new thread, how does he know that
     //he needs to join the rooms, join should be in the destructor of rooms in this case
-    // for (auto& room : listOfRooms) {
-    //     room.joinAllThreads();
-    // }
+    for (auto& room : rooms) {
+        room.second.interruptAllConnections();
+    }
     //listOfRooms.clear();
 }

@@ -50,6 +50,8 @@ public:
     void setId(int id);
     
     int getId();
+
+    bool isClosed() const;
 };
 
 #endif

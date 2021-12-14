@@ -24,8 +24,10 @@ void Player::startReceivingMessages() {
 void Player::join() {
     recvThread.stop();
     recvThread.join();
-    // if (this->receiverThread.joinable())
-    //     this->receiverThread.join();
+}
+
+bool Player::isDead() const {
+    return this->proxy.isClosed();
 }
 
 int Player::getId() {

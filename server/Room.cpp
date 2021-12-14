@@ -4,6 +4,7 @@
 #include <PlayerNameMessage.h>
 #include <PlayerTypeMessage.h>
 #include <SeedMessage.h>
+#include <StageMode.h>
 
 void Room::sendNamesToClient(ClientProxy &client) {
     for (auto &p : players) {
@@ -13,30 +14,27 @@ void Room::sendNamesToClient(ClientProxy &client) {
 }
 
 void Room::assignPlayerType(ClientProxy &client) {
+    char real_type = SPECTATOR_CHAR;
     char type = client.recv()->getMessage().at(0);
     if (type == WHITE_CHAR) {
         if (!white) {
-            client.send(std::make_shared<PlayerTypeMessage>(WHITE_CHAR));
+            real_type = WHITE_CHAR;
             white = true;
         } else if (!black) {
-            client.send(std::make_shared<PlayerTypeMessage>(BLACK_CHAR));
+            real_type = BLACK_CHAR;
             black = true;
-        } else {
-            client.send(std::make_shared<PlayerTypeMessage>(SPECTATOR_CHAR));
-        }
+        } 
     } else if (type == BLACK_CHAR) {
         if (!black) {
-            client.send(std::make_shared<PlayerTypeMessage>(BLACK_CHAR));
+            real_type = BLACK_CHAR;
             black = true;
         } else if (!white) {
-            client.send(std::make_shared<PlayerTypeMessage>(WHITE_CHAR));
+            real_type = WHITE_CHAR;
             white = true;
-        } else {
-            client.send(std::make_shared<PlayerTypeMessage>(SPECTATOR_CHAR));
-        }
-    } else {
-        client.send(std::make_shared<PlayerTypeMessage>(SPECTATOR_CHAR));
+        } 
     }
+
+    client.send(std::make_shared<PlayerTypeMessage>(real_type));
 }
 
 void Room::addClient(ClientProxy &client) {
@@ -60,7 +58,19 @@ void Room::addClient(ClientProxy &client) {
     next_id++;
 }
 
-void Room::joinAllThreads() {
+void Room::cleanInactivePlayers() {
+    for (auto it = players.begin(); it != players.end(); ) {
+        if (it->isDead()) {
+            StageMode::log("Cleaning client. ID: " + std::to_string(it->getId()));
+            it->join();
+            it = players.erase(it);
+        } else {
+            ++it;
+        }
+    }
+}
+
+void Room::interruptAllConnections() {
     //TODO: read and fix this join issue
     // its debatable if manually joining violates RAII, does
     // . "players[BLACK_PLAYER].startReceivingMessages();" .
@@ -69,14 +79,20 @@ void Room::joinAllThreads() {
     // each player could join its threads in their destructor
     for(auto & player : players)
         player.join();
-    // playerWhite.join();
-    // playerBlack.join();
-    //now here the join of sender thread its ok because we launch it
-    // if (senderThread.joinable())
-    //     senderThread.join();
+
+    for (auto it = players.begin(); it != players.end(); ) {
+        it->join();
+        it = players.erase(it);
+        ++it;
+    }
+
     sendThread.join();
 
-    std::cout << "all threads joined" << std::endl;
+    StageMode::log("Closing connections with every client of the room");
+}
+
+bool Room::isEmpty() const {
+    return this->players.empty();
 }
 
 Room::Room(ClientProxy &client) : sendThread(queueOfReceived, players, board, chat), 
@@ -86,6 +102,5 @@ Room::Room(ClientProxy &client) : sendThread(queueOfReceived, players, board, ch
 }
 
 Room::~Room() {
-    //TODO: need to force join threads from destructor
-    //this->joinAllThreads();
+    this->interruptAllConnections();
 }
