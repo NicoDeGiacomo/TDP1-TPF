@@ -157,7 +157,8 @@ void LoginScene::loadAllTextEntities() {
 
 void LoginScene::updateInputText() {
     //so it doesnt crash
-    if (userName.empty()) return;
+    std::string text = userName;
+    if (userName.empty()) text = " ";
     // Initialize SDL_ttf library
     SDL2pp::SDLTTF ttf;
     // Load font
@@ -165,6 +166,6 @@ void LoginScene::updateInputText() {
     SDL2pp::Font font("../assets/fonts/Vera.ttf", fontSize);
     SDL2pp::Texture texture(
             (*_renderer),
-            font.RenderText_Blended(userName, SDL_Color{255, 255, 255, 255}));
+            font.RenderText_Blended(text, SDL_Color{255, 255, 255, 255}));
     inputTextContainer->updateTexture(std::move(texture));
 }
