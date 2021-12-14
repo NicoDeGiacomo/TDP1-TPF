@@ -69,7 +69,10 @@ void BlockingQueue<T>::produce(T &&e) {
 template<typename T>
 T BlockingQueue<T>::popIfNotEmpty() {
     std::unique_lock<std::mutex> lock(mutex_);
-    if (queue_.empty() || closed) {
+    if (closed) {
+        throw ClosedQueueException();
+    }
+    if (queue_.empty()) {
         return nullptr;
     }
     T top = queue_.front();

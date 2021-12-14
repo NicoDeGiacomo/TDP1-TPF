@@ -75,7 +75,13 @@ void Client::run() {
         bool moreMessagesToProcess = true;
         
         while(moreMessagesToProcess) {
-            std::shared_ptr<Message> msg_ptr = recvQueue.popIfNotEmpty();
+            std::shared_ptr<Message> msg_ptr;
+            try {
+                msg_ptr = recvQueue.popIfNotEmpty();
+            } catch (const ClosedQueueException &e) {
+                gameFinished = true;
+                break;
+            }
 
             if (!msg_ptr) {
                 moreMessagesToProcess = false;
@@ -98,6 +104,7 @@ void Client::run() {
             //break;
         }
     }
+    sceneManager.updateLoopActiveScene();
     recvThread.stop();
     recvThread.join();
     sendThread.stop();

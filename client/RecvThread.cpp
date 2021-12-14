@@ -16,15 +16,8 @@ void RecvThread::run() {
         try {
             std::shared_ptr<Message> message = proxy.recv();
             queue.produce(std::move(message));
-        } catch(const std::exception &e) {
+        } catch(const ClosedSocketException &e) {
             this->stop();
-            StageMode::log(
-                std::string("Exception caught in RecvThread: '") + e.what()
-                    + "'");
-        } catch(...) {
-            this->stop();
-            StageMode::log("Unknown error caught in RecvThread:\n");
-            return;
         }
     }
 }
@@ -39,4 +32,5 @@ RecvThread::RecvThread(ServerProxy &proxy, BlockingQueue<std::shared_ptr<Message
 void RecvThread::stop() {
     this->keep_talking = false;
     this->proxy.close_connection();
+    this->queue.close();
 }

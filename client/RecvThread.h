@@ -12,7 +12,6 @@
 class RecvThread: public Thread {
 private:
     ServerProxy &proxy;
-    // Socket &socket;
     BlockingQueue<std::shared_ptr<Message>> &queue;
     std::atomic<bool> keep_talking;
 
