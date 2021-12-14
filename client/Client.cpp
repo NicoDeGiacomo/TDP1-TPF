@@ -94,8 +94,8 @@ void Client::run() {
         if (_board.isFinished()){
             StageMode::log("game finished with checkmate");
         }
+        sceneManager.updateLoopActiveScene();
     }
-    sceneManager.updateLoopActiveScene();
     recvThread.stop();
     recvThread.join();
     sendThread.stop();
