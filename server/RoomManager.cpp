@@ -21,7 +21,6 @@ void RoomManager::run() {
 
         ClientProxy client(peer);
         StageMode::log("New Client!");
-        StageMode::log("Receiving room id");
         std::shared_ptr<Message> room_id_msg = client.recv();
         if (room_id_msg->getType() != ROOM_ID_CHAR)
             throw std::runtime_error("First message should be the room id");
@@ -35,8 +34,6 @@ void RoomManager::run() {
            rooms.emplace(room_id, client); 
         }
 
-        StageMode::log("Client added with no errors");
-        
         for (auto it = rooms.begin(); it != rooms.end(); ) {
             it->second.cleanInactivePlayers();
             if (it->second.isEmpty()) {
