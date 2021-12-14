@@ -1,0 +1,8 @@
+[Desktop Entry]
+Name=Quantum Chess
+Comment= rediscover chess
+Exec=/bin/CLIENT
+Icon=/usr/local/share/icon.png
+Terminal=false
+Type=Application
+StartupNotify=true

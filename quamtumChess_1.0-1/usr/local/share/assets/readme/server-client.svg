@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?><svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" contentScriptType="application/ecmascript" contentStyleType="text/css" height="363px" preserveAspectRatio="none" style="width:244px;height:363px;background:#FFFFFF;" version="1.1" viewBox="0 0 244 363" width="244px" zoomAndPan="magnify"><defs><filter height="300%" id="fhbs753jf0sni" width="300%" x="-1" y="-1"><feGaussianBlur result="blurOut" stdDeviation="2.0"/><feColorMatrix in="blurOut" result="blurOut2" type="matrix" values="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 .4 0"/><feOffset dx="4.0" dy="4.0" in="blurOut2" result="blurOut3"/><feBlend in="SourceGraphic" in2="blurOut3" mode="normal"/></filter></defs><g><!--MD5=[d218c48b946d362ff1ecd879cabebcad]
+class Room--><rect codeLine="1" fill="#FEFECE" filter="url(#fhbs753jf0sni)" height="91.1875" id="Room" style="stroke:#A80036;stroke-width:1.5;" width="109" x="7" y="7"/><text fill="#000000" font-family="sans-serif" font-size="12" lengthAdjust="spacing" textLength="34" x="44.5" y="23.1387">Room</text><line style="stroke:#A80036;stroke-width:1.5;" x1="8" x2="115" y1="30.9688" y2="30.9688"/><text fill="#000000" font-family="sans-serif" font-size="11" lengthAdjust="spacing" textLength="97" x="13" y="45.1792">std::string name_</text><text fill="#000000" font-family="sans-serif" font-size="11" lengthAdjust="spacing" textLength="80" x="13" y="57.9839">Client clients_</text><line style="stroke:#A80036;stroke-width:1.5;" x1="8" x2="115" y1="64.5781" y2="64.5781"/><text fill="#000000" font-family="sans-serif" font-size="11" lengthAdjust="spacing" textLength="61" x="13" y="78.7886">join(Client)</text><text fill="#000000" font-family="sans-serif" font-size="11" lengthAdjust="spacing" textLength="74" x="13" y="91.5933">leave(Client)</text><!--MD5=[ed6624c6556d5e7b1bd23032162d20b7]
+class Client--><rect codeLine="8" fill="#FEFECE" filter="url(#fhbs753jf0sni)" height="65.5781" id="Client" style="stroke:#A80036;stroke-width:1.5;" width="109" x="7" y="284"/><text fill="#000000" font-family="sans-serif" font-size="12" lengthAdjust="spacing" textLength="33" x="45" y="300.1387">Client</text><line style="stroke:#A80036;stroke-width:1.5;" x1="8" x2="115" y1="307.9688" y2="307.9688"/><text fill="#000000" font-family="sans-serif" font-size="11" lengthAdjust="spacing" textLength="97" x="13" y="322.1792">std::string name_</text><line style="stroke:#A80036;stroke-width:1.5;" x1="8" x2="115" y1="328.7734" y2="328.7734"/><text fill="#000000" font-family="sans-serif" font-size="11" lengthAdjust="spacing" textLength="40" x="13" y="342.9839">notify()</text><!--MD5=[8f07f51d887e64eddc161f608ee0ddb0]
+class Socket--><rect codeLine="13" fill="#FEFECE" filter="url(#fhbs753jf0sni)" height="65.5781" id="Socket" style="stroke:#A80036;stroke-width:1.5;" width="64" x="158.5" y="158"/><text fill="#000000" font-family="sans-serif" font-size="12" lengthAdjust="spacing" textLength="42" x="169.5" y="174.1387">Socket</text><line style="stroke:#A80036;stroke-width:1.5;" x1="159.5" x2="221.5" y1="181.9688" y2="181.9688"/><line style="stroke:#A80036;stroke-width:1.5;" x1="159.5" x2="221.5" y1="189.9688" y2="189.9688"/><text fill="#000000" font-family="sans-serif" font-size="11" lengthAdjust="spacing" textLength="36" x="164.5" y="204.1792">send()</text><text fill="#000000" font-family="sans-serif" font-size="11" lengthAdjust="spacing" textLength="52" x="164.5" y="216.9839">receive()</text><!--MD5=[a0c27cfb527bdb20a6436baa93834728]
+class Protocol--><rect codeLine="18" fill="#FEFECE" filter="url(#fhbs753jf0sni)" height="65.5781" id="Protocol" style="stroke:#A80036;stroke-width:1.5;" width="79" x="151" y="284"/><text fill="#000000" font-family="sans-serif" font-size="12" lengthAdjust="spacing" textLength="49" x="166" y="300.1387">Protocol</text><line style="stroke:#A80036;stroke-width:1.5;" x1="152" x2="229" y1="307.9688" y2="307.9688"/><line style="stroke:#A80036;stroke-width:1.5;" x1="152" x2="229" y1="315.9688" y2="315.9688"/><text fill="#000000" font-family="sans-serif" font-size="11" lengthAdjust="spacing" textLength="67" x="157" y="330.1792">sendMove()</text><text fill="#000000" font-family="sans-serif" font-size="11" lengthAdjust="spacing" textLength="65" x="157" y="342.9839">readMove()</text><!--MD5=[46ab83acd7848c10d8702feec69892b3]
+reverse link Socket to Protocol--><path d="M190.5,244.447 C190.5,257.852 190.5,271.8678 190.5,283.9057 " fill="none" id="Socket-backto-Protocol" style="stroke:#A80036;stroke-width:1.0;"/><polygon fill="none" points="183.5,244.256,190.5,224.256,197.5,244.256,183.5,244.256" style="stroke:#A80036;stroke-width:1.0;"/><!--MD5=[ea69fa9a458e979a9ce7c6c787c8bddd]
+link Room to Client--><path codeLine="23" d="M61.5,110.03 C61.5,110.03 61.5,226.36 61.5,270.505 " fill="none" id="Room-Client" style="stroke:#A80036;stroke-width:1.0;"/><polygon fill="#A80036" points="61.5,283.6973,65.5,274.6973,61.5,278.6973,57.5,274.6973,61.5,283.6973" style="stroke:#A80036;stroke-width:1.0;"/><line style="stroke:#A80036;stroke-width:1.0;" x1="61.5" x2="61.5001" y1="278.6973" y2="270.6973"/><polygon fill="#A80036" points="61.5,98.03,57.5,104.03,61.5,110.03,65.5,104.03,61.5,98.03" style="stroke:#A80036;stroke-width:1.0;"/><text fill="#000000" font-family="sans-serif" font-size="13" lengthAdjust="spacing" textLength="7" x="53.8328" y="273.039">*</text><!--MD5=[960c71cafca27c0ea444a0766f3e4b00]
+link Client to Protocol--><path codeLine="24" d="M116.174,317 C125.981,317 135.788,317 145.595,317 " fill="none" id="Client-to-Protocol" style="stroke:#A80036;stroke-width:1.0;"/><polygon fill="#A80036" points="150.724,317,141.724,313,145.724,317,141.724,321,150.724,317" style="stroke:#A80036;stroke-width:1.0;"/><!--MD5=[1295fd6bfeb98a20e01859ab5c7368cd]
+@startuml
+class Room {
+std::string name_
+Client clients_
+join(Client)
+leave(Client)
+}
+
+class Client {
+std::string name_
+notify()
+}
+
+class Socket {
+send()
+receive()
+}
+
+class Protocol extends Socket {
+sendMove()
+readMove()
+}
+
+Room *- - -> "*" Client
+Client -> Protocol
+
+hide circle
+@enduml
+
+PlantUML version 1.2021.14beta3(Unknown compile time)
+(GPL source distribution)
+Java Runtime: Java(TM) SE Runtime Environment
+JVM: Java HotSpot(TM) 64-Bit Server VM
+Default Encoding: UTF-8
+Language: en
+Country: US
+--></g></svg>
