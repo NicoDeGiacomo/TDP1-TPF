@@ -177,7 +177,7 @@ void LobbyScene::loadInputRoomId(SDL2pp::Font &font) {
 
 void LobbyScene::updateInputText() {
     //so it doesnt crash
-    if (_roomId->empty()) (*_roomId) = " ";
+    if (_roomId->empty()) return;
     // Initialize SDL_ttf library
     SDL2pp::SDLTTF ttf;
     // Load font
