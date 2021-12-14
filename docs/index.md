@@ -93,7 +93,9 @@ The game is won by capturing your opponent’s king. This means your opponent ha
 You can exit the game at any time by pressing 'Q' or ESC.
 
 #### 2.3. Notation
-The notation of each individual move consists of four parts.
+The general disposition of the notation is inspired by chess [PGN](https://en.wikipedia.org/wiki/Portable_Game_Notation).
+
+In QuantumChess in particular, the notation of each individual move consists of four parts.
 
 The first part consists of a character to indicate the type of move:
 - 'N' for Normal Move.
@@ -108,6 +110,24 @@ The second part indicates the parting and destination squares of the move.
 Finally, if one or more measurements were performed during the move, the results will be indicated in order at the **beginning** of the notation.
 - '\*' if the measurement was confirmed.
 - '#' if the measurement was denied.
+
+Example Notation:
+```
+1. Ne2e4 Ne7e5
+2. Sg1f3h3 Sd8h4g5
+3. Nd1h5 Sg5f4e3
+4. Sf1c4d3 *#Nh4h3
+5. #Nc4f7 Nh3g2
+6. Sh1f1g1 *Ng2f1
+7. Nf3e5 Nf1e1
+```
+In black`s move number four, a normal moved was performed from square h4 to square h3. As a consequence, two measurements were performed, the first resulting in a confirmation and the second in a denial. With this information the game can be replicated in its entirety.
+
+At the end of each game, a dump will be available to download. The dump will be downloaded under the path `/home/{USER}/Documents/QuantumChess/` in several files that will not replace each other, generating a new file automatically for each game.
+
+![Screenshot from 2021-12-14 04-05-11](https://user-images.githubusercontent.com/11294851/145949362-ba0576b8-b9cf-491f-98e0-9ef61ea6bbd2.png)
+
+![Screenshot from 2021-12-14 04-08-56](https://user-images.githubusercontent.com/11294851/145949763-1105401c-965f-4288-a979-0a1b8ff4febb.png)
 
 ### 3. Settings
 At any time, you can click on the gear in the top-right corner to change the screen settings.\
