@@ -22,6 +22,7 @@ void Player::startReceivingMessages() {
 }
 
 void Player::join() {
+    proxy.close_connection();
     recvThread.stop();
     recvThread.join();
 }

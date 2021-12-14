@@ -77,8 +77,8 @@ void Room::interruptAllConnections() {
     // implies that we are throwing a new thread
     // and we need to manually join it? idk,
     // each player could join its threads in their destructor
-    for(auto & player : players)
-        player.join();
+    // for(auto & player : players)
+    //     player.join();
 
     for (auto it = players.begin(); it != players.end(); ) {
         it->join();
@@ -86,7 +86,9 @@ void Room::interruptAllConnections() {
         ++it;
     }
 
-    sendThread.join();
+    sendThread.stop();
+    if (sendThread.joinable())
+        sendThread.join();
 
     StageMode::log("Closing connections with every client of the room");
 }

@@ -5,13 +5,27 @@
 #include <map>
 #include <string>
 
-class RoomManager {
+class RoomManager: public Thread {
 private:
-    Socket acceptor;
+    Socket &acceptor;
     std::map<std::string,Room> rooms;
+
+protected:
+    void run() override;
+
 public:
-    RoomManager();
-    void start();
+    /*
+     *  Constructor
+     */
+    RoomManager(Socket &acceptor);
+    /*
+     *  Constructor por copia
+     */
+    RoomManager(const RoomManager &other) = delete;
+    /*
+     *  Cierra las conexiones con los clientes y corta su ejecucion
+     */
+    void stop();
 };
 
 

@@ -1,4 +1,5 @@
-#include "Thread.h"
+#include <Thread.h>
+#include <thread>
 #include <iostream>
 #include <utility>
 
@@ -22,6 +23,10 @@ void Thread::start() {
 
 void Thread::join() {
     t.join();
+}
+
+bool Thread::joinable() const {
+    return t.joinable();
 }
 
 Thread::Thread(Thread &&other) : t(std::move(other.t)) {}

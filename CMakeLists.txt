@@ -48,6 +48,7 @@ set(THREADS_PREFER_PTHREAD_FLAG ON)
 find_package(Threads REQUIRED)
 target_link_libraries(CLIENT Threads::Threads)
 target_link_libraries(SERVER Threads::Threads)
+target_link_libraries(TESTS Threads::Threads)
 
 # SDL2pp
 SET(SDL2PP_WITH_IMAGE ON)

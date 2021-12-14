@@ -38,6 +38,11 @@ public:
      * @brief      Waits the thread to finish.
      */
     void join();
+
+    /**
+     * @brief      checks whether the thread is joinable.
+     */
+    bool joinable() const;
     
     /*
      *  Constructor

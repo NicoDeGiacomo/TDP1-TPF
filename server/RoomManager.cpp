@@ -6,17 +6,21 @@
 #include <Message.h>
 #include "StageMode.h"
 
-RoomManager::RoomManager(){
-    //todo: dont hardcode this
-    this->acceptor.bind("7777");
-    this->acceptor.listen(6);
-}
+RoomManager::RoomManager(Socket &acceptor) : acceptor(acceptor) {}
 
-void RoomManager::start() {
+void RoomManager::run() {
     //std::list<std::reference_wrapper<Room>> listOfRooms;
     //TODO: need to look for dead threads and shutdown everything after finish chat.
-    while (true){
-        Socket peer = acceptor.accept();
+    while (!acceptor.isNotActive()){
+        Socket peer;
+        try {
+            peer = acceptor.accept();
+        } catch (ClosedSocketException &e) {
+            std::cout << "ClosedSocketException\n";
+            this->stop();
+            return;
+        }
+
         if (peer.isNotActive())
             //proceed to clean and shutdown threads
             break;
@@ -40,7 +44,7 @@ void RoomManager::start() {
 
         try {
             rooms.at(room_id).addClient(client);
-        } catch (...) {
+        } catch (const std::out_of_range &e) {
            rooms.emplace(room_id, client); 
         }
 
@@ -61,8 +65,14 @@ void RoomManager::start() {
     }
     //TODO: this is bad, roomManager is never throwing new thread, how does he know that
     //he needs to join the rooms, join should be in the destructor of rooms in this case
-    for (auto& room : rooms) {
+    for (auto& room : rooms)
         room.second.interruptAllConnections();
-    }
+
     //listOfRooms.clear();
+}
+
+void RoomManager::stop() {
+    for (auto& room : rooms)
+        room.second.interruptAllConnections();
+    this->acceptor.shutdown();
 }
