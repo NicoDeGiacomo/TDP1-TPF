@@ -13,13 +13,8 @@ Quantum Chess allows (almost) all pieces to exist in superposition, where they c
 * [3. Settings](#3-settings)
 
 ### 1. Installation Guide
-Download the [latest release](https://github.com/NicoDeGiacomo/TDP1-TPF/releases/latest), extract it, and open a terminal on the main folder.\
-Run the installer.
-```shell
-$ sh install.sh
-$ cd build
-$ ./CLIENT [SERVER_IP] 7777
-```
+Go to the [latest release](https://github.com/NicoDeGiacomo/TDP1-TPF/releases/latest), and download the `.deb` file.\
+Afterwards, open de file normally and click install.
 
 ### 2. How to Play
 #### 2.1. Connect to a Game
