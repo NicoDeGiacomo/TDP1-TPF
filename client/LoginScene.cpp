@@ -57,6 +57,8 @@ void LoginScene::handleEvents() {
 void LoginScene::render() {
 	// Clear screen
 	_renderer->Clear();
+    _renderer->Copy((*backgroundImageTexture), SDL2pp::NullOpt,
+                    SDL2pp::Rect(0, 0, _window->GetWidth(), _window->GetHeight()));
 
     for (auto& entity : entities){
         entity.render(_renderer, 255);
@@ -70,6 +72,7 @@ void LoginScene::render() {
 void LoginScene::load(SDL2pp::Renderer *renderer, SDL2pp::Window *window) {
     Scene::load(renderer, window);
     //load scene, but dont process input nor render textures
+    backgroundImageTexture = std::make_unique<SDL2pp::Texture>((*_renderer), MAIN_BACKGROUND_FILEPATH);
     this->loadConfigButton();
     this->loadAllTextEntities();
     this->render();

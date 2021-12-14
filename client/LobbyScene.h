@@ -12,18 +12,16 @@
 #include "Entity.h"
 
 #define CONFIG_BUTTON_PNG "assets/sprites/configButton.png"
-#define LOBBY_BACKGROUND_FILEPATH "assets/sprites/lobbyBackground.png"
 
 class LobbyScene : public Scene {
 private:
     int fontSize;
-    bool clickedInOneRoom;
     Scene* _configScene;
     std::unique_ptr<SDL2pp::Texture> backgroundImageTexture;
     std::unique_ptr<ClickableEntity> configButton;
     std::vector<ClickableEntity> buttons;
     std::vector<Entity> entities;
-    std::unique_ptr<ClickableEntity> inputTextContainer;
+    std::unique_ptr<Entity> inputTextContainer;
     std::string* _roomId;
     char* _playerType;
     bool done;

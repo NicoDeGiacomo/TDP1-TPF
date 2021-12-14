@@ -10,6 +10,7 @@ class LoginScene: public Scene {
 private:
     std::string &userName;
     std::vector<Entity> entities;
+    std::unique_ptr<SDL2pp::Texture> backgroundImageTexture;
     std::unique_ptr<Entity> inputTextContainer;
     bool done;
     std::unique_ptr<ClickableEntity> configButton;
