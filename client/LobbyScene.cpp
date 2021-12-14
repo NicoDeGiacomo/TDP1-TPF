@@ -34,6 +34,7 @@ void LobbyScene::handleEvents() {
                 //Handle backspace
                 if( event.key.keysym.sym == SDLK_BACKSPACE && _roomId->length() > 0 ) {
                     _roomId->pop_back();
+                    updateInputText();
                 }
                     //Handle copy
                 else if( event.key.keysym.sym == SDLK_c && SDL_GetModState() & KMOD_CTRL ) {
@@ -81,7 +82,7 @@ void LobbyScene::render() {
 
 void LobbyScene::load(SDL2pp::Renderer *renderer, SDL2pp::Window *window) {
     Scene::load(renderer, window);
-    backgroundImageTexture = std::make_unique<SDL2pp::Texture>((*_renderer), LOBBY_BACKGROUND_FILEPATH);
+    backgroundImageTexture = std::make_unique<SDL2pp::Texture>((*_renderer), MAIN_BACKGROUND_FILEPATH);
     loadRoomsTextures();
     this->render();
 }
@@ -92,7 +93,6 @@ void LobbyScene::loadRoomsTextures() {
     // Load font
     fontSize = _window->GetHeight() * FONT_SIZE_MULTIPLIER;
     SDL2pp::Font font("../assets/fonts/Vera.ttf", fontSize);
-    //loadRoomsButtons(font);
     loadConfigButton();
     loadInputRoomId(font);
     loadJoinButtons(font);
@@ -117,10 +117,6 @@ void LobbyScene::handleMouseClick(){
         //reload scene
         load(_renderer, _window);
         return;
-    } else if (inputTextContainer->contains(mouseX,mouseY)){
-        _roomId->clear();
-        updateInputText();
-        return;
     }
 
     for (auto& button : buttons){
@@ -141,37 +137,6 @@ void LobbyScene::addButton(std::function<void()>&& onClickHandler,
     buttons.push_back(std::move(button));
 }
 
-/*void LobbyScene::loadRoomsButtons(SDL2pp::Font& font) {
-    buttons.clear();
-    int messageWidth, messageHeight;
-    //todo: max text size would be with room 99, look into this
-    TTF_SizeText(font.Get(), "Room 99", &messageWidth, &messageHeight);
-    int xOffset = _window->GetWidth() / X_OFFSET_BETWEEN_ROOMS;
-    int yOffset = _window->GetHeight() / Y_OFFSET_BETWEEN_ROOMS;
-    int roomsFitHorizontally = _window->GetWidth() / (messageWidth + xOffset);
-    int roomsFitVertically = _window->GetHeight() / (messageHeight + yOffset);
-    int currentRoomNumber = 0;
-    for(int i = 0; i < roomsFitVertically && currentRoomNumber < _numberOfRooms; ++i) {
-        for(int j = 0; j < roomsFitHorizontally && currentRoomNumber < _numberOfRooms; ++j) {
-            SDL2pp::Texture texture(
-                    (*_renderer),
-                    font.RenderText_Blended("Room " + std::to_string(currentRoomNumber),
-                                            SDL_Color{22,22,22,255}));
-            SDL2pp::Rect buttonRect(
-                    j * (messageWidth + xOffset),
-                    i * (messageHeight + yOffset),
-                    messageWidth,
-                    messageHeight
-            );
-            addButton([currentRoomNumber]{
-                    std::cout << "You clicked room number " + std::to_string(currentRoomNumber) << std::endl;
-                },std::move(texture), buttonRect);
-            ++currentRoomNumber;
-        }
-    }
-    //todo: if (currentRoomNumber < _numberOfRooms) add logic to add rooms beyond the screen size, like scrolling or something
-}*/
-
 void LobbyScene::loadConfigButton() {
     SDL2pp::Texture texture((*_renderer), CONFIG_BUTTON_PNG);
     int configButtonSize = _window->GetHeight() * CONFIG_BUTTON_SIZE_MULTIPLIER;
@@ -188,11 +153,11 @@ void LobbyScene::loadInputRoomId(SDL2pp::Font &font) {
     buttons.clear();
     SDL2pp::Texture typeRoomIdTexture(
             (*_renderer),
-            font.RenderText_Blended("Type Room id: ",SDL_Color{255,255,255,255}));
-    (*_roomId) = "click here to clear message...";
+            font.RenderText_Blended("Type room id: ",SDL_Color{255,255,255,255}));
+    (*_roomId) = "...";
     SDL2pp::Texture inputRoomIdTexture(
             (*_renderer),
-            font.RenderText_Blended((*_roomId),SDL_Color{22,22,22,255}));
+            font.RenderText_Blended((*_roomId),SDL_Color{255,255,255,255}));
     //1/3 of the screen in y, center of the screen in x
     SDL2pp::Rect typeRoomIdRect(
             _window->GetWidth() / 2 - typeRoomIdTexture.GetWidth(),
@@ -207,8 +172,7 @@ void LobbyScene::loadInputRoomId(SDL2pp::Font &font) {
             inputRoomIdTexture.GetHeight()
     );
     entities.emplace_back(std::move(typeRoomIdTexture), typeRoomIdRect);
-    inputTextContainer = std::make_unique<ClickableEntity>(std::move(inputRoomIdTexture), inputRoomIdRect);
-    inputTextContainer->onClick([inputId = _roomId] { (*inputId) = ""; std::cout << "asd" << std::endl; });
+    inputTextContainer = std::make_unique<Entity>(std::move(inputRoomIdTexture), inputRoomIdRect);
 }
 
 void LobbyScene::updateInputText() {
