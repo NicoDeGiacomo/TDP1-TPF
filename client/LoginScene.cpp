@@ -72,7 +72,7 @@ void LoginScene::render() {
 void LoginScene::load(SDL2pp::Renderer *renderer, SDL2pp::Window *window) {
     Scene::load(renderer, window);
     //load scene, but dont process input nor render textures
-    backgroundImageTexture = std::make_unique<SDL2pp::Texture>((*_renderer), MAIN_BACKGROUND_FILEPATH);
+    backgroundImageTexture = std::make_unique<SDL2pp::Texture>((*_renderer), StageMode::getFullPath(MAIN_BACKGROUND_FILEPATH));
     this->loadConfigButton();
     this->loadAllTextEntities();
     this->render();
