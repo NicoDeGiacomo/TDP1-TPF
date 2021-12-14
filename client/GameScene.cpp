@@ -463,7 +463,7 @@ void GameScene::handleBoardClick() {
 void GameScene::manageBoardEvent(SDL_Event &event) {
     switch (event.type) {
         case SDL_QUIT:
-            StageMode::log("GAME FINISHED");
+            StageMode::log("QUIT GAME");
             _gameFinished = true;
             return;
         case SDL_KEYDOWN:
@@ -500,8 +500,13 @@ void GameScene::manageBoardEvent(SDL_Event &event) {
 void GameScene::manageChatEvent(SDL_Event &event) {
     switch (event.type) {
         case SDL_KEYDOWN:
+            if(event.key.keysym.sym == SDLK_ESCAPE) {
+                _gameFinished = true;
+                StageMode::log("QUIT GAME");
+                return;
+            }
             //Handle backspace
-            if( event.key.keysym.sym == SDLK_BACKSPACE && inputData.message.length() > 0 ) {
+            else if( event.key.keysym.sym == SDLK_BACKSPACE && inputData.message.length() > 0 ) {
                 inputData.message.pop_back();
             }
                 //Handle copy
@@ -524,7 +529,7 @@ void GameScene::manageChatEvent(SDL_Event &event) {
             }
             break;
         case SDL_QUIT:
-            StageMode::log("GAME FINISHED");
+            StageMode::log("QUIT GAME");
             _gameFinished = true;
             return;
         case SDL_TEXTINPUT:

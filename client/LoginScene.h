@@ -13,13 +13,14 @@ private:
     std::unique_ptr<SDL2pp::Texture> backgroundImageTexture;
     std::unique_ptr<Entity> inputTextContainer;
     bool done;
+    bool& _gameFinished;
     std::unique_ptr<ClickableEntity> configButton;
     Scene* _configScene;
     void render() override;
     void handleEvents() override;
     void addButton(std::function<void()>&& onClickHandler, SDL2pp::Texture &&texture, const SDL2pp::Rect &rect);
 public:
-    LoginScene(Scene* configScene, std::string &user_name);
+    LoginScene(Scene* configScene, std::string &user_name, bool& gameFinished);
     void updateLoop() override;
     void load(SDL2pp::Renderer* renderer, SDL2pp::Window *window) override;
 

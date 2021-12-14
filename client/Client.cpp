@@ -32,9 +32,11 @@ void Client::run() {
     //add scene main game screen
     sceneManager.loadScene(LOGIN_SCENE);
     sceneManager.updateLoopActiveScene();
+    if (gameFinished) return;
     
     sceneManager.loadScene(LOBBY_SCENE);
     sceneManager.updateLoopActiveScene();
+    if (gameFinished) return;
     StageMode::log(std::string("client has room id: .") + roomId + ". and type ." + playerType + ".");
     
     proxy.connect();
@@ -120,8 +122,8 @@ Client::Client(const char *host, const char *service, bool mute)
 
     // int numberOfRooms = 50; //todo: placeholder, change this to actual number of rooms
     std::unique_ptr<Scene> configScene = std::make_unique<ConfigScene>();
-    sceneManager.addScene(std::make_unique<LoginScene>(configScene.get(), name), LOGIN_SCENE);
-    sceneManager.addScene(std::make_unique<LobbyScene>(configScene.get(), &playerType, &roomId), LOBBY_SCENE);
+    sceneManager.addScene(std::make_unique<LoginScene>(configScene.get(), name, gameFinished), LOGIN_SCENE);
+    sceneManager.addScene(std::make_unique<LobbyScene>(configScene.get(), &playerType, &roomId, gameFinished), LOBBY_SCENE);
     sceneManager.addScene(std::move(configScene), CONFIG_SCENE);
 }
 

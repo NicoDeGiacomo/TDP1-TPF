@@ -12,6 +12,8 @@
 #include "GameScene.h"
 #include "SceneManager.h"
 #include "Chat.h"
+#include "SendThread.h"
+#include "RecvThread.h"
 
 #define LOGIN_SCENE "Login"
 #define LOBBY_SCENE "Lobby"
