@@ -5,7 +5,10 @@
 #include <Message.h>
 #include "StageMode.h"
 
-RoomManager::RoomManager(Socket &acceptor) : acceptor(acceptor) {}
+RoomManager::RoomManager(std::string service) {
+    this->acceptor.bind(service.c_str());
+    this->acceptor.listen(LISTEN_BACKLOG);
+}
 
 void RoomManager::run() {
     while (!acceptor.isNotActive()){

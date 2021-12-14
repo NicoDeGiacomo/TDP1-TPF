@@ -6,9 +6,11 @@
 #include <map>
 #include <string>
 
+#define LISTEN_BACKLOG 50
+
 class RoomManager: public Thread {
 private:
-    Socket &acceptor;
+    Socket acceptor;
     std::map<std::string,Room> rooms;
 
 protected:
@@ -18,7 +20,7 @@ public:
     /*
      *  Constructor
      */
-    RoomManager(Socket &acceptor);
+    RoomManager(std::string service);
     /*
      *  Constructor por copia
      */
