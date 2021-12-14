@@ -3,7 +3,6 @@
 #include <NormalMoveMessage.h>
 #include <MergeMoveMessage.h>
 #include <SplitMoveMessage.h>
-#include <SelectMessage.h>
 #include <PlayerNameMessage.h>
 #include <RoomIdMessage.h>
 #include <PlayerTypeMessage.h>
@@ -26,8 +25,6 @@ namespace Protocol {
             return std::make_shared<MergeMoveMessage>();
         } else if (type == SPLIT_MOVE_CHAR) {
             return std::make_shared<SplitMoveMessage>();
-        } else if (type == SELECT_CHAR) {
-            return std::make_shared<SelectMessage>();
         } else if (type == PLAYER_NAME_CHAR) {
             return std::make_shared<PlayerNameMessage>();
         } else if (type == ROOM_ID_CHAR) {
@@ -48,8 +45,6 @@ namespace Protocol {
             return std::make_shared<MergeMoveMessage>(id);
         } else if (type == SPLIT_MOVE_CHAR) {
             return std::make_shared<SplitMoveMessage>(id);
-        } else if (type == SELECT_CHAR) {
-            return std::make_shared<SelectMessage>(id);
         } else if (type == PLAYER_NAME_CHAR) {
             return std::make_shared<PlayerNameMessage>(id);
         } else if (type == ROOM_ID_CHAR) {

@@ -4,7 +4,6 @@
 #include "NormalMoveMessage.h"
 #include "SplitMoveMessage.h"
 #include "MergeMoveMessage.h"
-#include "SelectMessage.h"
 #include <iostream>
 #include <string.h>
 #include <arpa/inet.h>
