@@ -95,3 +95,7 @@ int ClientProxy::getId() {
 void ClientProxy::close_connection() {
     this->socket.shutdown();
 }
+
+bool ClientProxy::isClosed() const {
+    return this->socket.isNotActive();
+}
