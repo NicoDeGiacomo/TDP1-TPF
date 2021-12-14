@@ -81,7 +81,7 @@ void LobbyScene::render() {
 
 void LobbyScene::load(SDL2pp::Renderer *renderer, SDL2pp::Window *window) {
     Scene::load(renderer, window);
-    backgroundImageTexture = std::make_unique<SDL2pp::Texture>((*_renderer), LOBBY_BACKGROUND_FILEPATH);
+    backgroundImageTexture = std::make_unique<SDL2pp::Texture>((*_renderer), StageMode::getFullPath(LOBBY_BACKGROUND_FILEPATH));
     loadRoomsTextures();
     this->render();
 }
@@ -91,7 +91,7 @@ void LobbyScene::loadRoomsTextures() {
     SDL2pp::SDLTTF ttf;
     // Load font
     fontSize = _window->GetHeight() * FONT_SIZE_MULTIPLIER;
-    SDL2pp::Font font("../assets/fonts/Vera.ttf", fontSize);
+    SDL2pp::Font font(StageMode::getFullPath("assets/fonts/Vera.ttf"), fontSize);
     //loadRoomsButtons(font);
     loadConfigButton();
     loadInputRoomId(font);
@@ -173,7 +173,7 @@ void LobbyScene::addButton(std::function<void()>&& onClickHandler,
 }*/
 
 void LobbyScene::loadConfigButton() {
-    SDL2pp::Texture texture((*_renderer), CONFIG_BUTTON_PNG);
+    SDL2pp::Texture texture((*_renderer), StageMode::getFullPath(CONFIG_BUTTON_PNG));
     int configButtonSize = _window->GetHeight() * CONFIG_BUTTON_SIZE_MULTIPLIER;
     SDL2pp::Rect buttonRect(
             _window->GetWidth() - configButtonSize,
@@ -218,7 +218,7 @@ void LobbyScene::updateInputText() {
     SDL2pp::SDLTTF ttf;
     // Load font
     fontSize = _window->GetHeight() * FONT_SIZE_MULTIPLIER;
-    SDL2pp::Font font("../assets/fonts/Vera.ttf", fontSize);
+    SDL2pp::Font font(StageMode::getFullPath("assets/fonts/Vera.ttf"), fontSize);
     SDL2pp::Texture texture(
             (*_renderer),
             font.RenderText_Blended((*_roomId),SDL_Color{255,255,255,255}));

@@ -4,7 +4,7 @@
 #include <SDL2pp/SDL2pp.hh>
 #include "Scene.h"
 #include "ClickableEntity.h"
-#define CONFIG_BUTTON_PNG "../assets/sprites/configButton.png"
+#define CONFIG_BUTTON_PNG "assets/sprites/configButton.png"
 
 class LoginScene: public Scene {
 private:

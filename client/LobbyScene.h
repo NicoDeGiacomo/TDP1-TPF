@@ -11,8 +11,8 @@
 #include "ClickableEntity.h"
 #include "Entity.h"
 
-#define CONFIG_BUTTON_PNG "../assets/sprites/configButton.png"
-#define LOBBY_BACKGROUND_FILEPATH "../assets/sprites/lobbyBackground.png"
+#define CONFIG_BUTTON_PNG "assets/sprites/configButton.png"
+#define LOBBY_BACKGROUND_FILEPATH "assets/sprites/lobbyBackground.png"
 
 class LobbyScene : public Scene {
 private:

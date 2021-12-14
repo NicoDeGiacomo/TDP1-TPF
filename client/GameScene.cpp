@@ -313,7 +313,7 @@ void GameScene::loadNotifications() {
     // Initialize SDL_ttf library
     SDL2pp::SDLTTF ttf;
     // Load font, 12pt size
-    SDL2pp::Font font("../assets/fonts/Vera.ttf", this->selectedPieceSize * 2);
+    SDL2pp::Font font(StageMode::getFullPath("assets/fonts/Vera.ttf"), this->selectedPieceSize * 2);
 
     // Render the text into new texture. Note that SDL_ttf render
     // text into Surface, which is converted into texture on the fly
@@ -326,46 +326,46 @@ void GameScene::loadNotifications() {
 }
 
 void GameScene::loadBoardTextures() {
-    texturesMap.insert({BOARD_KEY, SDL2pp::Texture((*_renderer), BOARD_PNG)});
+    texturesMap.insert({BOARD_KEY, SDL2pp::Texture((*_renderer), StageMode::getFullPath(BOARD_PNG))});
 
-    texturesMap.insert({WHITE_PAWN_KEY, SDL2pp::Texture((*_renderer), WHITE_PAWN_PNG)});
-    texturesMap.insert({WHITE_ROOK_KEY, SDL2pp::Texture((*_renderer), WHITE_ROOK_PNG)});
-    texturesMap.insert({WHITE_KNIGHT_KEY, SDL2pp::Texture((*_renderer), WHITE_KNIGHT_PNG)});
-    texturesMap.insert({WHITE_BISHOP_KEY, SDL2pp::Texture((*_renderer), WHITE_BISHOP_PNG)});
-    texturesMap.insert({WHITE_KING_KEY, SDL2pp::Texture((*_renderer), WHITE_KING_PNG)});
-    texturesMap.insert({WHITE_QUEEN_KEY, SDL2pp::Texture((*_renderer), WHITE_QUEEN_PNG)});
+    texturesMap.insert({WHITE_PAWN_KEY, SDL2pp::Texture((*_renderer), StageMode::getFullPath(WHITE_PAWN_PNG))});
+    texturesMap.insert({WHITE_ROOK_KEY, SDL2pp::Texture((*_renderer), StageMode::getFullPath(WHITE_ROOK_PNG))});
+    texturesMap.insert({WHITE_KNIGHT_KEY, SDL2pp::Texture((*_renderer), StageMode::getFullPath(WHITE_KNIGHT_PNG))});
+    texturesMap.insert({WHITE_BISHOP_KEY, SDL2pp::Texture((*_renderer), StageMode::getFullPath(WHITE_BISHOP_PNG))});
+    texturesMap.insert({WHITE_KING_KEY, SDL2pp::Texture((*_renderer), StageMode::getFullPath(WHITE_KING_PNG))});
+    texturesMap.insert({WHITE_QUEEN_KEY, SDL2pp::Texture((*_renderer), StageMode::getFullPath(WHITE_QUEEN_PNG))});
 
-    texturesMap.insert({BLACK_PAWN_KEY, SDL2pp::Texture((*_renderer), BLACK_PAWN_PNG)});
-    texturesMap.insert({BLACK_ROOK_KEY, SDL2pp::Texture((*_renderer), BLACK_ROOK_PNG)});
-    texturesMap.insert({BLACK_KNIGHT_KEY, SDL2pp::Texture((*_renderer), BLACK_KNIGHT_PNG)});
-    texturesMap.insert({BLACK_BISHOP_KEY, SDL2pp::Texture((*_renderer), BLACK_BISHOP_PNG)});
-    texturesMap.insert({BLACK_KING_KEY, SDL2pp::Texture((*_renderer), BLACK_KING_PNG)});
-    texturesMap.insert({BLACK_QUEEN_KEY, SDL2pp::Texture((*_renderer), BLACK_QUEEN_PNG)});
+    texturesMap.insert({BLACK_PAWN_KEY, SDL2pp::Texture((*_renderer), StageMode::getFullPath(BLACK_PAWN_PNG))});
+    texturesMap.insert({BLACK_ROOK_KEY, SDL2pp::Texture((*_renderer), StageMode::getFullPath(BLACK_ROOK_PNG))});
+    texturesMap.insert({BLACK_KNIGHT_KEY, SDL2pp::Texture((*_renderer), StageMode::getFullPath(BLACK_KNIGHT_PNG))});
+    texturesMap.insert({BLACK_BISHOP_KEY, SDL2pp::Texture((*_renderer), StageMode::getFullPath(BLACK_BISHOP_PNG))});
+    texturesMap.insert({BLACK_KING_KEY, SDL2pp::Texture((*_renderer), StageMode::getFullPath(BLACK_KING_PNG))});
+    texturesMap.insert({BLACK_QUEEN_KEY, SDL2pp::Texture((*_renderer), StageMode::getFullPath(BLACK_QUEEN_PNG))});
 
-    selectedTexturesMap.insert({WHITE_PAWN_KEY, SDL2pp::Texture((*_renderer), SELECTED_PAWN_PNG)});
-    selectedTexturesMap.insert({WHITE_ROOK_KEY, SDL2pp::Texture((*_renderer), SELECTED_ROOK_PNG)});
-    selectedTexturesMap.insert({WHITE_KNIGHT_KEY, SDL2pp::Texture((*_renderer), SELECTED_KNIGHT_PNG)});
-    selectedTexturesMap.insert({WHITE_BISHOP_KEY, SDL2pp::Texture((*_renderer), SELECTED_BISHOP_PNG)});
-    selectedTexturesMap.insert({WHITE_KING_KEY, SDL2pp::Texture((*_renderer), SELECTED_KING_PNG)});
-    selectedTexturesMap.insert({WHITE_QUEEN_KEY, SDL2pp::Texture((*_renderer), SELECTED_QUEEN_PNG)});
+    selectedTexturesMap.insert({WHITE_PAWN_KEY, SDL2pp::Texture((*_renderer), StageMode::getFullPath(SELECTED_PAWN_PNG))});
+    selectedTexturesMap.insert({WHITE_ROOK_KEY, SDL2pp::Texture((*_renderer), StageMode::getFullPath(SELECTED_ROOK_PNG))});
+    selectedTexturesMap.insert({WHITE_KNIGHT_KEY, SDL2pp::Texture((*_renderer), StageMode::getFullPath(SELECTED_KNIGHT_PNG))});
+    selectedTexturesMap.insert({WHITE_BISHOP_KEY, SDL2pp::Texture((*_renderer), StageMode::getFullPath(SELECTED_BISHOP_PNG))});
+    selectedTexturesMap.insert({WHITE_KING_KEY, SDL2pp::Texture((*_renderer), StageMode::getFullPath(SELECTED_KING_PNG))});
+    selectedTexturesMap.insert({WHITE_QUEEN_KEY, SDL2pp::Texture((*_renderer), StageMode::getFullPath(SELECTED_QUEEN_PNG))});
 
-    entangledTexturesMap.insert({WHITE_PAWN_KEY, SDL2pp::Texture((*_renderer), SELECTED_PAWN_PNG)});
-    entangledTexturesMap.insert({WHITE_ROOK_KEY, SDL2pp::Texture((*_renderer), SELECTED_ROOK_PNG)});
-    entangledTexturesMap.insert({WHITE_KNIGHT_KEY, SDL2pp::Texture((*_renderer), SELECTED_KNIGHT_PNG)});
-    entangledTexturesMap.insert({WHITE_BISHOP_KEY, SDL2pp::Texture((*_renderer), SELECTED_BISHOP_PNG)});
-    entangledTexturesMap.insert({WHITE_KING_KEY, SDL2pp::Texture((*_renderer), SELECTED_KING_PNG)});
-    entangledTexturesMap.insert({WHITE_QUEEN_KEY, SDL2pp::Texture((*_renderer), SELECTED_QUEEN_PNG)});
+    entangledTexturesMap.insert({WHITE_PAWN_KEY, SDL2pp::Texture((*_renderer), StageMode::getFullPath(SELECTED_PAWN_PNG))});
+    entangledTexturesMap.insert({WHITE_ROOK_KEY, SDL2pp::Texture((*_renderer), StageMode::getFullPath(SELECTED_ROOK_PNG))});
+    entangledTexturesMap.insert({WHITE_KNIGHT_KEY, SDL2pp::Texture((*_renderer), StageMode::getFullPath(SELECTED_KNIGHT_PNG))});
+    entangledTexturesMap.insert({WHITE_BISHOP_KEY, SDL2pp::Texture((*_renderer), StageMode::getFullPath(SELECTED_BISHOP_PNG))});
+    entangledTexturesMap.insert({WHITE_KING_KEY, SDL2pp::Texture((*_renderer), StageMode::getFullPath(SELECTED_KING_PNG))});
+    entangledTexturesMap.insert({WHITE_QUEEN_KEY, SDL2pp::Texture((*_renderer), StageMode::getFullPath(SELECTED_QUEEN_PNG))});
 
     for (auto& texture : entangledTexturesMap) {
         texture.second.SetColorAndAlphaMod(colors.entangled);
     }
 
-    samePieceSplitTextureMap.insert({WHITE_PAWN_KEY, SDL2pp::Texture((*_renderer), SELECTED_PAWN_PNG)});
-    samePieceSplitTextureMap.insert({WHITE_ROOK_KEY, SDL2pp::Texture((*_renderer), SELECTED_ROOK_PNG)});
-    samePieceSplitTextureMap.insert({WHITE_KNIGHT_KEY, SDL2pp::Texture((*_renderer), SELECTED_KNIGHT_PNG)});
-    samePieceSplitTextureMap.insert({WHITE_BISHOP_KEY, SDL2pp::Texture((*_renderer), SELECTED_BISHOP_PNG)});
-    samePieceSplitTextureMap.insert({WHITE_KING_KEY, SDL2pp::Texture((*_renderer), SELECTED_KING_PNG)});
-    samePieceSplitTextureMap.insert({WHITE_QUEEN_KEY, SDL2pp::Texture((*_renderer), SELECTED_QUEEN_PNG)});
+    samePieceSplitTextureMap.insert({WHITE_PAWN_KEY, SDL2pp::Texture((*_renderer), StageMode::getFullPath(SELECTED_PAWN_PNG))});
+    samePieceSplitTextureMap.insert({WHITE_ROOK_KEY, SDL2pp::Texture((*_renderer), StageMode::getFullPath(SELECTED_ROOK_PNG))});
+    samePieceSplitTextureMap.insert({WHITE_KNIGHT_KEY, SDL2pp::Texture((*_renderer), StageMode::getFullPath(SELECTED_KNIGHT_PNG))});
+    samePieceSplitTextureMap.insert({WHITE_BISHOP_KEY, SDL2pp::Texture((*_renderer), StageMode::getFullPath(SELECTED_BISHOP_PNG))});
+    samePieceSplitTextureMap.insert({WHITE_KING_KEY, SDL2pp::Texture((*_renderer), StageMode::getFullPath(SELECTED_KING_PNG))});
+    samePieceSplitTextureMap.insert({WHITE_QUEEN_KEY, SDL2pp::Texture((*_renderer), StageMode::getFullPath(SELECTED_QUEEN_PNG))});
 
     for (auto& texture : samePieceSplitTextureMap) {
         texture.second.SetColorAndAlphaMod(colors.samePiece);
@@ -642,7 +642,7 @@ void GameScene::load(SDL2pp::Renderer *renderer, SDL2pp::Window *window) {
     this->loadBoardTextures();
     this->loadNotifications();
     this->paintMoveSelectedNotification(colors.normalMove);
-    this->dotTexture = std::make_unique<SDL2pp::Texture>((*_renderer), DOT_PNG);
+    this->dotTexture = std::make_unique<SDL2pp::Texture>((*_renderer), StageMode::getFullPath(DOT_PNG));
     this->dotTexture->SetAlphaMod(100);
     this->render();
 }

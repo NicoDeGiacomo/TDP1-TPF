@@ -83,7 +83,7 @@ void ConfigScene::loadResizeButtons() {
     SDL2pp::SDLTTF ttf;
     // Load font
     int fontSize = _window->GetHeight() * FONT_SIZE_MULTIPLIER;
-    SDL2pp::Font font("../assets/fonts/Vera.ttf", fontSize);
+    SDL2pp::Font font(StageMode::getFullPath("assets/fonts/Vera.ttf"), fontSize);
     int i = 0;
     int yButtonPosition = _window->GetHeight() / (ScreenResolutions::resolutionsCount + 1); // +1 for fullscreen
     loadFullScreenButton(font, i++);
