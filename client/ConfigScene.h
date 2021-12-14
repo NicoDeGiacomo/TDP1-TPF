@@ -1,7 +1,3 @@
-//
-// Created by ale on 8/12/21.
-//
-
 #ifndef QUANTUM_CHESS_CONFIGSCENE_H
 #define QUANTUM_CHESS_CONFIGSCENE_H
 

@@ -582,7 +582,6 @@ void GameScene::showEntangledPieces(Piece *piece) {
 }
 
 void GameScene::endMessage(char end_state) {
-    //todo: fix this messages
     std::string message;
     if (end_state == BLACK_CHAR){
         message = "FIN DE LA PARTIDA\nGANASTE!";

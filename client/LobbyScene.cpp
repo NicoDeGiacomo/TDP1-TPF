@@ -1,7 +1,3 @@
-//
-// Created by ale on 5/12/21.
-//
-
 #include "LobbyScene.h"
 #include "Protocol.h"
 #include <StageMode.h>

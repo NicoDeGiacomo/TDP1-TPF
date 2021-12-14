@@ -1,7 +1,5 @@
 #include "RoomIdMessage.h"
 #include "Protocol.h"
-#include <arpa/inet.h>
-#include <string.h>
 
 /***********************
     Metodos publicos

@@ -1,7 +1,3 @@
-//
-// Created by ale on 4/12/21.
-//
-
 #include "SceneManager.h"
 #include "ScreenResolutions.h"
 #include "StageMode.h"
@@ -9,7 +5,6 @@
 #include <SDL_mixer.h>
 
 #include <SDL2pp/SDL.hh>
-#include <SDL2pp/SDLMixer.hh>
 #include <SDL2pp/Mixer.hh>
 #include <SDL2pp/Chunk.hh>
 

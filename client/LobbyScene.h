@@ -1,7 +1,3 @@
-//
-// Created by ale on 5/12/21.
-//
-
 #ifndef QUANTUM_CHESS_LOBBYSCENE_H
 #define QUANTUM_CHESS_LOBBYSCENE_H
 

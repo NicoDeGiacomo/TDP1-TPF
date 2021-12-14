@@ -1,7 +1,3 @@
-//
-// Created by ale on 7/12/21.
-//
-
 #include "ClickableEntity.h"
 
 ClickableEntity::ClickableEntity(SDL2pp::Texture &&texture, const SDL2pp::Rect &rect, SDL_Color color) :

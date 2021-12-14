@@ -1,5 +1,4 @@
 #include <iostream>
-#include <messages/ChatMessage.h>
 #include "Player.h"
 #include "Protocol.h"
 #include "RecvThread.h"

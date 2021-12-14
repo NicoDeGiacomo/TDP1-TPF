@@ -1,7 +1,3 @@
-//
-// Created by ale on 8/12/21.
-//
-
 #include "ConfigScene.h"
 #include "ScreenResolutions.h"
 #include <StageMode.h>
