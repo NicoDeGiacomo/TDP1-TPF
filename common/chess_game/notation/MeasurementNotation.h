@@ -11,6 +11,8 @@ class MeasurementNotation : public MoveNotation {
 
   std::shared_ptr<Message> getMoveMessage() override;
 
+  bool isTurnEndingMove() override;
+
  private:
   bool result_;
 };

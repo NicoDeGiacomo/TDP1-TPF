@@ -6,6 +6,10 @@
 #include "Piece.h"
 #include "MoveNotation.h"
 
+#define DUMP_FOLDER_ "/Documents/QuantumChess/"
+#define DUMP_FILENAME_ "chess-game"
+#define DUMP_SUFFIX_ ".txt"
+
 class Piece;
 class MoveNotation;
 enum class PieceColor;
@@ -61,6 +65,7 @@ private:
   void validateTurn_(Piece* piece);
   void changeTurn_();
   void generatePiecesForColor_(PieceColor color);
+  static std::string getDumpPath_(const std::string& folder, int i);
 
   friend Piece;
 };

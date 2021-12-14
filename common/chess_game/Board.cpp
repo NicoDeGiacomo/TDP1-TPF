@@ -12,6 +12,7 @@
 #include <random>
 #include <iostream>
 #include <fstream>
+#include <filesystem>
 #include <NormalNotation.h>
 #include <SplitNotation.h>
 #include <MergeNotation.h>
@@ -200,12 +201,44 @@ std::vector<std::shared_ptr<MoveNotation>> Board::getCurrentMoves() {
 }
 
 void Board::generateDump() {
-    std::cout << "generating moves dump" << std::endl;
-    std::ofstream outfile (StageMode::getFullPath("chess-game.txt"));
-    for (const auto& move: moves_) {
-        outfile << move->getString();
+    namespace fs = std::filesystem;
+
+    std::string folder = std::string(getenv("HOME")) + DUMP_FOLDER_;
+
+    if (!fs::exists(folder)) {
+        fs::create_directory(folder);
     }
+
+    int index(0);
+    while (fs::exists(getDumpPath_(folder, index))) {
+        index++;
+    }
+
+    std::ofstream outfile(getDumpPath_(folder, index));
+    int i(1);
+    bool turnChange(false);
+    outfile << std::to_string(i);
+    outfile << ". ";
+    for (const auto &move: moves_) {
+        outfile << move->getString();
+
+        if (move->isTurnEndingMove()) {
+            if (turnChange) {
+                ++i;
+                outfile << std::endl;
+                outfile << std::to_string(i);
+                outfile << ". ";
+            } else {
+                outfile << " ";
+            }
+
+            turnChange = !turnChange;
+        }
+    }
+
     outfile.close();
+
+    StageMode::log("Saved dump: " + getDumpPath_(folder, index));
 }
 
 unsigned int Board::getSeed() const {
@@ -215,4 +248,9 @@ unsigned int Board::getSeed() const {
 void Board::setSeed(unsigned int seed) {
     this->engine_ = std::mt19937(seed);
     this->seed_ = seed;
+}
+
+std::string Board::getDumpPath_(const std::string &folder, int i) {
+    return folder + DUMP_FILENAME_ + " (" + std::to_string(i) + ") "
+        + DUMP_SUFFIX_;
 }

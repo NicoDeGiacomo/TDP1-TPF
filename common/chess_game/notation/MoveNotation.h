@@ -8,9 +8,10 @@ class Message;
 
 class MoveNotation {
  public:
+  virtual ~MoveNotation() = default;
   virtual std::string getString() = 0;
   virtual std::shared_ptr<Message> getMoveMessage() = 0;
-  virtual ~MoveNotation() = default;
+  virtual bool isTurnEndingMove() = 0;
 };
 
 #endif  // QUANTUM_CHESS_COMMON_CHESS_GAME_MOVE_H_

@@ -8,7 +8,7 @@ class NormalNotation : public MoveNotation {
   NormalNotation(Position from, Position to);
   std::string getString() override;
   std::shared_ptr<Message> getMoveMessage() override;
-
+  bool isTurnEndingMove() override;
  private:
   Position from_;
   Position to_;

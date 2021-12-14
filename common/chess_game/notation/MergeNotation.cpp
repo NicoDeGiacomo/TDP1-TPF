@@ -13,3 +13,7 @@ std::string MergeNotation::getString() {
 std::shared_ptr<Message> MergeNotation::getMoveMessage() {
     return std::make_shared<MergeMoveMessage>(from1_, from2_, to_);
 }
+
+bool MergeNotation::isTurnEndingMove() {
+    return true;
+}

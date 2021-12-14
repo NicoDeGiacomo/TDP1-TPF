@@ -10,3 +10,7 @@ std::string SplitNotation::getString() {
 std::shared_ptr<Message> SplitNotation::getMoveMessage() {
     return std::make_shared<SplitMoveMessage>(from_, to1_, to2_);
 }
+
+bool SplitNotation::isTurnEndingMove() {
+    return true;
+}
