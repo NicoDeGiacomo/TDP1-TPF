@@ -25,12 +25,12 @@ $ ./CLIENT [SERVER_IP] 7777
 #### 2.1. Connect to a Game
 The first thing you will see upon opening the game is a screen asking for your username.
 
-![Screenshot from 2021-12-13 02-01-55](https://user-images.githubusercontent.com/11294851/145755249-16cacc16-deec-40d2-8c8c-ae54d50c0a3b.png)
+![Screenshot from 2021-12-14 04-22-13](https://user-images.githubusercontent.com/11294851/145952105-0e9100e8-0fa1-42c7-86f5-378cc996d0f6.png)
 
 The next thing you want to do is to connect to a room, and you can do that by typing the ID of the room in the login screen and selecting how you want to join.\
 You can choose between using the white pieces, the black pieces, or being a spectator. If there are no rooms with the typed ID, one will be created for you.
 
-![Screenshot from 2021-12-13 02-02-59](https://user-images.githubusercontent.com/11294851/145755278-3169a71c-f54e-48f8-be4d-fca5501c3419.png)
+![Screenshot from 2021-12-14 04-22-13](https://user-images.githubusercontent.com/11294851/145952136-4f3a80b3-c85d-4322-9472-ebcdcd894877.png)
 
 #### 2.2. Play
 There are three types of moves: normal, split and merge.  
