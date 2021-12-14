@@ -16,58 +16,14 @@
 #include "GameScene.h"
 #include "StageMode.h"
 
-void close_client() {
-    StageMode::log("closing client");
-}
-
-
 int main(int argc, const char *argv[]) {
     StageMode::log("STARTING CLIENT");
-
-    /////////////////////////////////
-    /// Testing board window, you can comment this block if you want (640x480 hardcoded)
-    //Board board;
-    //Client client(argv[1], argv[2], board);
-    //GameScene mainGameScreen(renderer, &board, client.getQueue());
-    // run thread
-    //mainGameScreen.start();
-    //std::cin.get(); //any key to continue
-    //mainGameScreen.join();
-    /////////////////////////////////
-
-
-    /*LoginScene login(renderer);
-    login.start();
-    std::string userName = login.get_user_name();
-
-    std::cout << "USERNAME: " << userName << "\n";
-    GameLobby gameLobby(renderer, userName);
-
-
-    if (gameLobby.start() == 1) {
-        close_client();
-        return 0;
-    }*/
-    
-    //TODO: need to encapsulate the chat
-    //create the room class
-    //handle the logic for client joining or leaving the room
-    // Client client;
-    // client.start();
-    // board()
-    // close_client();
-
-    // refreshScreen
-    // click -> move -> .......
-    // refreshScreen
-
     bool mute = false;
     if (argc > 1 && !strcmp(argv[1], "-m")) mute = true;
 
     try {
         Client client("localhost", "7777", mute);
         client.run();
-        close_client();
     } catch(const std::exception &e) {
         std::cerr << "Se atrapó una excepcion en el cliente: '" 
                   << e.what() << "'" << std::endl;
@@ -77,6 +33,5 @@ int main(int argc, const char *argv[]) {
         return 2;
     }
 
-    //mainGameScreen.join();
     return 0;
 }

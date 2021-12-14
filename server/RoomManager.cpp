@@ -53,7 +53,7 @@ void RoomManager::run() {
         for (auto it = rooms.begin(); it != rooms.end(); ) {
             it->second.cleanInactivePlayers();
             if (it->second.isEmpty()) {
-                it->second.interruptAllConnections();
+                it->second.close();
                 it = rooms.erase(it);
             } else {
                 ++it;
@@ -66,13 +66,13 @@ void RoomManager::run() {
     //TODO: this is bad, roomManager is never throwing new thread, how does he know that
     //he needs to join the rooms, join should be in the destructor of rooms in this case
     for (auto& room : rooms)
-        room.second.interruptAllConnections();
+        room.second.close();
 
     //listOfRooms.clear();
 }
 
 void RoomManager::stop() {
     for (auto& room : rooms)
-        room.second.interruptAllConnections();
+        room.second.close();
     this->acceptor.shutdown();
 }

@@ -29,7 +29,7 @@ public:
 
     void cleanInactivePlayers();
 
-    void interruptAllConnections();
+    void close();
 
     bool isEmpty() const;
 

@@ -15,10 +15,10 @@ private:
     std::string recvMessage(unsigned short int msg_len);
     unsigned short int decodeChatMessageLen();
 public:
+    /*
+     *  Constructor
+     */
     ClientProxy(Socket &socket);
-
-    ClientProxy(Socket &socket, int id, char type, unsigned int seed);
-    
     /*
      *  Constructor por copia
      */

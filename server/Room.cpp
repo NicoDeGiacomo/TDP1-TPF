@@ -70,7 +70,7 @@ void Room::cleanInactivePlayers() {
     }
 }
 
-void Room::interruptAllConnections() {
+void Room::close() {
     //TODO: read and fix this join issue
     // its debatable if manually joining violates RAII, does
     // . "players[BLACK_PLAYER].startReceivingMessages();" .
@@ -104,5 +104,5 @@ Room::Room(ClientProxy &client) : sendThread(queueOfReceived, players, board, ch
 }
 
 Room::~Room() {
-    this->interruptAllConnections();
+    this->close();
 }

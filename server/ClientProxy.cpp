@@ -11,42 +11,11 @@
 #include <arpa/inet.h>
 #include <string.h>
 
-
-/***********************
-    Metodos privados
-************************/
-
-unsigned short int ClientProxy::decodeChatMessageLen() {
-    char _msg_len[2];
-    socket.receive(_msg_len, 2);
-    unsigned short int name_len_be;
-    memcpy(&name_len_be, _msg_len, 2);
-    unsigned short int msg_len = ntohs(name_len_be);
-    return msg_len;
-}
-
-std::string ClientProxy::recvMessage(unsigned short int msg_len) {
-    std::vector<char> msg;
-    msg.reserve(msg_len);
-    char *buf = &msg[0];
-    socket.receive(buf, msg_len);
-    std::string msg_str(buf, msg_len);
-    return msg_str;
-}
-
 /***********************
     Metodos publicos
 ************************/
 
 ClientProxy::ClientProxy(Socket &socket) : socket(std::move(socket)), id(-1) {}
-
-ClientProxy::ClientProxy(Socket &socket, int id, char type, unsigned int seed)
-                        : socket(std::move(socket)), id(id) {
-    // this->socket.send(&type, 1);
-    // this->socket.send(seed);
-    seed++;
-    type++;
-}
 
 ClientProxy::ClientProxy(ClientProxy &&other) 
                 : socket(std::move(other.socket)), id(other.id) {}
