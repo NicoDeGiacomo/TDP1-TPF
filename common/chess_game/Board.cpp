@@ -201,7 +201,7 @@ std::vector<std::shared_ptr<MoveNotation>> Board::getCurrentMoves() {
 
 void Board::generateDump() {
     std::cout << "generating moves dump" << std::endl;
-    std::ofstream outfile ("../chess-game.txt");
+    std::ofstream outfile (StageMode::getFullPath("chess-game.txt"));
     for (const auto& move: moves_) {
         outfile << move->getString();
     }

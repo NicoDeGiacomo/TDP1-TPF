@@ -72,7 +72,7 @@ void LoginScene::render() {
 void LoginScene::load(SDL2pp::Renderer *renderer, SDL2pp::Window *window) {
     Scene::load(renderer, window);
     //load scene, but dont process input nor render textures
-    backgroundImageTexture = std::make_unique<SDL2pp::Texture>((*_renderer), MAIN_BACKGROUND_FILEPATH);
+    backgroundImageTexture = std::make_unique<SDL2pp::Texture>((*_renderer), StageMode::getFullPath(MAIN_BACKGROUND_FILEPATH));
     this->loadConfigButton();
     this->loadAllTextEntities();
     this->render();
@@ -83,7 +83,7 @@ LoginScene::LoginScene(Scene* configScene, std::string &user_name) : userName(us
 }
 
 void LoginScene::loadConfigButton() {
-    SDL2pp::Texture texture((*_renderer), CONFIG_BUTTON_PNG);
+    SDL2pp::Texture texture((*_renderer), StageMode::getFullPath(CONFIG_BUTTON_PNG));
     int configButtonSize = _window->GetHeight() * CONFIG_BUTTON_SIZE_MULTIPLIER;
     SDL2pp::Rect buttonRect(
             _window->GetWidth() - configButtonSize,
@@ -120,7 +120,7 @@ void LoginScene::loadAllTextEntities() {
     SDL2pp::SDLTTF ttf;
     // Load font
     int fontSize = _window->GetHeight() * FONT_SIZE_MULTIPLIER;
-    SDL2pp::Font font("../assets/fonts/Vera.ttf", fontSize);
+    SDL2pp::Font font(StageMode::getFullPath("assets/fonts/Vera.ttf"), fontSize);
     entities.clear();
     SDL2pp::Texture titleTexture(
             (*_renderer),
@@ -163,7 +163,7 @@ void LoginScene::updateInputText() {
     SDL2pp::SDLTTF ttf;
     // Load font
     int fontSize = _window->GetHeight() * FONT_SIZE_MULTIPLIER;
-    SDL2pp::Font font("../assets/fonts/Vera.ttf", fontSize);
+    SDL2pp::Font font(StageMode::getFullPath("assets/fonts/Vera.ttf"), fontSize);
     SDL2pp::Texture texture(
             (*_renderer),
             font.RenderText_Blended(text, SDL_Color{255, 255, 255, 255}));

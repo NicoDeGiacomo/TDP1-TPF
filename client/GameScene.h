@@ -48,29 +48,29 @@ struct Colors {
 #define BLACK_QUEEN_KEY 'q'
 
 
-#define BOARD_PNG "../assets/sprites/board.png"
-#define DOT_PNG "../assets/sprites/dot.png"
+#define BOARD_PNG "assets/sprites/board.png"
+#define DOT_PNG "assets/sprites/dot.png"
 
-#define WHITE_PAWN_PNG "../assets/sprites/whitePawn.png"
-#define WHITE_ROOK_PNG "../assets/sprites/whiteRook.png"
-#define WHITE_KNIGHT_PNG "../assets/sprites/whiteKnight.png"
-#define WHITE_BISHOP_PNG "../assets/sprites/whiteBishop.png"
-#define WHITE_KING_PNG "../assets/sprites/whiteKing.png"
-#define WHITE_QUEEN_PNG "../assets/sprites/whiteQueen.png"
+#define WHITE_PAWN_PNG "assets/sprites/whitePawn.png"
+#define WHITE_ROOK_PNG "assets/sprites/whiteRook.png"
+#define WHITE_KNIGHT_PNG "assets/sprites/whiteKnight.png"
+#define WHITE_BISHOP_PNG "assets/sprites/whiteBishop.png"
+#define WHITE_KING_PNG "assets/sprites/whiteKing.png"
+#define WHITE_QUEEN_PNG "assets/sprites/whiteQueen.png"
 
-#define BLACK_PAWN_PNG "../assets/sprites/blackPawn.png"
-#define BLACK_ROOK_PNG "../assets/sprites/blackRook.png"
-#define BLACK_KNIGHT_PNG "../assets/sprites/blackKnight.png"
-#define BLACK_BISHOP_PNG "../assets/sprites/blackBishop.png"
-#define BLACK_KING_PNG "../assets/sprites/blackKing.png"
-#define BLACK_QUEEN_PNG "../assets/sprites/blackQueen.png"
+#define BLACK_PAWN_PNG "assets/sprites/blackPawn.png"
+#define BLACK_ROOK_PNG "assets/sprites/blackRook.png"
+#define BLACK_KNIGHT_PNG "assets/sprites/blackKnight.png"
+#define BLACK_BISHOP_PNG "assets/sprites/blackBishop.png"
+#define BLACK_KING_PNG "assets/sprites/blackKing.png"
+#define BLACK_QUEEN_PNG "assets/sprites/blackQueen.png"
 
-#define SELECTED_PAWN_PNG "../assets/sprites/selectedPawn.png"
-#define SELECTED_ROOK_PNG "../assets/sprites/selectedRook.png"
-#define SELECTED_KNIGHT_PNG "../assets/sprites/selectedKnight.png"
-#define SELECTED_BISHOP_PNG "../assets/sprites/selectedBishop.png"
-#define SELECTED_KING_PNG "../assets/sprites/selectedKing.png"
-#define SELECTED_QUEEN_PNG "../assets/sprites/selectedQueen.png"
+#define SELECTED_PAWN_PNG "assets/sprites/selectedPawn.png"
+#define SELECTED_ROOK_PNG "assets/sprites/selectedRook.png"
+#define SELECTED_KNIGHT_PNG "assets/sprites/selectedKnight.png"
+#define SELECTED_BISHOP_PNG "assets/sprites/selectedBishop.png"
+#define SELECTED_KING_PNG "assets/sprites/selectedKing.png"
+#define SELECTED_QUEEN_PNG "assets/sprites/selectedQueen.png"
 
 #define BOARD_SQUARES_IN_A_LINE 8
 #define PROBABILITY_BAR_WIDTH_MULTIPLIER .9f

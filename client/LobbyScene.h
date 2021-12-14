@@ -11,7 +11,7 @@
 #include "ClickableEntity.h"
 #include "Entity.h"
 
-#define CONFIG_BUTTON_PNG "../assets/sprites/configButton.png"
+#define CONFIG_BUTTON_PNG "assets/sprites/configButton.png"
 
 class LobbyScene : public Scene {
 private:

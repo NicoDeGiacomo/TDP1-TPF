@@ -7,7 +7,7 @@
 #include <SDL_image.h>
 #include <SDL2pp/SDL2pp.hh>
 #include "Timer.h"
-#define MAIN_BACKGROUND_FILEPATH "../assets/sprites/mainBackground.png"
+#define MAIN_BACKGROUND_FILEPATH "assets/sprites/mainBackground.png"
 
 #define TIME_BETWEEN_FRAMES 1000 / 60
 #define FONT_SIZE_MULTIPLIER .045f

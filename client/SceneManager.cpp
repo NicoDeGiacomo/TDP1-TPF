@@ -4,6 +4,7 @@
 
 #include "SceneManager.h"
 #include "ScreenResolutions.h"
+#include "StageMode.h"
 #include <SDL.h>
 #include <SDL_mixer.h>
 
@@ -38,8 +39,8 @@ void SceneManager::loadWindow() {
                                                SDL_WINDOW_SHOWN | SDL_WINDOW_ALLOW_HIGHDPI);
     _renderer = std::make_unique<SDL2pp::Renderer>((*_window), -1, SDL_RENDERER_ACCELERATED);
     _mixer = std::make_unique<SDL2pp::Mixer>(MIX_DEFAULT_FREQUENCY, MIX_DEFAULT_FORMAT, MIX_DEFAULT_CHANNELS, 4096);
-    std::unique_ptr<SDL2pp::Chunk> sfx = std::make_unique<SDL2pp::Chunk>("../assets/sounds/chess-move-normal.wav");
-    std::unique_ptr<SDL2pp::Chunk> music = std::make_unique<SDL2pp::Chunk>("../assets/sounds/music.wav");
+    std::unique_ptr<SDL2pp::Chunk> sfx = std::make_unique<SDL2pp::Chunk>(StageMode::getFullPath("assets/sounds/chess-move-normal.wav"));
+    std::unique_ptr<SDL2pp::Chunk> music = std::make_unique<SDL2pp::Chunk>(StageMode::getFullPath("assets/sounds/music.wav"));
     _sound.push_back(std::move(music));
     _sound.push_back(std::move(sfx));
 }
