@@ -16,12 +16,8 @@ void RecvThread::run() {
         } catch (ClosedSocketException& e) {
             std::cout << "Socket closed. Closing RecvThread" << std::endl;
             this->stop();
-        } catch(const std::exception &e) {
-            this->stop();
-            std::cerr << "Exception caught in RecvThread: '" 
-                    << e.what() << "'" << std::endl;
-        } catch (...) {
-            std::cerr << "Unknown error caught in RecvThread" << std::endl;
+        } catch(const ClosedQueueException &e) {
+            std::cout << "Closed queue. Closing RecvThread" << std::endl;
             this->stop();
         }
     }
