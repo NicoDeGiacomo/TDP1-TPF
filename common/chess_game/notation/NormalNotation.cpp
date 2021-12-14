@@ -10,3 +10,7 @@ std::string NormalNotation::getString() {
 std::shared_ptr<Message> NormalNotation::getMoveMessage() {
     return std::make_shared<NormalMoveMessage>(from_, to_);
 }
+
+bool NormalNotation::isTurnEndingMove() {
+    return true;
+}

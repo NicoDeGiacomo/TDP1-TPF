@@ -12,3 +12,7 @@ std::string MeasurementNotation::getString() {
 std::shared_ptr<Message> MeasurementNotation::getMoveMessage() {
     return nullptr;
 }
+
+bool MeasurementNotation::isTurnEndingMove() {
+    return false;
+}
