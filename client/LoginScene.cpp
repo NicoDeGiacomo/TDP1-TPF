@@ -40,7 +40,7 @@ void LoginScene::handleEvents() {
                     userName += SDL_GetClipboardText();
                     updateInputText();
                 }
-                else if (event.key.keysym.scancode == SDL_SCANCODE_RETURN)
+                else if (event.key.keysym.scancode == SDL_SCANCODE_RETURN && !userName.empty())
                     done = SDL_TRUE;
                 break;
             case SDL_QUIT:

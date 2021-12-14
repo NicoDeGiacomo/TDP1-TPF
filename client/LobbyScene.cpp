@@ -63,7 +63,8 @@ void LobbyScene::handleEvents() {
                 updateInputText();
                 break;
             case SDL_MOUSEBUTTONDOWN:
-                handleMouseClick();
+                if (!_roomId->empty())
+                    handleMouseClick();
                 break;
         }
     }
