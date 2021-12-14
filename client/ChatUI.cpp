@@ -9,8 +9,9 @@ void ChatUI::load(SDL2pp::Renderer* renderer, SDL2pp::Window* window){
     _window = window;
     backgroundImageTexture = std::make_unique<SDL2pp::Texture>((*_renderer), CHAT_BACKGROUND_PNG);
     fontSize = _window->GetHeight() * FONT_SIZE_MULTIPLIER;
-    paddingX = fontSize;
-    paddingY = fontSize * 2;
+    paddingX = fontSize * PADDING_X_MULTIPLIER;
+    paddingY = fontSize * PADDING_Y_MULTIPLIER;
+    inputMessagePaddingY = fontSize * INPUT_PADDING_Y_MULTIPLIER;
 }
 void ChatUI::drawInputMessage(std::string& inputMessage) {
     if (inputMessage.empty()) return;
@@ -30,7 +31,7 @@ void ChatUI::drawInputMessage(std::string& inputMessage) {
                     255}));
     SDL2pp::Rect messageRect(
             _window->GetHeight() + paddingX,
-            _window->GetHeight() - paddingY,
+            _window->GetHeight() - inputMessagePaddingY,
             inputMessageTexture->GetWidth(),
             inputMessageTexture->GetHeight()
     );
@@ -65,7 +66,7 @@ void ChatUI::renderMessages(std::string& inputMessage) {
     int i = 1;
     auto texture = textures.begin();
     while (texture != textures.end()) {
-        int y = _window->GetHeight() - paddingY - i * fontSize;
+        int y = _window->GetHeight() - i * (fontSize + paddingY) - inputMessagePaddingY;
         //if i cant render it, delete it from the queue
         if (y < 0) {
             texture = textures.erase(texture);

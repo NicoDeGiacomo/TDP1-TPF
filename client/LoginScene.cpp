@@ -1,11 +1,6 @@
 #include "LoginScene.h"
-#include "Screen.h"
 #include <StageMode.h>
 #include <SDL2pp/SDL2pp.hh>
-
-/*LoginScene::LoginScene(SDL2pp::Renderer* renderer) {
-	_renderer = renderer;
-}*/
 
 void LoginScene::updateLoop() {
     done = false;
@@ -27,16 +22,18 @@ void LoginScene::handleEvents() {
         switch (event.type) {
             case SDL_KEYDOWN:
                 //Handle backspace
-                if( event.key.keysym.sym == SDLK_BACKSPACE && user_name.length() > 0 ) {
-                    user_name.pop_back();
+                if( event.key.keysym.sym == SDLK_BACKSPACE && userName.length() > 0 ) {
+                    userName.pop_back();
+                    updateInputText();
                 }
                     //Handle copy
                 else if( event.key.keysym.sym == SDLK_c && SDL_GetModState() & KMOD_CTRL ) {
-                    SDL_SetClipboardText( user_name.c_str() );
+                    SDL_SetClipboardText(userName.c_str() );
                 }
                     //Handle paste
                 else if( event.key.keysym.sym == SDLK_v && SDL_GetModState() & KMOD_CTRL ) {
-                    user_name += SDL_GetClipboardText();
+                    userName += SDL_GetClipboardText();
+                    updateInputText();
                 }
                 else if (event.key.keysym.scancode == SDL_SCANCODE_RETURN)
                     done = SDL_TRUE;
@@ -47,7 +44,8 @@ void LoginScene::handleEvents() {
                 break;
             case SDL_TEXTINPUT:
                 /* Add new text onto the end of our text */
-                user_name += event.text.text;
+                userName += event.text.text;
+                updateInputText();
                 break;
             case SDL_MOUSEBUTTONDOWN:
                 handleMouseClick();
@@ -60,69 +58,24 @@ void LoginScene::render() {
 	// Clear screen
 	_renderer->Clear();
 
-	std::string title = "Welcome to Quantum Chess";
-	this->insert_text(title, 30, 50, 20, A_CENTER);
-	std::string choose_text("Please choose a username:");
-	this->insert_text(choose_text, 20, 50, 40, A_CENTER);
-	this->insert_text(this->user_name, 20, 50, 50, A_CENTER);
-    configButton->render(_renderer, 0);
+    for (auto& entity : entities){
+        entity.render(_renderer, 255);
+    }
+    this->inputTextContainer->render(_renderer, 255);
+    this->configButton->render(_renderer, 0);
 	// Show rendered frame
 	_renderer->Present();
-}
-
-void LoginScene::insert_text(std::string &text,
-                             int font_size,
-                             int pos_x,
-                             int pos_y,
-                             int flags) {
-	if (text.empty()) return;
-	// Initialize SDL_ttf library
-	SDL2pp::SDLTTF ttf;
-
-	// Load font, 12pt size
-	SDL2pp::Font font("../assets/fonts/Vera.ttf", font_size);
-
-	// Render the text into new texture. Note that SDL_ttf render
-	// text into Surface, which is converted into texture on the fly
-	SDL2pp::Texture text_sprite(
-			(*_renderer),
-			font.RenderText_Blended(text, SDL_Color{255, 255, 255, 255})
-	);
-
-	int x_text_pos = 0;
-	int y_text_pos = 0;
-
-	switch (flags)
-	{
-		case A_CENTER:
-			x_text_pos = _renderer->GetOutputWidth() * pos_x / 100 - text_sprite.GetWidth() * 0.5;
-			y_text_pos = _renderer->GetOutputHeight() * pos_y / 100;
-			break;
-		case A_RIGHT:
-			x_text_pos = _renderer->GetOutputWidth() - pos_x - text_sprite.GetWidth();
-			y_text_pos = pos_y;
-			break;
-		default: // A_LEFT
-			x_text_pos = pos_x;
-			y_text_pos = pos_y;
-			break;
-	}
-
-	// Copy texture into top-left corner of the window
-	_renderer->Copy(text_sprite,
-				  SDL2pp::NullOpt,
-				  SDL2pp::Rect(x_text_pos, y_text_pos,
-							   text_sprite.GetWidth(), text_sprite.GetHeight()));
 }
 
 void LoginScene::load(SDL2pp::Renderer *renderer, SDL2pp::Window *window) {
     Scene::load(renderer, window);
     //load scene, but dont process input nor render textures
     this->loadConfigButton();
+    this->loadAllTextEntities();
     this->render();
 }
 
-LoginScene::LoginScene(Scene* configScene, std::string &user_name) : user_name(user_name) {
+LoginScene::LoginScene(Scene* configScene, std::string &user_name) : userName(user_name) {
     _configScene = configScene;
 }
 
@@ -157,4 +110,58 @@ void LoginScene::handleMouseClick() {
         //reload scene
         load(_renderer, _window);
     }
+}
+
+void LoginScene::loadAllTextEntities() {
+    // Initialize SDL_ttf library
+    SDL2pp::SDLTTF ttf;
+    // Load font
+    int fontSize = _window->GetHeight() * FONT_SIZE_MULTIPLIER;
+    SDL2pp::Font font("../assets/fonts/Vera.ttf", fontSize);
+    entities.clear();
+    SDL2pp::Texture titleTexture(
+            (*_renderer),
+            font.RenderText_Blended("Welcome to Quantum Chess",SDL_Color{255,255,255,255}));
+    SDL2pp::Texture chooseUsernameTexture(
+            (*_renderer),
+            font.RenderText_Blended("Please choose your username:",SDL_Color{255,255,255,255}));
+    SDL2pp::Texture inputText(
+            (*_renderer),
+            font.RenderText_Blended(" ",SDL_Color{255,255,255,255}));
+    //1/3 of the screen in y, center of the screen in x
+    SDL2pp::Rect titleRect(
+            _window->GetWidth() / 2 - (titleTexture.GetWidth() / 2),
+            _window->GetHeight() / 3,
+            titleTexture.GetWidth(),
+            titleTexture.GetHeight()
+    );
+    SDL2pp::Rect chooseUsernameRect(
+            _window->GetWidth() / 2 - (chooseUsernameTexture.GetWidth() / 2),
+            _window->GetHeight() / 3 + titleTexture.GetHeight(),
+            chooseUsernameTexture.GetWidth(),
+            chooseUsernameTexture.GetHeight()
+    );
+    SDL2pp::Rect inputTextRect(
+            _window->GetWidth() / 2 - (chooseUsernameTexture.GetWidth() / 2),
+            _window->GetHeight() / 3 + titleTexture.GetHeight() + chooseUsernameTexture.GetHeight(),
+            chooseUsernameTexture.GetWidth(),
+            chooseUsernameTexture.GetHeight()
+    );
+    entities.emplace_back(std::move(titleTexture), titleRect);
+    entities.emplace_back(std::move(chooseUsernameTexture), chooseUsernameRect);
+    inputTextContainer = std::make_unique<Entity>(std::move(inputText), inputTextRect);
+}
+
+void LoginScene::updateInputText() {
+    //so it doesnt crash
+    if (userName.empty()) return;
+    // Initialize SDL_ttf library
+    SDL2pp::SDLTTF ttf;
+    // Load font
+    int fontSize = _window->GetHeight() * FONT_SIZE_MULTIPLIER;
+    SDL2pp::Font font("../assets/fonts/Vera.ttf", fontSize);
+    SDL2pp::Texture texture(
+            (*_renderer),
+            font.RenderText_Blended(userName, SDL_Color{255, 255, 255, 255}));
+    inputTextContainer->updateTexture(std::move(texture));
 }

@@ -9,7 +9,8 @@
 #include "Timer.h"
 
 #define TIME_BETWEEN_FRAMES 1000 / 60
-#define GENERAL_FONT_SIZE 22
+#define FONT_SIZE_MULTIPLIER .045f
+#define CONFIG_BUTTON_SIZE_MULTIPLIER .1f
 
 class Scene {
 protected:

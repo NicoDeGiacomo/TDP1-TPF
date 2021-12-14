@@ -26,7 +26,7 @@ void Client::run() {
     SendThread sendThread(proxy, _board, chat, sendQueue);
     // mainGameScreen()
 
-    //std::string user_name = mainGameScreen.login();
+    //std::string userName = mainGameScreen.login();
 
     //LoginScene login;
     //add scene main game screen

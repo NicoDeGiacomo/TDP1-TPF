@@ -7,6 +7,9 @@
 
 #define CHAT_BACKGROUND_PNG "../assets/sprites/chatBackground.png"
 #define FONT_SIZE_MULTIPLIER .045f
+#define PADDING_Y_MULTIPLIER .9f
+#define PADDING_X_MULTIPLIER 2
+#define INPUT_PADDING_Y_MULTIPLIER 1.7
 
 class ChatUI {
 private:
@@ -15,10 +18,7 @@ private:
     std::deque<std::unique_ptr<SDL2pp::Texture>> textures;
     SDL2pp::Renderer* _renderer;
     SDL2pp::Window* _window;
-    int fontSize, paddingX, paddingY;
-    /*, yOffset, xOffset;
-    const int yOffset = CHAT_FONT_SIZE + CHAT_FONT_PADDING * 2,
-            xOffset = CHAT_FONT_SIZE + CHAT_FONT_PADDING;*/
+    int fontSize, paddingX, paddingY, inputMessagePaddingY;
     BlockingQueue<std::shared_ptr<std::string>> &chatQueue;
 
     std::deque<std::string> splitMessageIntoRenderableChunks(const std::string &basicString,

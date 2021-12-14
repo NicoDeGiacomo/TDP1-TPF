@@ -38,10 +38,10 @@ int main(int argc, const char *argv[]) {
 
     /*LoginScene login(renderer);
     login.start();
-    std::string user_name = login.get_user_name();
+    std::string userName = login.get_user_name();
 
-    std::cout << "USERNAME: " << user_name << "\n";
-    GameLobby gameLobby(renderer, user_name);
+    std::cout << "USERNAME: " << userName << "\n";
+    GameLobby gameLobby(renderer, userName);
 
 
     if (gameLobby.start() == 1) {

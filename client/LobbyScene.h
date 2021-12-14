@@ -9,13 +9,10 @@
 #include <vector>
 #include "Scene.h"
 #include "ClickableEntity.h"
+#include "Entity.h"
 
 #define CONFIG_BUTTON_PNG "../assets/sprites/configButton.png"
-#define CONFIG_BUTTON_SIZE_MULTIPLIER .1f
 #define LOBBY_BACKGROUND_FILEPATH "../assets/sprites/lobbyBackground.png"
-#define X_OFFSET_BETWEEN_ROOMS 20
-#define Y_OFFSET_BETWEEN_ROOMS 20
-#define FONT_SIZE_MULTIPLIER .045f
 
 class LobbyScene : public Scene {
 private:
@@ -25,6 +22,7 @@ private:
     std::unique_ptr<SDL2pp::Texture> backgroundImageTexture;
     std::unique_ptr<ClickableEntity> configButton;
     std::vector<ClickableEntity> buttons;
+    std::vector<Entity> entities;
     std::unique_ptr<ClickableEntity> inputTextContainer;
     std::string* _roomId;
     char* _playerType;

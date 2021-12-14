@@ -70,6 +70,9 @@ void LobbyScene::render() {
     for(auto& button : buttons){
         button.render(_renderer, 255);
     }
+    for(auto& entity : entities){
+        entity.render(_renderer, 255);
+    }
     configButton->render(_renderer, 0);
     inputTextContainer->render(_renderer, 255);
     //show rendered frame
@@ -185,7 +188,7 @@ void LobbyScene::loadInputRoomId(SDL2pp::Font &font) {
     buttons.clear();
     SDL2pp::Texture typeRoomIdTexture(
             (*_renderer),
-            font.RenderText_Blended("Type Room id: ",SDL_Color{22,22,22,255}));
+            font.RenderText_Blended("Type Room id: ",SDL_Color{255,255,255,255}));
     (*_roomId) = "click here to clear message...";
     SDL2pp::Texture inputRoomIdTexture(
             (*_renderer),
@@ -203,15 +206,14 @@ void LobbyScene::loadInputRoomId(SDL2pp::Font &font) {
             inputRoomIdTexture.GetWidth(),
             inputRoomIdTexture.GetHeight()
     );
-    addButton(nullptr, std::move(typeRoomIdTexture), typeRoomIdRect);
+    entities.emplace_back(std::move(typeRoomIdTexture), typeRoomIdRect);
     inputTextContainer = std::make_unique<ClickableEntity>(std::move(inputRoomIdTexture), inputRoomIdRect);
     inputTextContainer->onClick([inputId = _roomId] { (*inputId) = ""; std::cout << "asd" << std::endl; });
 }
 
 void LobbyScene::updateInputText() {
     //so it doesnt crash
-    if (_roomId->empty())
-        (*_roomId) = " ";
+    if (_roomId->empty()) return;
     // Initialize SDL_ttf library
     SDL2pp::SDLTTF ttf;
     // Load font
@@ -219,7 +221,7 @@ void LobbyScene::updateInputText() {
     SDL2pp::Font font("../assets/fonts/Vera.ttf", fontSize);
     SDL2pp::Texture texture(
             (*_renderer),
-            font.RenderText_Blended((*_roomId),SDL_Color{22,22,22,255}));
+            font.RenderText_Blended((*_roomId),SDL_Color{255,255,255,255}));
     inputTextContainer->updateTexture(std::move(texture));
 }
 
