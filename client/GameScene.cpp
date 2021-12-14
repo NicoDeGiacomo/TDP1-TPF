@@ -1,4 +1,3 @@
-#include <NormalMove.h>
 #include <NormalMoveMessage.h>
 #include <thread>
 #include <SplitMoveMessage.h>
@@ -7,12 +6,9 @@
 #include <StageMode.h>
 #include "GameScene.h"
 #include <SDL.h>
-#include <SDL_mixer.h>
 
 #include <SDL2pp/SDL.hh>
-#include <SDL2pp/SDLMixer.hh>
 #include <SDL2pp/Mixer.hh>
-#include <SDL2pp/Music.hh>
 
 GameScene::GameScene(Board& board,
                      BlockingQueue<std::shared_ptr<Message>>* userInputQueue,

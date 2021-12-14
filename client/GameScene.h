@@ -31,6 +31,7 @@ struct Colors {
     SDL_Color white;
     SDL_Color black;
 };
+
 #define BOARD_KEY 'Z'
 
 #define WHITE_PAWN_KEY 'P'
