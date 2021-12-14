@@ -1,7 +1,3 @@
-//
-// Created by ale on 6/12/21.
-//
-
 #include "Timer.h"
 
 void Timer::start(){

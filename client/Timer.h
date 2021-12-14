@@ -1,7 +1,3 @@
-//
-// Created by ale on 6/12/21.
-//
-
 #ifndef QUANTUM_CHESS_TIMER_H
 #define QUANTUM_CHESS_TIMER_H
 

@@ -1,6 +1,5 @@
 #include <iostream>
 #include <thread>
-#include <list>
 #include <Protocol.h>
 #include <RoomManager.h>
 #include <Message.h>

@@ -1,13 +1,8 @@
-//
-// Created by ale on 12/11/21.
-//
-
 #ifndef QUANTUM_CHESS_PLAYER_H
 #define QUANTUM_CHESS_PLAYER_H
 
 
 #include <Socket.h>
-// #include <thread>
 #include "BlockingQueue.h"
 #include "messages/Message.h"
 #include "ClientProxy.h"

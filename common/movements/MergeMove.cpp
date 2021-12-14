@@ -1,7 +1,3 @@
-//
-// Created by ale on 18/11/21.
-//
-
 #include "MergeMove.h"
 #include <iostream>
 

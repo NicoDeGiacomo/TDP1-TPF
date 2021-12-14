@@ -1,7 +1,3 @@
-//
-// Created by ale on 4/12/21.
-//
-
 #ifndef QUANTUM_CHESS_SCENE_H
 #define QUANTUM_CHESS_SCENE_H
 #include <SDL_image.h>

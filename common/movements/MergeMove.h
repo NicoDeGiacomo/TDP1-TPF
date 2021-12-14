@@ -1,7 +1,3 @@
-//
-// Created by ale on 18/11/21.
-//
-
 #ifndef QUANTUM_CHESS_MERGEMOVE_H
 #define QUANTUM_CHESS_MERGEMOVE_H
 

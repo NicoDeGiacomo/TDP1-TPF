@@ -1,7 +1,3 @@
-//
-// Created by ale on 7/12/21.
-//
-
 #ifndef QUANTUM_CHESS_CLICKABLEENTITY_H
 #define QUANTUM_CHESS_CLICKABLEENTITY_H
 

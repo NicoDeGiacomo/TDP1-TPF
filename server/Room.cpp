@@ -38,10 +38,6 @@ void Room::assignPlayerType(ClientProxy &client) {
 }
 
 void Room::addClient(ClientProxy &client) {
-    //TODO: this list of peers should be protected, can add client while sending messages
-    //this->listOfPeers.push_front(std::move(socket));
-    //TODO: this is placeholder, it shouldnt receive a socket, rooms should receive players
-
     std::cout << "SEED: " << board.getSeed() << "\n";
     client.setId(next_id);
 

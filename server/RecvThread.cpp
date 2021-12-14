@@ -1,7 +1,6 @@
 #include "RecvThread.h"
 #include "Socket.h"
 #include "Message.h"
-#include "Protocol.h"
 #include <iostream>
 
 /***********************

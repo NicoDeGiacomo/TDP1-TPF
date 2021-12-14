@@ -1,9 +1,6 @@
 #include "MoveMessage.h"
 #include "movements/MovementCommand.h"
 #include <iostream>
-#include <NormalMove.h>
-#include <SplitMove.h>
-#include <MergeMove.h>
 
 /***********************
     Metodos publicos

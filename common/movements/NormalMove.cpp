@@ -1,7 +1,3 @@
-//
-// Created by ale on 18/11/21.
-//
-
 #include <iostream>
 #include "NormalMove.h"
 
