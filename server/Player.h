@@ -40,8 +40,6 @@ public:
     int getId();
 
     void join();
-
-    ~Player();
 };
 
 

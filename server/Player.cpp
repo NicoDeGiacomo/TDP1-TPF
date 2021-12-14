@@ -34,9 +34,3 @@ bool Player::isDead() const {
 int Player::getId() {
     return proxy.getId();
 }
-
-Player::~Player() {
-    //could join by force here, and make join private
-    //std::cout << "joining player by destructor" << std::endl;
-    // this->join();
-}

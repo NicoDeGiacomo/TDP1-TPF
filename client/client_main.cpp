@@ -25,11 +25,12 @@ int main(int argc, const char *argv[]) {
         Client client("localhost", "7777", mute);
         client.run();
     } catch(const std::exception &e) {
-        std::cerr << "Se atrapó una excepcion en el cliente: '" 
-                  << e.what() << "'" << std::endl;
-        return 2;
+        StageMode::log(
+                    std::string("Exception caught in client: '") + e.what()
+                        + "'");
+        return 1;
     } catch(...) {
-        std::cerr << "Error desconocido en el cliente" << std::endl;
+        StageMode::log("Unknown error caught in client.");
         return 2;
     }
 

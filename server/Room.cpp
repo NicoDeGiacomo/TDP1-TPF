@@ -71,15 +71,6 @@ void Room::cleanInactivePlayers() {
 }
 
 void Room::close() {
-    //TODO: read and fix this join issue
-    // its debatable if manually joining violates RAII, does
-    // . "players[BLACK_PLAYER].startReceivingMessages();" .
-    // implies that we are throwing a new thread
-    // and we need to manually join it? idk,
-    // each player could join its threads in their destructor
-    // for(auto & player : players)
-    //     player.join();
-
     for (auto it = players.begin(); it != players.end(); ) {
         it->join();
         it = players.erase(it);

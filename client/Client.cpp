@@ -24,12 +24,6 @@
 void Client::run() {
     RecvThread recvThread(proxy, recvQueue);
     SendThread sendThread(proxy, _board, chat, sendQueue);
-    // mainGameScreen()
-
-    //std::string userName = mainGameScreen.login();
-
-    //LoginScene login;
-    //add scene main game screen
     sceneManager.loadScene(LOGIN_SCENE);
     sceneManager.updateLoopActiveScene();
     if (gameFinished) return;
@@ -95,15 +89,10 @@ void Client::run() {
                 StageMode::log(
                     std::string("Exception caught in client: '") + e.what()
                         + "'");
-            } catch (...) {
-                StageMode::log("Unknown error caught in client.");
-            }
+            } 
         }
         if (_board.isFinished()){
-            //sceneManager.updateLoopActiveScene();
-            //mainGameScreen.endMessage(SPECTATOR_CHAR); cant do this anymore, need to think another way
             StageMode::log("game finished with checkmate");
-            //break;
         }
     }
     sceneManager.updateLoopActiveScene();
@@ -119,8 +108,6 @@ BlockingQueue<std::shared_ptr<Message>>* Client::getQueue(){
 
 Client::Client(const char *host, const char *service, bool mute)
             : proxy(host, service), _board(false), gameFinished(false), mute(mute) {
-
-    // int numberOfRooms = 50; //todo: placeholder, change this to actual number of rooms
     std::unique_ptr<Scene> configScene = std::make_unique<ConfigScene>();
     sceneManager.addScene(std::make_unique<LoginScene>(configScene.get(), name, gameFinished), LOGIN_SCENE);
     sceneManager.addScene(std::make_unique<LobbyScene>(configScene.get(), &playerType, &roomId, gameFinished), LOBBY_SCENE);

@@ -9,13 +9,6 @@
 int main() {
     StageMode::log("STARTING SERVER");
 
-    // if (argc != 3) {
-    //     std::cerr << "Error en la cantidad de argumentos\n"
-    //     << "El servidor se ejecuta de la siguiente manera:\n"
-    //     << "./server <service>\n";
-    //     return 1;
-    // }
-
     try {
         Server server("7777");
         server.run();
