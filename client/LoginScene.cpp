@@ -4,7 +4,7 @@
 
 void LoginScene::updateLoop() {
     done = false;
-    while (!done) {
+    while (!done && !_gameFinished) {
         this->handleEvents();
         Uint32 deltaTime = Timer::partial();
         //wait if not enough time has passed for it to render another frame
@@ -21,8 +21,13 @@ void LoginScene::handleEvents() {
     if (SDL_PollEvent(&event)) {
         switch (event.type) {
             case SDL_KEYDOWN:
+                if(event.key.keysym.sym == SDLK_ESCAPE) {
+                    _gameFinished = true;
+                    StageMode::log("QUIT GAME");
+                    return;
+                }
                 //Handle backspace
-                if( event.key.keysym.sym == SDLK_BACKSPACE && userName.length() > 0 ) {
+                else if( event.key.keysym.sym == SDLK_BACKSPACE && userName.length() > 0 ) {
                     userName.pop_back();
                     updateInputText();
                 }
@@ -41,7 +46,9 @@ void LoginScene::handleEvents() {
             case SDL_QUIT:
                 /* Quit */
                 done = SDL_TRUE;
-                break;
+                _gameFinished = true;
+                StageMode::log("QUIT GAME");
+                return;
             case SDL_TEXTINPUT:
                 /* Add new text onto the end of our text */
                 userName += event.text.text;
@@ -78,7 +85,7 @@ void LoginScene::load(SDL2pp::Renderer *renderer, SDL2pp::Window *window) {
     this->render();
 }
 
-LoginScene::LoginScene(Scene* configScene, std::string &user_name) : userName(user_name) {
+LoginScene::LoginScene(Scene* configScene, std::string &user_name, bool& gameFinished) : userName(user_name), _gameFinished(gameFinished) {
     _configScene = configScene;
 }
 

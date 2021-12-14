@@ -24,6 +24,7 @@ private:
     std::unique_ptr<Entity> inputTextContainer;
     std::string* _roomId;
     char* _playerType;
+    bool& _gameFinished;
     bool done;
 
     void loadRoomsTextures();
@@ -32,7 +33,7 @@ private:
     void createConfigButton(SDL2pp::Texture &&texture, const SDL2pp::Rect &rect);
     void addButton(std::function<void()>&& onClickHandler, SDL2pp::Texture &&texture, const SDL2pp::Rect &rect, SDL_Color color = {255,255,255, 255});
 public:
-    explicit LobbyScene(Scene* configScene, char* playerType, std::string* roomId);
+    explicit LobbyScene(Scene* configScene, char* playerType, std::string* roomId, bool& gameFinished);
     void updateLoop() override;
     void load(SDL2pp::Renderer* renderer, SDL2pp::Window *window) override;
 

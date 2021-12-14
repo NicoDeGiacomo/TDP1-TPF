@@ -6,7 +6,7 @@
 #include "Protocol.h"
 #include <StageMode.h>
 
-LobbyScene::LobbyScene(Scene* configScene, char* playerType, std::string* roomId) {
+LobbyScene::LobbyScene(Scene* configScene, char* playerType, std::string* roomId, bool& gameFinished) : _gameFinished(gameFinished) {
     _playerType = playerType;
     _roomId = roomId;
     _configScene = configScene;
@@ -14,7 +14,7 @@ LobbyScene::LobbyScene(Scene* configScene, char* playerType, std::string* roomId
 
 void LobbyScene::updateLoop() {
     done = false;
-    while(!done) {
+    while(!done && !_gameFinished) {
         this->handleEvents();
         Uint32 deltaTime = Timer::partial();
         //wait if not enough time has passed for it to render another frame
@@ -31,8 +31,13 @@ void LobbyScene::handleEvents() {
     while (SDL_PollEvent(&event)) {
         switch (event.type) {
             case SDL_KEYDOWN:
-                //Handle backspace
-                if( event.key.keysym.sym == SDLK_BACKSPACE && _roomId->length() > 0 ) {
+                if(event.key.keysym.sym == SDLK_ESCAPE) {
+                    _gameFinished = true;
+                    StageMode::log("QUIT GAME");
+                    return;
+                }
+                    //Handle backspace
+                else if( event.key.keysym.sym == SDLK_BACKSPACE && _roomId->length() > 0 ) {
                     _roomId->pop_back();
                     updateInputText();
                 }
@@ -49,7 +54,9 @@ void LobbyScene::handleEvents() {
             case SDL_QUIT:
                 /* Quit */
                 done = true;
-                break;
+                _gameFinished = true;
+                StageMode::log("QUIT GAME");
+                return;
             case SDL_TEXTINPUT:
                 /* Add new text onto the end of our text */
                 (*_roomId) += event.text.text;
