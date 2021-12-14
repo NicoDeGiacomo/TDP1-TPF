@@ -13,12 +13,13 @@ int main() {
         Server server("7777");
         server.run();
     } catch(const std::exception &e) {
-        std::cerr << "Se atrapó una excepcion en el servidor: '" 
-                  << e.what() << "'" << std::endl;
+        StageMode::log(
+                    std::string("Exception caught in server: '") + e.what()
+                        + "'");
         return 1;
     } catch(...) {
-        std::cerr << "Error desconocido en el servidor" << std::endl;
-        return 2;
+        StageMode::log("Unknown error caught in server.");
+        return 1;
     }
     return 0;
 }

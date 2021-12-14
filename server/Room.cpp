@@ -40,7 +40,6 @@ void Room::assignPlayerType(ClientProxy &client) {
 void Room::addClient(ClientProxy &client) {
     std::cout << "SEED: " << board.getSeed() << "\n";
     client.setId(next_id);
-
     assignPlayerType(client);
 
     client.send(std::make_shared<SeedMessage>(board.getSeed()));
@@ -57,7 +56,6 @@ void Room::addClient(ClientProxy &client) {
 void Room::cleanInactivePlayers() {
     for (auto it = players.begin(); it != players.end(); ) {
         if (it->isDead()) {
-            StageMode::log("Cleaning client. ID: " + std::to_string(it->getId()));
             it->join();
             it = players.erase(it);
         } else {
@@ -72,12 +70,9 @@ void Room::close() {
         it = players.erase(it);
         ++it;
     }
-
     sendThread.stop();
     if (sendThread.joinable())
         sendThread.join();
-
-    StageMode::log("Closing connections with every client of the room");
 }
 
 bool Room::isEmpty() const {

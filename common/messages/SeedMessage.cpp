@@ -20,6 +20,4 @@ SeedMessage::SeedMessage(unsigned int seed) {
     _message = std::string(_message.data(), _msg_len);
 }
 
-void SeedMessage::apply(Board&, Chat &) const {
-    // throw std::runtime_error("This method should not be called");
-}
+void SeedMessage::apply(Board&, Chat &) const {}

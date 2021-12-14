@@ -17,6 +17,27 @@
 #include "ConfigScene.h"
 #include "StageMode.h"
 
+void Client::initMessages() {
+    sendQueue.produce(std::make_shared<RoomIdMessage>(roomId));
+    
+    sendQueue.produce(std::make_shared<PlayerTypeMessage>(playerType));
+    std::shared_ptr<Message> type_msg = recvQueue.top();
+    if (type_msg->getType() != PLAYER_TYPE_CHAR)
+        throw std::runtime_error("First message should be the player type");
+    playerType = type_msg->getMessage().at(0);
+    recvQueue.pop();
+
+    std::shared_ptr<Message> seed_msg = recvQueue.top();
+    if (seed_msg->getType() != SEED_CHAR)
+        throw std::runtime_error("Second message should be the seed");
+    unsigned int seed;
+    memcpy(&seed, seed_msg->getMessage().data(), sizeof(seed));
+    StageMode::log(std::string("SEED ") + std::to_string(seed));
+    recvQueue.pop();
+
+    _board.setSeed(seed);
+}
+
 void Client::run() {
     RecvThread recvThread(proxy, recvQueue);
     SendThread sendThread(proxy, _board, chat, sendQueue);
@@ -33,29 +54,12 @@ void Client::run() {
     recvThread.start();
     sendThread.start();
 
-    sendQueue.produce(std::make_shared<RoomIdMessage>(roomId));
-    
-    sendQueue.produce(std::make_shared<PlayerTypeMessage>(playerType));
-    std::shared_ptr<Message> type_msg = recvQueue.top();
-    if (type_msg->getType() != PLAYER_TYPE_CHAR)
-        throw std::runtime_error("First message should be the player type");
-    char player_type = type_msg->getMessage().at(0);
-    recvQueue.pop();
-
-    std::shared_ptr<Message> seed_msg = recvQueue.top();
-    if (seed_msg->getType() != SEED_CHAR)
-        throw std::runtime_error("Second message should be the seed");
-    unsigned int seed;
-    memcpy(&seed, seed_msg->getMessage().data(), sizeof(seed));
-    StageMode::log(std::string("SEED ") + std::to_string(seed));
-    recvQueue.pop();
-
-    _board.setSeed(seed);
+    this->initMessages();
 
     sceneManager.addScene(std::make_unique<GameScene>(_board,
                                                       &sendQueue,
                                                       chat.getQueue(),
-                                                      player_type,
+                                                      playerType,
                                                       gameFinished,
                                                       mute), GAME_SCENE);
 
