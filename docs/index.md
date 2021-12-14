@@ -133,4 +133,4 @@ At the end of each game, a dump will be available to download. The dump will be 
 At any time, you can click on the gear in the top-right corner to change the screen settings.\
 Then click on the desired resolution.
 
-![Screenshot from 2021-12-13 02-09-02](https://user-images.githubusercontent.com/11294851/145755830-25386caf-a313-4311-9e80-975f3b56cf5d.png)
+![Screenshot from 2021-12-14 04-32-35](https://user-images.githubusercontent.com/11294851/145953002-8eda8545-36d8-4f18-965e-6f3f6617d1b5.png)
