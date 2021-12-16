@@ -44,21 +44,35 @@ TEST_CASE("Create Chess Board") {
 }
 
 TEST_CASE("Test big match") {
-    Board board(false, 1);
+    Board board(false, 3293601666);
 
     board.move(Position("e2"), Position("e4"));
-    board.move(Position("e7"), Position("e5"));
-    board.split(Position("d1"), Position("g4"), Position("h5"));
+    board.split(Position("b8"), Position("c6"), Position("a6"));
+    board.move(Position("d2"), Position("d4"));
     board.split(Position("g8"), Position("f6"), Position("h6"));
-    board.move(Position("h5"), Position("h6"));
-    board.split(Position("f6"), Position("g4"), Position("h5"));
-    board.split(Position("h6"), Position("f4"), Position("f6"));
-    board.split(Position("b8"), Position("a6"), Position("c6"));
-    board.split(Position("f6"), Position("h4"), Position("d6"));
-    board.split(Position("d8"), Position("f6"), Position("g5"));
-    board.split(Position("g1"), Position("h3"), Position("f3"));
-    board.split(Position("c6"), Position("b4"), Position("d4"));
-    board.move(Position("d2"), Position("d3"));
+    board.split(Position("f1"), Position("e2"), Position("d3"));
+    board.move(Position("e7"), Position("e6"));
+    board.split(Position("c1"), Position("d2"), Position("f4"));
+    board.split(Position("c6"), Position("e7"), Position("b4"));
+    board.move(Position("d1"), Position("f3"));
+    board.move(Position("f6"), Position("d5"));
+    board.move(Position("f3"), Position("d3"));
+    board.move(Position("e7"), Position("d5"));
+    board.move(Position("d1"), Position("d3"));
+    board.move(Position("b4"), Position("d5"));
+    board.move(Position("d1"), Position("d2"));
+    board.split(Position("f8"), Position("e7"), Position("c5"));
+    board.move(Position("d3"), Position("c3"));
+    board.split(Position("c5"), Position("d6"), Position("b6"));
+    board.split(Position("c3"), Position("c6"), Position("h3"));
+    board.move(Position("c7"), Position("c6"));
+    board.move(Position("h3"), Position("h7"));
+    board.move(Position("b7"), Position("b6"));
+    board.split(Position("h7"), Position("g8"), Position("g6"));
+    board.split(Position("e7"), Position("h4"), Position("g5"));
+    board.move(Position("f4"), Position("d6"));
+    board.move(Position("g5"), Position("e7"));
+    board.move(Position("d6"), Position("e7"));
 }
 }
 

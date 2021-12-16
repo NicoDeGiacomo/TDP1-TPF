@@ -1,5 +1,4 @@
 #include <stdexcept>
-#include <algorithm>
 #include "PieceSplits.h"
 
 struct SplitNode_ {
@@ -194,29 +193,48 @@ std::shared_ptr<SplitNode_> PieceSplits::findNode_(const std::shared_ptr<SplitNo
     return nullptr;
 }
 bool PieceSplits::propagateProbability_(const std::shared_ptr<SplitNode_>& node, float probability) {
+    if (node == nullptr) {
+        return false;
+    }
+
     if (node->leaf) {
         node->probability += probability;
         if (node->probability >= 1.0f) {
             if (node->leaf && node->entanglement) {
                 node->entanglement->denySplit_();
             }
-            node->piece->resetSplits_();
+            if (node->piece) {
+                node->piece->resetSplits_();
+            }
             return true;
         }
     } else {
-        if(!node->left && !node->right) {
-            return propagateProbability_(node->father.lock(), probability / 2);
+        if(node->left == nullptr && node->right == nullptr) {
+            if (!node->leaf && !node->father.expired() && node != root_) {
+                std::shared_ptr<SplitNode_> father = node->father.lock();
+                if (father->right == node) {
+                    father->right = nullptr;
+                }
+                if (father->left == node) {
+                    father->left = nullptr;
+                }
+            }
+
+            if (!node->father.expired() && node != root_) {
+                return propagateProbability_(node->father.lock(), probability / 2);
+            }
+            return false;
         }
     }
 
-    if (node->left && node->right) {
+    if (node->left != nullptr && node->right  != nullptr) {
         return propagateProbability_(node->left, probability / 2)
             || propagateProbability_(node->right, probability / 2);
     }
-    if (node->left) {
+    if (node->left != nullptr) {
         return propagateProbability_(node->left, probability);
     }
-    if (node->right) {
+    if (node->right != nullptr) {
         return propagateProbability_(node->right, probability);
     }
 
